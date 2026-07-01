@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clinic Administrator Panel | Kinetic Dental & Healthcare Center</title>
+  
+  <!-- SEO & Favicon -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/x-icon" href="first.jpg">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-content">
+      <div class="top-info">
+        <span class="top-link"><i data-lucide="shield-check" class="icon-sm"></i> Secure Admin Dashboard</span>
+      </div>
+      <div class="top-socials">
+        <a href="index.html" class="top-link"><i data-lucide="arrow-left" class="icon-sm"></i> Back to Main Site</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Section -->
+  <header class="main-header">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <img src="first.jpg" alt="Kinetic Dental Logo" class="logo-img">
+        <div class="logo-text">
+          <span class="logo-title">Kinetic Dental</span>
+          <span class="logo-sub">Healthcare Center</span>
+        </div>
+      </a>
+
+      <!-- Actions -->
+      <div class="desktop-nav">
+        <span class="nav-item active">Admin Panel</span>
+        <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Dark Mode">
+          <i data-lucide="moon" class="theme-icon-dark"></i>
+          <i data-lucide="sun" class="theme-icon-light hidden"></i>
+        </button>
+        <button class="btn btn-secondary hidden" id="logoutBtnTop"><i data-lucide="log-out" class="icon-left"></i> Log Out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Portal Section -->
+  <main class="section-padding" style="min-height: calc(100vh - 200px);">
+    <div class="container">
+      
+      <!-- 1. AUTHENTICATION CARDS (LOGIN & REGISTER SETUP) -->
+      <div class="admin-auth-wrapper" id="authSection">
+        <div class="admin-auth-card">
+          <div class="auth-header">
+            <i data-lucide="lock" class="auth-lock-icon"></i>
+            <h2>Clinic Login</h2>
+            <p>Access appointment submissions and patient details.</p>
+          </div>
+          
+          <form id="loginForm" class="booking-form">
+            <div class="form-group" id="loginEmailGroup">
+              <label for="adminEmail">Email Address</label>
+              <div class="input-wrapper">
+                <i data-lucide="mail" class="input-icon"></i>
+                <input type="email" id="adminEmail" placeholder="admin@kineticdental.com" required>
+              </div>
+              <span class="error-msg" id="loginEmailError">Please enter a valid email.</span>
+            </div>
+
+            <div class="form-group" id="loginPasswordGroup">
+              <label for="adminPassword">Password</label>
+              <div class="input-wrapper">
+                <i data-lucide="key-round" class="input-icon"></i>
+                <input type="password" id="adminPassword" placeholder="••••••••" required>
+              </div>
+              <span class="error-msg" id="loginPasswordError">Password is required.</span>
+            </div>
+
+            <span class="error-msg" id="authGeneralError" style="margin-bottom: 15px; text-align: center;">Incorrect credentials. Please try again.</span>
+
+            <div class="auth-buttons-row">
+              <button type="submit" class="btn btn-primary" style="flex: 1;">
+                <span>Sign In</span>
+                <i data-lucide="log-in" class="icon-right"></i>
+              </button>
+              <button type="button" class="btn btn-secondary" id="registerBtn">
+                <span>Register</span>
+                <i data-lucide="user-plus" class="icon-right"></i>
+              </button>
+            </div>
+          </form>
+          
+          <div class="auth-info-tip">
+            <i data-lucide="info" class="text-gold flex-shrink-0" style="width: 16px; height: 16px;"></i>
+            <p><strong>First-time setup?</strong> Enter your desired admin email and password, then click <strong>Register</strong> to initialize your clinic account.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. SECURE PORTAL DASHBOARD (LOADS ON AUTHENTICATED STATE) -->
+      <div class="admin-dashboard-wrapper hidden" id="dashboardSection">
+        <div class="dashboard-header scroll-reveal reveal-active">
+          <div>
+            <span class="section-tag">Internal System</span>
+            <h2 class="section-title" style="text-align: left; margin-bottom: 8px;">Appointment Submissions</h2>
+            <p>Review, update, and manage bookings saved via Formspree and Firebase.</p>
+          </div>
+          <button class="btn btn-secondary" id="logoutBtnMain"><i data-lucide="log-out" class="icon-left"></i> Sign Out</button>
+        </div>
+
+        <!-- Metric Counter Grid -->
+        <div class="dashboard-metrics-grid scroll-reveal reveal-active">
+          <div class="metric-card metric-total">
+            <div class="metric-icon"><i data-lucide="calendar-days"></i></div>
+            <div>
+              <h3 id="metricTotal">0</h3>
+              <p>Total Bookings</p>
+            </div>
+          </div>
+          <div class="metric-card metric-pending">
+            <div class="metric-icon"><i data-lucide="clock"></i></div>
+            <div>
+              <h3 id="metricPending">0</h3>
+              <p>Pending Review</p>
+            </div>
+          </div>
+          <div class="metric-card metric-confirmed">
+            <div class="metric-icon"><i data-lucide="check-circle-2"></i></div>
+            <div>
+              <h3 id="metricConfirmed">0</h3>
+              <p>Confirmed Spots</p>
+            </div>
+          </div>
+          <div class="metric-card metric-completed">
+            <div class="metric-icon"><i data-lucide="award"></i></div>
+            <div>
+              <h3 id="metricCompleted">0</h3>
+              <p>Completed Visits</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters & Table Panel -->
+        <div class="dashboard-table-panel scroll-reveal reveal-active">
+          <div class="table-controls-bar">
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+              <button class="tab-btn active" data-filter="all">All Booking Requests</button>
+              <button class="tab-btn" data-filter="Pending">Pending</button>
+              <button class="tab-btn" data-filter="Confirmed">Confirmed</button>
+              <button class="tab-btn" data-filter="Completed">Completed</button>
+            </div>
+            
+            <!-- Search -->
+            <div class="table-search-box">
+              <i data-lucide="search" class="search-icon"></i>
+              <input type="text" id="searchBar" placeholder="Search patient name or phone...">
+            </div>
+          </div>
+
+          <!-- Appointments List Container -->
+          <div class="table-responsive-wrapper">
+            <table class="appointments-table">
+              <thead>
+                <tr>
+                  <th>Patient Info</th>
+                  <th>Contact Number</th>
+                  <th>Treatment / Service</th>
+                  <th>Preferred Slot</th>
+                  <th>Status</th>
+                  <th>Notes / Symptoms</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="appointmentsTableBody">
+                <tr>
+                  <td colspan="7" class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading database submissions...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-bottom-content" style="opacity: 0.6; padding-bottom: 30px;">
+      <p>&copy; 2026 Kinetic Dental & Healthcare Center. Secure Admin Dashboard.</p>
+      <p><a href="index.html" style="color: #fff; text-decoration: underline;">Back to Homepage</a></p>
+    </div>
+  </footer>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <!-- Admin JS logic -->
+  <script src="admin.js"></script>
+</body>
+</html>
