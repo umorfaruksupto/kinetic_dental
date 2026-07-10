@@ -68,42 +68,110 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* --------------------------------------------------------------------------
-     2. Authentication Listeners & State Toggles
+     2. Admin Email Whitelist & Authentication
      -------------------------------------------------------------------------- */
+  const ALLOWED_ADMIN_EMAILS = new Set([
+    'kineticdental29@gmail.com',
+    'drnadiakineticdental@gmail.com',
+    'drnafisanadiaanzum@gamil.com',
+    'drnafisanadiaanzum@gmail.com'
+  ]);
+
+  function isAllowedAdminEmail(email) {
+    return ALLOWED_ADMIN_EMAILS.has(email.trim().toLowerCase());
+  }
+
+  function showAuthError(message) {
+    authGeneralError.innerHTML = message;
+    authGeneralError.style.display = 'block';
+  }
+
+  function clearAuthError() {
+    authGeneralError.style.display = 'none';
+    authGeneralError.textContent = '';
+  }
+
   const authSection = document.getElementById('authSection');
   const dashboardSection = document.getElementById('dashboardSection');
   const logoutBtnTop = document.getElementById('logoutBtnTop');
   const logoutBtnMain = document.getElementById('logoutBtnMain');
   const loginForm = document.getElementById('loginForm');
-  const registerBtn = document.getElementById('registerBtn');
+  const signInTab = document.getElementById('signInTab');
+  const signUpTab = document.getElementById('signUpTab');
+  const authTitle = document.getElementById('authTitle');
+  const authSubtitle = document.getElementById('authSubtitle');
+  const authSubmitLabel = document.getElementById('authSubmitLabel');
+  const authSubmitIcon = document.getElementById('authSubmitIcon');
+  const passwordField = document.getElementById('adminPassword');
   
   const emailField = document.getElementById('adminEmail');
-  const passwordField = document.getElementById('adminPassword');
   const authGeneralError = document.getElementById('authGeneralError');
   
+  let authMode = 'signin';
   let unsubscribeFirestore = null;
   let appointmentsList = [];
   let currentFilter = 'all';
   let currentSearch = '';
 
+  function setAuthMode(mode) {
+    authMode = mode;
+    const isSignUp = mode === 'signup';
+
+    signInTab?.classList.toggle('active', !isSignUp);
+    signUpTab?.classList.toggle('active', isSignUp);
+    signInTab?.setAttribute('aria-selected', String(!isSignUp));
+    signUpTab?.setAttribute('aria-selected', String(isSignUp));
+
+    if (authTitle) authTitle.textContent = isSignUp ? 'Create Admin Account' : 'Sign In';
+    if (authSubtitle) {
+      authSubtitle.textContent = isSignUp
+        ? 'Register with an authorized clinic email address.'
+        : 'Access appointment submissions and patient details.';
+    }
+    if (authSubmitLabel) authSubmitLabel.textContent = isSignUp ? 'Sign Up' : 'Sign In';
+    if (authSubmitIcon) authSubmitIcon.setAttribute('data-lucide', isSignUp ? 'user-plus' : 'log-in');
+    if (passwordField) passwordField.setAttribute('autocomplete', isSignUp ? 'new-password' : 'current-password');
+
+    clearAuthError();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  signInTab?.addEventListener('click', () => setAuthMode('signin'));
+  signUpTab?.addEventListener('click', () => setAuthMode('signup'));
+
+  function handleFirebaseAuthError(err) {
+    console.error('Auth failed:', err);
+    if (err.code === 'auth/configuration-not-found') {
+      showAuthError('<strong>Setup Required:</strong> Email/Password authentication is disabled in your Firebase console. Please go to <strong>Firebase Console &gt; Authentication &gt; Sign-in Method</strong> and enable <strong>Email/Password</strong>.');
+    } else if (err.code === 'auth/email-already-in-use') {
+      showAuthError('This email is already registered. Switch to <strong>Sign In</strong> and use your password.');
+    } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+      showAuthError('Incorrect email or password. If this is your first visit, use <strong>Sign Up</strong> with an authorized clinic email.');
+    } else {
+      showAuthError(`${authMode === 'signup' ? 'Sign Up' : 'Sign In'} failed: ${err.message}`);
+    }
+  }
+
   // Auth State observer
   window.auth.onAuthStateChanged((user) => {
     if (user) {
-      // User is logged in
+      if (!isAllowedAdminEmail(user.email || '')) {
+        window.auth.signOut();
+        showAuthError('Access denied. This email is not authorized for admin access.');
+        return;
+      }
+
       authSection.classList.add('hidden');
       dashboardSection.classList.remove('hidden');
       logoutBtnTop?.classList.remove('hidden');
-      authGeneralError.style.display = 'none';
+      clearAuthError();
       
-      // Start Realtime Database listener
       startFirestoreListener();
     } else {
-      // User is logged out
       authSection.classList.remove('hidden');
       dashboardSection.classList.add('hidden');
       logoutBtnTop?.classList.add('hidden');
       
-      // Stop Realtime Listener
       if (unsubscribeFirestore) {
         unsubscribeFirestore();
         unsubscribeFirestore = null;
@@ -111,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Login handler
   if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -119,47 +186,25 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = emailField.value.trim();
       const password = passwordField.value;
       
-      authGeneralError.style.display = 'none';
+      clearAuthError();
 
-      window.auth.signInWithEmailAndPassword(email, password)
-        .catch(err => {
-          console.error("Login failed:", err);
-          if (err.code === 'auth/configuration-not-found') {
-            authGeneralError.innerHTML = `<strong>Setup Required:</strong> Email/Password authentication is disabled in your Firebase console. Please go to <strong>Firebase Console &gt; Authentication &gt; Sign-in Method</strong> and enable <strong>Email/Password</strong>.`;
-          } else {
-            authGeneralError.textContent = `Login Failed: ${err.message}`;
-          }
-          authGeneralError.style.display = 'block';
-        });
-    });
-  }
-
-  // Register setup handler (First time admin registration helper)
-  if (registerBtn) {
-    registerBtn.addEventListener('click', () => {
-      const email = emailField.value.trim();
-      const password = passwordField.value;
-      
-      if (!email || password.length < 6) {
-        alert("Please enter a valid email and password (minimum 6 characters) to register.");
+      if (!isAllowedAdminEmail(email)) {
+        showAuthError('Access denied. Only authorized clinic admin emails can register or sign in.');
         return;
       }
 
-      authGeneralError.style.display = 'none';
+      if (password.length < 6) {
+        showAuthError('Password must be at least 6 characters.');
+        return;
+      }
 
-      window.auth.createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          alert("Admin account registered successfully! You are now logged in.");
-        })
-        .catch(err => {
-          console.error("Registration failed:", err);
-          if (err.code === 'auth/configuration-not-found') {
-            authGeneralError.innerHTML = `<strong>Setup Required:</strong> Email/Password authentication is disabled in your Firebase console. Please go to <strong>Firebase Console &gt; Authentication &gt; Sign-in Method</strong> and enable <strong>Email/Password</strong>.`;
-          } else {
-            authGeneralError.textContent = `Registration Failed: ${err.message}`;
-          }
-          authGeneralError.style.display = 'block';
-        });
+      if (authMode === 'signup') {
+        window.auth.createUserWithEmailAndPassword(email, password)
+          .catch(handleFirebaseAuthError);
+      } else {
+        window.auth.signInWithEmailAndPassword(email, password)
+          .catch(handleFirebaseAuthError);
+      }
     });
   }
 
@@ -178,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const metricPending = document.getElementById('metricPending');
   const metricConfirmed = document.getElementById('metricConfirmed');
   const metricCompleted = document.getElementById('metricCompleted');
+  const metricReplied = document.getElementById('metricReplied');
   const tableBody = document.getElementById('appointmentsTableBody');
   const searchBar = document.getElementById('searchBar');
   const filterTabs = document.querySelectorAll('.tab-btn');
@@ -206,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Firestore listener error:", err);
         tableBody.innerHTML = `
           <tr>
-            <td colspan="7" class="loading-state" style="color: #e74c3c;">
+            <td colspan="8" class="loading-state" style="color: #e74c3c;">
               <i data-lucide="alert-triangle" style="width: 32px; height:32px; margin:0 auto 12px; display:block;"></i>
               <p>Failed to load appointments: Access Denied. Check your Firestore rules.</p>
             </td>
@@ -216,16 +262,25 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
+  function getReplyStatus(item) {
+    if (item.replyStatus === 'replied' || (Array.isArray(item.replies) && item.replies.length > 0)) {
+      return 'replied';
+    }
+    return 'pending';
+  }
+
   function calculateMetrics() {
     const total = appointmentsList.length;
     const pending = appointmentsList.filter(a => a.status === 'Pending').length;
     const confirmed = appointmentsList.filter(a => a.status === 'Confirmed').length;
     const completed = appointmentsList.filter(a => a.status === 'Completed').length;
+    const replied = appointmentsList.filter(a => getReplyStatus(a) === 'replied').length;
 
     if (metricTotal) metricTotal.textContent = total;
     if (metricPending) metricPending.textContent = pending;
     if (metricConfirmed) metricConfirmed.textContent = confirmed;
     if (metricCompleted) metricCompleted.textContent = completed;
+    if (metricReplied) metricReplied.textContent = replied;
   }
 
   function renderTable() {
@@ -235,7 +290,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let filtered = appointmentsList;
 
     // Filter by Tab Status
-    if (currentFilter !== 'all') {
+    if (currentFilter === 'reply-pending') {
+      filtered = filtered.filter(a => getReplyStatus(a) === 'pending');
+    } else if (currentFilter === 'reply-replied') {
+      filtered = filtered.filter(a => getReplyStatus(a) === 'replied');
+    } else if (currentFilter !== 'all') {
       filtered = filtered.filter(a => a.status === currentFilter);
     }
 
@@ -253,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filtered.length === 0) {
       tableBody.innerHTML = `
         <tr>
-          <td colspan="7" class="loading-state">
+          <td colspan="8" class="loading-state">
             <i data-lucide="inbox" style="width: 32px; height:32px; margin:0 auto 12px; display:block; opacity:0.5;"></i>
             <p>No matching appointment records found.</p>
           </td>
@@ -267,6 +326,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let html = '';
     filtered.forEach(item => {
       const formattedDate = item.createdAt ? formatDate(item.createdAt.toDate()) : 'Pending Sync...';
+      const replyStatus = getReplyStatus(item);
+      const lastReply = Array.isArray(item.replies) && item.replies.length
+        ? item.replies[item.replies.length - 1]
+        : null;
       
       html += `
         <tr>
@@ -289,12 +352,19 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="status-badge status-${item.status}">${item.status}</span>
           </td>
           <td>
+            <span class="status-badge status-reply-${replyStatus}">${replyStatus === 'replied' ? 'Replied' : 'Awaiting'}</span>
+            ${lastReply ? `<div class="reply-preview">${escapeHTML(truncateText(lastReply.message, 60))}</div>` : ''}
+          </td>
+          <td>
             <div style="max-width:200px; font-size:0.82rem; max-height:60px; overflow-y:auto; word-break:break-word;">
               ${escapeHTML(item.notes || 'N/A')}
             </div>
           </td>
           <td>
             <div class="action-btn-group">
+              <button class="action-btn btn-reply" onclick="openReplyModal('${item.id}')" title="Reply to Patient">
+                <i data-lucide="message-square-reply"></i>
+              </button>
               ${item.status === 'Pending' ? `
                 <button class="action-btn btn-confirm" onclick="updateAppointmentStatus('${item.id}', 'Confirmed')" title="Confirm Booking">
                   <i data-lucide="check"></i>
@@ -344,7 +414,11 @@ document.addEventListener('DOMContentLoaded', () => {
      4. Global Database Actions (Accessible globally from buttons)
      -------------------------------------------------------------------------- */
   window.updateAppointmentStatus = (id, status) => {
-    if (!window.db) return;
+    if (!window.db || !window.auth.currentUser) return;
+    if (!isAllowedAdminEmail(window.auth.currentUser.email || '')) {
+      alert('Access denied.');
+      return;
+    }
     
     window.db.collection('appointments').doc(id).update({
       status: status
@@ -363,7 +437,11 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    if (!window.db) return;
+    if (!window.db || !window.auth.currentUser) return;
+    if (!isAllowedAdminEmail(window.auth.currentUser.email || '')) {
+      alert('Access denied.');
+      return;
+    }
 
     window.db.collection('appointments').doc(id).delete()
       .then(() => {
@@ -376,6 +454,118 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   /* --------------------------------------------------------------------------
+     4b. Admin Reply Modal & Send Reply
+     -------------------------------------------------------------------------- */
+  const replyModal = document.getElementById('replyModal');
+  const replyForm = document.getElementById('replyForm');
+  const replyMessageField = document.getElementById('replyMessage');
+  const replyPatientSummary = document.getElementById('replyPatientSummary');
+  const replyThread = document.getElementById('replyThread');
+  const replyThreadList = document.getElementById('replyThreadList');
+  const replyModalClose = document.getElementById('replyModalClose');
+  const replyCancelBtn = document.getElementById('replyCancelBtn');
+  const replySendLabel = document.getElementById('replySendLabel');
+  let activeReplyAppointmentId = null;
+
+  function closeReplyModal() {
+    activeReplyAppointmentId = null;
+    replyModal?.classList.remove('active');
+    document.body.style.overflow = '';
+    if (replyForm) replyForm.reset();
+    replyThread?.classList.add('hidden');
+    if (replyThreadList) replyThreadList.innerHTML = '';
+  }
+
+  window.openReplyModal = (id) => {
+    if (!window.auth.currentUser || !isAllowedAdminEmail(window.auth.currentUser.email || '')) {
+      alert('You must be signed in as an authorized admin to reply.');
+      return;
+    }
+
+    const item = appointmentsList.find(a => a.id === id);
+    if (!item) return;
+
+    activeReplyAppointmentId = id;
+    replyPatientSummary.innerHTML = `
+      <p><strong>${escapeHTML(item.name)}</strong> · <a href="tel:${escapeHTML(item.phone)}">${escapeHTML(item.phone)}</a></p>
+      <p>${escapeHTML(item.treatment)} — ${escapeHTML(item.date)} ${escapeHTML(item.time)}</p>
+    `;
+
+    const replies = Array.isArray(item.replies) ? item.replies : [];
+    if (replies.length > 0) {
+      replyThread.classList.remove('hidden');
+      replyThreadList.innerHTML = replies.map(reply => `
+        <div class="admin-reply-bubble">
+          <p>${escapeHTML(reply.message)}</p>
+          <span class="reply-meta">${escapeHTML(reply.repliedBy || 'Admin')} · ${formatReplyTimestamp(reply.repliedAt)}</span>
+        </div>
+      `).join('');
+    } else {
+      replyThread.classList.add('hidden');
+      replyThreadList.innerHTML = '';
+    }
+
+    replyModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    replyMessageField?.focus();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  };
+
+  replyModalClose?.addEventListener('click', closeReplyModal);
+  replyCancelBtn?.addEventListener('click', closeReplyModal);
+  replyModal?.addEventListener('click', (e) => {
+    if (e.target === replyModal) closeReplyModal();
+  });
+
+  if (replyForm) {
+    replyForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const user = window.auth.currentUser;
+      if (!user || !isAllowedAdminEmail(user.email || '')) {
+        alert('Access denied. Only authorized admins can send replies.');
+        return;
+      }
+
+      const message = replyMessageField.value.trim();
+      if (!message) {
+        replyMessageField.closest('.form-group')?.classList.add('invalid');
+        return;
+      }
+      replyMessageField.closest('.form-group')?.classList.remove('invalid');
+
+      if (!activeReplyAppointmentId || !window.db) return;
+
+      const replySendBtn = document.getElementById('replySendBtn');
+      if (replySendBtn) replySendBtn.disabled = true;
+      if (replySendLabel) replySendLabel.textContent = 'Sending...';
+
+      const newReply = {
+        message: message,
+        repliedAt: firebase.firestore.Timestamp.now(),
+        repliedBy: user.email
+      };
+
+      window.db.collection('appointments').doc(activeReplyAppointmentId).update({
+        replies: firebase.firestore.FieldValue.arrayUnion(newReply),
+        replyStatus: 'replied',
+        lastReplyAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(() => {
+        closeReplyModal();
+      })
+      .catch(err => {
+        console.error('Reply failed:', err);
+        alert('Failed to send reply: ' + err.message);
+      })
+      .finally(() => {
+        if (replySendBtn) replySendBtn.disabled = false;
+        if (replySendLabel) replySendLabel.textContent = 'Send Reply';
+      });
+    });
+  }
+
+  /* --------------------------------------------------------------------------
      5. Helper Functions
      -------------------------------------------------------------------------- */
   function formatDate(date) {
@@ -386,6 +576,16 @@ document.addEventListener('DOMContentLoaded', () => {
       minute: '2-digit' 
     };
     return date.toLocaleDateString('en-US', options);
+  }
+
+  function formatReplyTimestamp(timestamp) {
+    if (!timestamp || !timestamp.toDate) return '';
+    return formatDate(timestamp.toDate());
+  }
+
+  function truncateText(str, max) {
+    if (!str) return '';
+    return str.length > max ? str.slice(0, max) + '…' : str;
   }
 
   function escapeHTML(str) {

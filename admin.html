@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clinic Administrator Panel | Kinetic Dental & Healthcare Center</title>
+  <title>Clinic Administrator Panel | Kinetic Dental Care</title>
   
   <!-- SEO & Favicon -->
   <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://kineticdentalcare.com/admin.html">
   <link rel="icon" type="image/x-icon" href="first.jpg">
 
   <!-- Google Fonts -->
@@ -61,13 +62,18 @@
   <main class="section-padding" style="min-height: calc(100vh - 200px);">
     <div class="container">
       
-      <!-- 1. AUTHENTICATION CARDS (LOGIN & REGISTER SETUP) -->
+      <!-- 1. AUTHENTICATION CARDS (LOGIN & REGISTER) -->
       <div class="admin-auth-wrapper" id="authSection">
         <div class="admin-auth-card">
           <div class="auth-header">
             <i data-lucide="lock" class="auth-lock-icon"></i>
-            <h2>Clinic Login</h2>
-            <p>Access appointment submissions and patient details.</p>
+            <h2 id="authTitle">Sign In</h2>
+            <p id="authSubtitle">Access appointment submissions and patient details.</p>
+          </div>
+
+          <div class="auth-mode-tabs" role="tablist" aria-label="Authentication mode">
+            <button type="button" class="auth-mode-tab active" id="signInTab" data-mode="signin" role="tab" aria-selected="true">Sign In</button>
+            <button type="button" class="auth-mode-tab" id="signUpTab" data-mode="signup" role="tab" aria-selected="false">Sign Up</button>
           </div>
           
           <form id="loginForm" class="booking-form">
@@ -75,7 +81,7 @@
               <label for="adminEmail">Email Address</label>
               <div class="input-wrapper">
                 <i data-lucide="mail" class="input-icon"></i>
-                <input type="email" id="adminEmail" placeholder="admin@kineticdental.com" required>
+                <input type="email" id="adminEmail" placeholder="your-clinic-email@gmail.com" required autocomplete="email">
               </div>
               <span class="error-msg" id="loginEmailError">Please enter a valid email.</span>
             </div>
@@ -84,28 +90,22 @@
               <label for="adminPassword">Password</label>
               <div class="input-wrapper">
                 <i data-lucide="key-round" class="input-icon"></i>
-                <input type="password" id="adminPassword" placeholder="••••••••" required>
+                <input type="password" id="adminPassword" placeholder="••••••••" required minlength="6" autocomplete="current-password">
               </div>
-              <span class="error-msg" id="loginPasswordError">Password is required.</span>
+              <span class="error-msg" id="loginPasswordError">Password must be at least 6 characters.</span>
             </div>
 
             <span class="error-msg" id="authGeneralError" style="margin-bottom: 15px; text-align: center;">Incorrect credentials. Please try again.</span>
 
-            <div class="auth-buttons-row">
-              <button type="submit" class="btn btn-primary" style="flex: 1;">
-                <span>Sign In</span>
-                <i data-lucide="log-in" class="icon-right"></i>
-              </button>
-              <button type="button" class="btn btn-secondary" id="registerBtn">
-                <span>Register</span>
-                <i data-lucide="user-plus" class="icon-right"></i>
-              </button>
-            </div>
+            <button type="submit" class="btn btn-primary auth-submit-btn" id="authSubmitBtn">
+              <span id="authSubmitLabel">Sign In</span>
+              <i data-lucide="log-in" class="icon-right" id="authSubmitIcon"></i>
+            </button>
           </form>
           
           <div class="auth-info-tip">
             <i data-lucide="info" class="text-gold flex-shrink-0" style="width: 16px; height: 16px;"></i>
-            <p><strong>First-time setup?</strong> Enter your desired admin email and password, then click <strong>Register</strong> to initialize your clinic account.</p>
+            <p id="authInfoTip"><strong>Authorized admins only.</strong> Sign up is limited to approved clinic email addresses. Use <strong>Sign Up</strong> once to create your account, then <strong>Sign In</strong> on future visits.</p>
           </div>
         </div>
       </div>
@@ -151,6 +151,13 @@
               <p>Completed Visits</p>
             </div>
           </div>
+          <div class="metric-card metric-replied">
+            <div class="metric-icon"><i data-lucide="message-circle"></i></div>
+            <div>
+              <h3 id="metricReplied">0</h3>
+              <p>Replied to Patients</p>
+            </div>
+          </div>
         </div>
 
         <!-- Filters & Table Panel -->
@@ -162,6 +169,8 @@
               <button class="tab-btn" data-filter="Pending">Pending</button>
               <button class="tab-btn" data-filter="Confirmed">Confirmed</button>
               <button class="tab-btn" data-filter="Completed">Completed</button>
+              <button class="tab-btn" data-filter="reply-pending">Awaiting Reply</button>
+              <button class="tab-btn" data-filter="reply-replied">Replied</button>
             </div>
             
             <!-- Search -->
@@ -181,13 +190,14 @@
                   <th>Treatment / Service</th>
                   <th>Preferred Slot</th>
                   <th>Status</th>
+                  <th>Reply</th>
                   <th>Notes / Symptoms</th>
                   <th style="text-align: right;">Actions</th>
                 </tr>
               </thead>
               <tbody id="appointmentsTableBody">
                 <tr>
-                  <td colspan="7" class="loading-state">
+                  <td colspan="8" class="loading-state">
                     <div class="loading-spinner"></div>
                     <p>Loading database submissions...</p>
                   </td>
@@ -200,6 +210,37 @@
 
     </div>
   </main>
+
+  <!-- Admin Reply Modal -->
+  <div class="modal" id="replyModal">
+    <div class="modal-card reply-modal-card">
+      <div class="reply-modal-header">
+        <h3><i data-lucide="message-square-reply" class="icon-sm"></i> Reply to Patient</h3>
+        <button type="button" class="reply-modal-close" id="replyModalClose" aria-label="Close">&times;</button>
+      </div>
+      <div class="reply-patient-summary" id="replyPatientSummary"></div>
+      <div class="reply-thread hidden" id="replyThread">
+        <h5>Previous Replies</h5>
+        <div id="replyThreadList"></div>
+      </div>
+      <form id="replyForm" class="booking-form">
+        <div class="form-group">
+          <label for="replyMessage">Your Message <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <textarea id="replyMessage" rows="4" placeholder="e.g. Your appointment is confirmed for Tuesday at 4 PM. Please arrive 10 minutes early." required></textarea>
+          </div>
+          <span class="error-msg" id="replyMessageError">Please enter a reply message.</span>
+        </div>
+        <div class="reply-modal-actions">
+          <button type="button" class="btn btn-secondary" id="replyCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="replySendBtn">
+            <span id="replySendLabel">Send Reply</span>
+            <i data-lucide="send" class="icon-right"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="footer">

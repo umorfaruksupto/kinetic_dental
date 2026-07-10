@@ -162,6 +162,44 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* --------------------------------------------------------------------------
+     3b. Desktop Nav "More" Dropdown
+     -------------------------------------------------------------------------- */
+  const navMoreDropdown = document.getElementById('navMoreDropdown');
+  const navMoreBtn = document.getElementById('navMoreBtn');
+
+  if (navMoreBtn && navMoreDropdown) {
+    navMoreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = navMoreDropdown.classList.toggle('open');
+      navMoreBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!navMoreDropdown.contains(e.target)) {
+        navMoreDropdown.classList.remove('open');
+        navMoreBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    navMoreDropdown.querySelectorAll('.nav-dropdown-menu a').forEach((link) => {
+      link.addEventListener('click', () => {
+        navMoreDropdown.classList.remove('open');
+        navMoreBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  /* --------------------------------------------------------------------------
+     3c. Hide cards with missing/broken images
+     -------------------------------------------------------------------------- */
+  if (typeof hideCardsWithoutImages === 'function') {
+    hideCardsWithoutImages('.home-link-card');
+    hideCardsWithoutImages('.program-card');
+    hideCardsWithoutImages('.ft-card');
+    hideCardsWithoutImages('.gallery-item');
+  }
+
+  /* --------------------------------------------------------------------------
      4. Scroll Reveal Animations (Intersection Observer)
      -------------------------------------------------------------------------- */
   const revealElements = document.querySelectorAll('.scroll-reveal');
@@ -275,7 +313,9 @@ document.addEventListener('DOMContentLoaded', () => {
           time: timeField.value,
           notes: notesField.value.trim(),
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          status: 'Pending'
+          status: 'Pending',
+          replyStatus: 'pending',
+          replies: []
         };
 
         // 1. Post to Formspree API
@@ -299,13 +339,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const firestorePromise = window.db.collection('appointments').add(bookingData);
 
         Promise.all([formspreePromise, firestorePromise])
-          .then(() => {
+          .then(([, docRef]) => {
+            const bookingId = docRef.id;
+            try {
+              localStorage.setItem('kinetic-last-booking-ref', bookingId);
+            } catch (e) { /* ignore storage errors */ }
+
             // Restore button
             if (submitBtnText) submitBtnText.textContent = 'Send Appointment Request';
             if (submitBtn) submitBtn.disabled = false;
 
             // Load values to success card
             modalSummary.innerHTML = `
+              <div class="modal-summary-item highlight-ref">
+                <span>Booking Reference:</span>
+                <span class="booking-ref-code">${escapeHTML(bookingId)}</span>
+              </div>
               <div class="modal-summary-item">
                 <span>Patient Name:</span>
                 <span>${escapeHTML(bookingData.name)}</span>
@@ -337,8 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (submitBtnText) submitBtnText.textContent = 'Send Appointment Request';
             if (submitBtn) submitBtn.disabled = false;
             
-            // Still display local popup warning
-            alert("A network timeout occurred. If you do not receive a confirmation phone call within 2 hours, please call us directly at 01313-175779!");
+            alert("A network timeout occurred. If you do not receive a confirmation phone call within 2 hours, please call us at 01313-175779 or 01308-388577!");
           });
       }
     });
@@ -348,6 +396,123 @@ document.addEventListener('DOMContentLoaded', () => {
     modalCloseBtn.addEventListener('click', () => {
       successModal.classList.remove('active');
       document.body.style.overflow = '';
+    });
+  }
+
+  /* --------------------------------------------------------------------------
+     6b. Booking Status Check (by reference ID)
+     -------------------------------------------------------------------------- */
+  const statusCheckForm = document.getElementById('statusCheckForm');
+  const bookingRefInput = document.getElementById('bookingRef');
+  const statusResult = document.getElementById('statusResult');
+  const statusResultSummary = document.getElementById('statusResultSummary');
+  const statusResultBadge = document.getElementById('statusResultBadge');
+  const adminRepliesPanel = document.getElementById('adminRepliesPanel');
+  const adminRepliesList = document.getElementById('adminRepliesList');
+  const statusResultNoReply = document.getElementById('statusResultNoReply');
+
+  try {
+    const savedRef = localStorage.getItem('kinetic-last-booking-ref');
+    if (savedRef && bookingRefInput) bookingRefInput.value = savedRef;
+  } catch (e) { /* ignore */ }
+
+  function escapeHTML(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>'"]/g,
+      tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[tag] || tag)
+    );
+  }
+
+  function formatReplyDate(timestamp) {
+    if (!timestamp || !timestamp.toDate) return '';
+    return timestamp.toDate().toLocaleString('en-BD', {
+      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function renderStatusResult(data) {
+    statusResult.classList.remove('hidden');
+    statusResultBadge.textContent = data.status || 'Pending';
+    statusResultBadge.className = `status-badge status-${data.status || 'Pending'}`;
+
+    statusResultSummary.innerHTML = `
+      <div class="modal-summary-item">
+        <span>Patient Name:</span>
+        <span>${escapeHTML(data.name)}</span>
+      </div>
+      <div class="modal-summary-item">
+        <span>Contact Phone:</span>
+        <span>${escapeHTML(data.phone)}</span>
+      </div>
+      <div class="modal-summary-item">
+        <span>Requested Care:</span>
+        <span>${escapeHTML(data.treatment)}</span>
+      </div>
+      <div class="modal-summary-item">
+        <span>Preferred Slot:</span>
+        <span>${escapeHTML(data.date)} — ${escapeHTML(data.time)}</span>
+      </div>
+    `;
+
+    const replies = Array.isArray(data.replies) ? data.replies : [];
+    if (replies.length > 0) {
+      adminRepliesPanel.classList.remove('hidden');
+      statusResultNoReply.classList.add('hidden');
+      adminRepliesList.innerHTML = replies.map(reply => `
+        <div class="admin-reply-bubble">
+          <p>${escapeHTML(reply.message)}</p>
+          <span class="reply-meta">${escapeHTML(reply.repliedBy || 'Clinic Team')} · ${formatReplyDate(reply.repliedAt)}</span>
+        </div>
+      `).join('');
+    } else {
+      adminRepliesPanel.classList.add('hidden');
+      statusResultNoReply.classList.remove('hidden');
+      adminRepliesList.innerHTML = '';
+    }
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  if (statusCheckForm && window.db) {
+    statusCheckForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const ref = bookingRefInput.value.trim();
+      const refGroup = bookingRefInput.closest('.form-group');
+      const statusCheckBtn = document.getElementById('statusCheckBtn');
+      const statusCheckBtnText = document.getElementById('statusCheckBtnText');
+
+      if (!ref) {
+        refGroup?.classList.add('invalid');
+        return;
+      }
+      refGroup?.classList.remove('invalid');
+
+      if (statusCheckBtn) statusCheckBtn.disabled = true;
+      if (statusCheckBtnText) statusCheckBtnText.textContent = 'Checking...';
+      statusResult.classList.add('hidden');
+
+      window.db.collection('appointments').doc(ref).get()
+        .then((doc) => {
+          if (!doc.exists) {
+            alert('No booking found for that reference. Please check the code from your confirmation and try again.');
+            return;
+          }
+          renderStatusResult(doc.data());
+        })
+        .catch((err) => {
+          console.error('Status check failed:', err);
+          alert('Unable to load booking status. Please call us at 01313-175779 or 01308-388577.');
+        })
+        .finally(() => {
+          if (statusCheckBtn) statusCheckBtn.disabled = false;
+          if (statusCheckBtnText) statusCheckBtnText.textContent = 'Check Status';
+        });
     });
   }
 
@@ -447,221 +612,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* --------------------------------------------------------------------------
-     9. AI Chatbot ("KineticDental AI Helper") Logic with Markdown Links & Lists
-     -------------------------------------------------------------------------- */
-  const chatbotTrigger = document.getElementById('chatbotTrigger');
-  const chatbotPanel = document.getElementById('chatbotPanel');
-  const chatCloseBtn = document.getElementById('chatCloseBtn');
-  const chatBody = document.getElementById('chatBody');
-  const chatForm = document.getElementById('chatForm');
-  const chatInput = document.getElementById('chatInput');
-
-  if (chatbotTrigger && chatbotPanel) {
-    chatbotTrigger.addEventListener('click', () => {
-      const isOpen = chatbotPanel.classList.toggle('open');
-      
-      const iconOpen = chatbotTrigger.querySelector('.trigger-icon-open');
-      const iconClose = chatbotTrigger.querySelector('.trigger-icon-close');
-      
-      if (isOpen) {
-        iconOpen?.classList.add('hidden');
-        iconClose?.classList.remove('hidden');
-        chatBody.scrollTop = chatBody.scrollHeight;
-        chatInput.focus();
-      } else {
-        iconOpen?.classList.remove('hidden');
-        iconClose?.classList.add('hidden');
-      }
-    });
-  }
-
-  if (chatCloseBtn && chatbotPanel && chatbotTrigger) {
-    chatCloseBtn.addEventListener('click', () => {
-      chatbotPanel.classList.remove('open');
-      chatbotTrigger.querySelector('.trigger-icon-open')?.classList.remove('hidden');
-      chatbotTrigger.querySelector('.trigger-icon-close')?.classList.add('hidden');
-    });
-  }
-
-  const SYSTEM_PROMPT = `You are "KineticDental AI Helper", the friendly digital assistant at Kinetic Dental & Healthcare Center (Mirpur 12, Dhaka).
-
-Clinic Context:
-- Dentist/Founder: Dr. Nadia (email: drnadiakineticdental@gmail.com)
-- Location: House no: 16, Road: 3, Sujatnagar, Mirpur 12, Dhaka, Bangladesh. (Walking distance from Mirpur 12 metro/bus station).
-- Hotline Numbers: +880 1313-175779 or 01313175779 (Dialer link: tel:+8801313175779).
-- Web links: Website [oidcard.com/Kineticdental](https://oidcard.com/Kineticdental), Google Map directions [Open Directions](https://maps.app.goo.gl/1kL5wwBY6asheCxeA?g_st=ipc), Facebook page [Facebook Page](https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr), Facebook group [Facebook Group](https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr).
-- Timing: Saturday-Thursday 10am-9pm, Friday 3pm-9pm. Hotline is open 24/7 for urgent emergencies.
-- Key Services: Tooth Scaling & Polishing, Teeth Whitening (Bleaching), Emergency Toothache Solutions, Root Canal Therapy (RCT), Pediatric Dentistry, Crowns/Bridges/Implants, Braces/Aligners.
-
-Response Guidelines:
-1. Speak warmly and directly.
-2. DO NOT repeat long welcome greetings like "Hello! Welcome to Kinetic Dental... How can I assist you today?" in subsequent messages. If the user says hello, give a brief, friendly 1-sentence welcome. If they ask a question, answer it directly without preamble.
-3. Keep answers concise (under 2 short paragraphs). Use markdown bold (**text**) for key details.
-4. When providing links, ALWAYS format them as markdown links, e.g., [Google Maps Directions](https://maps.app.goo.gl/1kL5wwBY6asheCxeA?g_st=ipc) or [Facebook Page](https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr).
-5. For lists, format them using standard markdown bullet points (e.g. "- Scaling" or "- Whitening").
-6. Suggest booking via the "Appointment Booking Form" on the page or calling us at +880 1313-175779.
-`;
-
-  const chatHistory = [
-    { role: 'system', content: SYSTEM_PROMPT }
-  ];
-
-  if (chatForm) {
-    chatForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const userText = chatInput.value.trim();
-      if (!userText) return;
-
-      appendMessage('user', userText);
-      chatInput.value = '';
-
-      chatHistory.push({ role: 'user', content: userText });
-      
-      if (chatHistory.length > 11) {
-        chatHistory.splice(1, 2);
-      }
-
-      const groqApiKey = window.APP_CONFIG?.groqApiKey;
-      if (!groqApiKey) {
-        appendMessage('ai', "The chat assistant is not configured yet. Please call us at **01313-175779** or email **drnadiakineticdental@gmail.com** and we'll be happy to help.");
-        return;
-      }
-
-      const typingIndicator = showTypingIndicator();
-      
-      try {
-        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${groqApiKey}`
-          },
-          body: JSON.stringify({
-            model: 'llama-3.1-8b-instant',
-            messages: chatHistory,
-            temperature: 0.7,
-            max_tokens: 300
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error('API request failed');
-        }
-
-        const data = await response.json();
-        const assistantText = data.choices[0].message.content;
-
-        typingIndicator.remove();
-
-        appendMessage('ai', assistantText);
-        chatHistory.push({ role: 'assistant', content: assistantText });
-
-      } catch (err) {
-        console.error('Chatbot API Error:', err);
-        typingIndicator.remove();
-        appendMessage('ai', "I apologize, but I am currently having trouble connecting to my servers. 🌐<br><br>Please feel free to call our reception directly at **01313-175779** or email us at **drnadiakineticdental@gmail.com**. You can also visit our clinic at **House 16, Road 3, Sujatnagar, Mirpur 12**! We are here to help.");
-      }
-    });
-  }
-
-  function appendMessage(sender, text) {
-    const msgDiv = document.createElement('div');
-    msgDiv.className = `msg msg-${sender}`;
-    
-    const bubble = document.createElement('div');
-    bubble.className = 'msg-bubble';
-    bubble.innerHTML = formatMarkdownToHTML(text);
-    
-    msgDiv.appendChild(bubble);
-    chatBody.appendChild(msgDiv);
-    chatBody.scrollTop = chatBody.scrollHeight;
-  }
-
-  function showTypingIndicator() {
-    const indicatorDiv = document.createElement('div');
-    indicatorDiv.className = 'msg msg-ai';
-    indicatorDiv.id = 'typingIndicator';
-    
-    indicatorDiv.innerHTML = `
-      <div class="typing-indicator">
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-      </div>
-    `;
-    
-    chatBody.appendChild(indicatorDiv);
-    chatBody.scrollTop = chatBody.scrollHeight;
-    return indicatorDiv;
-  }
-
-  // Improved markdown link, list, and bold tag parser
-  function formatMarkdownToHTML(text) {
-    let escaped = escapeHTML(text);
-    
-    // Convert markdown links: [link text](url) -> <a href="url" target="_blank" class="chat-link">link text ↗</a>
-    escaped = escaped.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" class="chat-link">$1 ↗</a>');
-    
-    // Remove raw angle brackets around links inside markdown (like <http...>)
-    escaped = escaped.replace(/&lt;(https?:\/\/.*?)&gt;/g, '<a href="$1" target="_blank" class="chat-link">$1 ↗</a>');
-
-    // Convert double asterisks to strong tags
-    escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    
-    // Format bullet list items line-by-line
-    const lines = escaped.split('\n');
-    let inList = false;
-    let result = [];
-    
-    for (let i = 0; i < lines.length; i++) {
-      let line = lines[i].trim();
-      
-      // Matches lines starting with "- " or "* " or "• "
-      if (line.startsWith('- ') || line.startsWith('* ') || line.startsWith('• ') || line.startsWith('<li>')) {
-        let cleanText = line;
-        if (line.startsWith('- ')) cleanText = line.substring(2);
-        else if (line.startsWith('* ')) cleanText = line.substring(2);
-        else if (line.startsWith('• ')) cleanText = line.substring(2);
-        
-        const li = `<li>${cleanText}</li>`;
-        
-        if (!inList) {
-          result.push('<ul>');
-          inList = true;
-        }
-        result.push(li);
-      } else {
-        if (inList) {
-          result.push('</ul>');
-          inList = false;
-        }
-        result.push(line);
-      }
-    }
-    if (inList) {
-      result.push('</ul>');
-    }
-    
-    escaped = result.join('<br>');
-    
-    // Clean trailing line-breaks around lists
-    escaped = escaped.replace(/<\/ul><br>/g, '</ul>');
-    escaped = escaped.replace(/<br><ul>/g, '<ul>');
-    
-    return escaped;
-  }
-
-  function escapeHTML(str) {
-    return str.replace(/[&<>'"]/g, 
-      tag => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        "'": '&#39;',
-        '"': '&quot;'
-      }[tag] || tag)
-    );
-  }
 });
