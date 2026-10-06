@@ -8,16 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
   }
 
-  // Firebase Configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyAi_iJkiNZunOEcXxX2kuZg70q-xYqioBQ",
-    authDomain: "kinetic-dental.firebaseapp.com",
-    projectId: "kinetic-dental",
-    storageBucket: "kinetic-dental.firebasestorage.app",
-    messagingSenderId: "523401059267",
-    appId: "1:523401059267:web:186d0b1b23405fea333b76",
-    measurementId: "G-Z1C46B6GSF"
-  };
+  // Firebase Configuration (Dynamic from Environment Variables)
+  const firebaseConfig = window.firebaseConfig || {};
 
   // Initialize Firebase
   if (typeof firebase !== 'undefined') {

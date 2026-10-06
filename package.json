@@ -1,0 +1,9 @@
+{
+  "name": "kinetic-dental",
+  "version": "1.0.0",
+  "description": "Kinetic Dental & Healthcare Center Website",
+  "private": true,
+  "scripts": {
+    "build": "node generate-config.js"
+  }
+}

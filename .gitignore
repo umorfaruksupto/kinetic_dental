@@ -1,4 +1,7 @@
 config.js
+firebase-config.js
+.env
+.env.local
 .claude/
 .DS_Store
 Thumbs.db
