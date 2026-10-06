@@ -12,19 +12,21 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Top Announcement Bar -->
+  <!-- Top Announcement Bar (Tech Dental Style) -->
   <div class="top-bar">
     <div class="container top-bar-content">
       <div class="top-info">
-        <a href="tel:+8801313175779" class="top-link"><i data-lucide="phone" class="icon-sm"></i> +880 1313-175779</a>
-        <a href="tel:+8801308388577" class="top-link"><i data-lucide="phone" class="icon-sm"></i> +880 1308-388577</a>
-        <span class="top-link hide-mobile"><i data-lucide="clock" class="icon-sm"></i> Fri–Thu: 10AM–2PM &amp; 5PM–9PM</span>
+        <span class="top-link"><span class="top-badge-hotline">24/7 Emergency</span> Hotline:</span>
+        <a href="tel:+8801313175779" class="top-link"><i data-lucide="phone" class="icon-sm"></i> 01313-175779</a>
+        <a href="tel:+8801308388577" class="top-link"><i data-lucide="phone" class="icon-sm"></i> 01308-388577</a>
+        <span class="top-link hide-mobile"><i data-lucide="map-pin" class="icon-sm"></i> Mirpur 12, Dhaka (Near Bus Stand)</span>
+        <span class="top-link hide-mobile"><i data-lucide="clock" class="icon-sm"></i> 10AM-2PM &amp; 5PM-9PM (Friday Open)</span>
       </div>
       <div class="top-socials">
         <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" aria-label="Facebook Page"><i data-lucide="facebook"></i></a>
@@ -46,12 +48,10 @@
 
       <nav class="desktop-nav">
         <a href="index.html" class="nav-item">Home</a>
-        <a href="index.html#services" class="nav-item">Services</a>
-        <a href="treatments.html" class="nav-item">Treatments</a>
-        <a href="dental-problems.html" class="nav-item">Dental Tips</a>
-        <a href="campaigns.html" class="nav-item">Campaigns</a>
+        <a href="index.html#all-treatments" class="nav-item">Treatments</a>
         <a href="doctors.html" class="nav-item active">Doctors</a>
-        <a href="index.html#contact" class="nav-item">Contact Us</a>
+        <a href="dental-problems.html" class="nav-item">Dental Tips</a>
+        <a href="index.html#contact" class="nav-item">Contact</a>
         <a href="index.html#appointment" class="btn btn-primary btn-nav">Book Appointment</a>
       </nav>
 
@@ -68,12 +68,11 @@
   <div class="mobile-drawer" id="mobileDrawer">
     <nav class="mobile-nav">
       <a href="index.html" class="mobile-nav-item">Home</a>
-      <a href="index.html#services" class="mobile-nav-item">Services</a>
-      <a href="treatments.html" class="mobile-nav-item">Treatments</a>
-      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips</a>
-      <a href="campaigns.html" class="mobile-nav-item">Campaigns</a>
-      <a href="doctors.html" class="mobile-nav-item">Doctors</a>
-      <a href="index.html#contact" class="mobile-nav-item">Contact Us</a>
+      <a href="index.html#all-treatments" class="mobile-nav-item">Treatments (চিকিৎসা সমূহ)</a>
+      <a href="doctors.html" class="mobile-nav-item">Doctors (৮ জন ডাক্তার)</a>
+      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips (ডাক্তারের পরামর্শ)</a>
+      <a href="campaigns.html" class="mobile-nav-item">Free Campaigns (ফ্রি ক্যাম্পেইন)</a>
+      <a href="index.html#contact" class="mobile-nav-item">Contact Us (যোগাযোগ)</a>
       <a href="index.html#appointment" class="btn btn-primary mobile-booking-btn">Book Appointment</a>
     </nav>
   </div>
@@ -92,103 +91,244 @@
   <main class="section-padding">
     <div class="container">
       <div class="section-header scroll-reveal">
-        <span class="section-tag">Meet the Team</span>
+        <span class="section-tag">Doctors Portfolio · আমাদের ডাক্তারবৃন্দ</span>
         <h2 class="section-title">Experienced Dental Specialists</h2>
-        <p class="section-subtitle">Every patient is treated by qualified professionals using international clinical standards.</p>
+        <p class="section-subtitle">আমাদের চেম্বারে প্রতিটি চিকিৎসা আন্তর্জাতিক মানসম্পন্ন প্রটোকল মেনে অভিজ্ঞ ও বিএমডিসি নিবন্ধিত ডেন্টাল সার্জনদের দ্বারা সম্পন্ন হয়।</p>
       </div>
 
-      <div class="doctors-grid scroll-reveal">
+      <!-- Female Dentist Dedicated Team Notice -->
+      <div class="female-dentist-alert scroll-reveal">
+        <div class="fda-icon"><i data-lucide="user-check"></i></div>
+        <div class="fda-content">
+          <h4>মহিলা রোগীদের জন্য অভিজ্ঞ নারী ডেন্টিস্টের আলাদা টিম</h4>
+          <p><strong>Female Dentist for Female Patients:</strong> Kinetic Dental-এ নারী রোগীদের সর্বোচ্চ শালীনতা, স্বাচ্ছন্দ্য ও আন্তরিক যত্নের সাথে সেবা দিতে আমাদের চেম্বারে অভিজ্ঞ নারী ডেন্টাল সার্জনদের ডেডিকেটেড টিম রয়েছে।</p>
+        </div>
+      </div>
 
-        <!-- Doctor 1 -->
-        <div class="doctor-card">
-          <div class="doctor-photo">
-            <img src="first.jpg" alt="Dr. Nadia portrait">
+      <!-- 1. FOUNDER & CHIEF DENTAL SURGEON SPOTLIGHT (ONLY DOCTOR WITH PHOTO) -->
+      <div class="founder-spotlight-section scroll-reveal" id="founderSpotlightArea">
+        <div class="founder-card">
+          <div class="founder-photo-wrap">
+            <img src="doctors.jpeg" alt="Dr. Nafisa Anzum Nadia - Founder &amp; Chief Dental Surgeon" id="founderPhoto">
+            <span class="founder-tag-pill"><i data-lucide="award" style="width:14px;height:14px;"></i> Founder &amp; Chief Surgeon</span>
           </div>
-          <div class="doctor-body">
-            <h3 class="doctor-name">Dr. Nadia</h3>
-            <p class="doctor-role">Founder &amp; Chief Dental Surgeon</p>
-            <p class="doctor-bio">BDS, Specialist in Cosmetic &amp; Restorative Dentistry. Founder of Kinetic Dental &amp; Healthcare Center with 8+ years of experience transforming smiles across Dhaka.</p>
-            <div class="doctor-skills">
-              <span class="doctor-skill">Cosmetic</span>
-              <span class="doctor-skill">RCT</span>
-              <span class="doctor-skill">Whitening</span>
-              <span class="doctor-skill">Crowns</span>
+          <div class="founder-details">
+            <span class="founder-header-badge"><i data-lucide="check-circle-2" style="width:14px;height:14px;"></i> Verified BMDC Reg: 10471</span>
+            <h2 class="founder-name" id="founderName">Dr. Nafisa Anzum Nadia</h2>
+            <p class="founder-designation" id="founderRole">Founder &amp; Chief Dental Surgeon · Kinetic Dental Care</p>
+            <div class="founder-qualifications" id="founderDegrees">
+              <strong>BDS (DU), PGT (DMC in OMS)</strong><br>
+              Specially Trained in Aesthetic Dentistry (Smile Design &amp; Precision RCT)
             </div>
-            <div class="doctor-contact">
-              <a href="tel:+8801313175779" aria-label="Call Dr. Nadia"><i data-lucide="phone"></i></a>
-              <a href="mailto:drnadiakineticdental@gmail.com" aria-label="Email Dr. Nadia"><i data-lucide="mail"></i></a>
-              <a href="index.html#appointment" aria-label="Book with Dr. Nadia"><i data-lucide="calendar"></i></a>
+            <p class="founder-bio" id="founderBio">
+              Founder and visionary leader of Kinetic Dental &amp; Healthcare Center in Mirpur 12. With extensive clinical experience in aesthetic dentistry, smile makeovers, and painless root canal therapy, Dr. Nadia ensures every patient receives personalized, sterile, and gentle clinical care.
+            </p>
+            <div class="founder-actions">
+              <a href="index.html#appointment" class="btn btn-primary"><i data-lucide="calendar" class="icon-left"></i> Book with Dr. Nadia</a>
+              <a href="tel:+8801313175779" class="btn btn-secondary"><i data-lucide="phone" class="icon-left"></i> 01313-175779</a>
+              <a href="https://wa.me/8801313175779?text=Hello%20Dr.%20Nadia%2C%20I%20would%20like%20to%20consult%20with%20you%20at%20Kinetic%20Dental." target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp"><i data-lucide="message-circle" class="icon-left"></i> WhatsApp</a>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Doctor 2 -->
-        <div class="doctor-card">
-          <div class="doctor-photo">
-            <img src="services.jpeg" alt="Orthodontist portrait">
+      <!-- 2. SPECIALIST SURGEONS DIRECTORY (PURE MEDICAL CREDENTIALS - NO PHOTOS) -->
+      <div class="specialists-directory-header scroll-reveal">
+        <div>
+          <h3>Our Specialist Dental Surgeons · বিশেষজ্ঞ সার্জনবৃন্দ</h3>
+          <p style="font-size:0.88rem; color:var(--text-body); margin-top:4px;">BMDC নিবন্ধিত বিশেষজ্ঞ সার্জনদের দ্বারা সম্পূর্ণ ব্যথাহীন ও জীবাণুমুক্ত চিকিৎসা সেবা।</p>
+        </div>
+        <span class="specialists-count-badge" id="specialistsCountBadge">7 Specialist Surgeons</span>
+      </div>
+
+      <div class="specialist-cards-grid scroll-reveal" id="specialistCardsGrid">
+
+        <!-- Doctor 2: Dr. Marufa Arefin -->
+        <div class="specialist-card" data-doctor-id="2">
+          <div class="specialist-top">
+            <span class="specialist-bmdc-badge"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> BMDC Reg: 11141</span>
+            <span class="specialist-female-badge"><i data-lucide="heart" style="width:12px;height:12px;"></i> Female Dentist</span>
           </div>
-          <div class="doctor-body">
-            <h3 class="doctor-name">Dr. Rahman</h3>
-            <p class="doctor-role">Orthodontist (Braces Specialist)</p>
-            <p class="doctor-bio">BDS, FCPS (Orthodontics). Expert in conventional braces, clear aligners and corrective treatment for children and adults with crooked teeth.</p>
-            <div class="doctor-skills">
-              <span class="doctor-skill">Braces</span>
-              <span class="doctor-skill">Aligners</span>
-              <span class="doctor-skill">Retainers</span>
-            </div>
-            <div class="doctor-contact">
-              <a href="tel:+8801313175779" aria-label="Call clinic"><i data-lucide="phone"></i></a>
-              <a href="index.html#appointment" aria-label="Book appointment"><i data-lucide="calendar"></i></a>
-            </div>
+          <h3 class="specialist-name">Dr. Marufa Arefin</h3>
+          <p class="specialist-role">Oral &amp; Dental Surgeon</p>
+          <div class="specialist-degrees-box">
+            <strong>BDS (Shaheed Suhrawardy Medical College)</strong><br>
+            PGT in Oral and Maxillofacial Surgery (SSMC)
+          </div>
+          <p class="specialist-bio">Specialist in oral surgery, tooth restorations, gentle extractions, and comprehensive oral healthcare.</p>
+          <div class="specialist-skills-list">
+            <span class="specialist-skill-pill">Oral Surgery</span>
+            <span class="specialist-skill-pill">Maxillofacial Care</span>
+            <span class="specialist-skill-pill">Extractions</span>
+          </div>
+          <div class="specialist-card-footer">
+            <span style="font-size:0.78rem; font-weight:700; color:var(--primary);">Kinetic Specialist</span>
+            <a href="index.html#appointment" class="btn-book-specialist" data-doc-name="Dr. Marufa Arefin">
+              <i data-lucide="calendar" style="width:14px;height:14px;"></i> Book Doctor
+            </a>
           </div>
         </div>
 
-        <!-- Doctor 3 -->
-        <div class="doctor-card">
-          <div class="doctor-photo">
-            <img src="services-1.jpeg" alt="Pediatric dentist portrait">
+        <!-- Doctor 3: Dr. Umme Kulsum -->
+        <div class="specialist-card" data-doctor-id="3">
+          <div class="specialist-top">
+            <span class="specialist-bmdc-badge"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> BMDC Reg: 13396</span>
+            <span class="specialist-female-badge"><i data-lucide="heart" style="width:12px;height:12px;"></i> Female Dentist</span>
           </div>
-          <div class="doctor-body">
-            <h3 class="doctor-name">Dr. Sumaiya</h3>
-            <p class="doctor-role">Pediatric &amp; Preventive Dentist</p>
-            <p class="doctor-bio">BDS, PGT (Pediatric Dentistry).Specialises in gentle, fear-free dental care for children — fluoride, sealants and early cavity prevention.</p>
-            <div class="doctor-skills">
-              <span class="doctor-skill">Kids Care</span>
-              <span class="doctor-skill">Fluoride</span>
-              <span class="doctor-skill">Sealants</span>
-            </div>
-            <div class="doctor-contact">
-              <a href="tel:+8801313175779" aria-label="Call clinic"><i data-lucide="phone"></i></a>
-              <a href="index.html#appointment" aria-label="Book appointment"><i data-lucide="calendar"></i></a>
-            </div>
+          <h3 class="specialist-name">Dr. Umme Kulsum</h3>
+          <p class="specialist-role">Oral &amp; Dental Surgeon</p>
+          <div class="specialist-degrees-box">
+            <strong>BDS (DI), MPH, PGT (OMS)</strong><br>
+            Expert Dental Surgeon &amp; Public Health Specialist
+          </div>
+          <p class="specialist-bio">Experienced in preventative oral healthcare, minor oral surgeries, painless fillings, and holistic patient counseling.</p>
+          <div class="specialist-skills-list">
+            <span class="specialist-skill-pill">Dental Surgery</span>
+            <span class="specialist-skill-pill">Public Health</span>
+            <span class="specialist-skill-pill">Preventative Care</span>
+          </div>
+          <div class="specialist-card-footer">
+            <span style="font-size:0.78rem; font-weight:700; color:var(--primary);">Kinetic Specialist</span>
+            <a href="index.html#appointment" class="btn-book-specialist" data-doc-name="Dr. Umme Kulsum">
+              <i data-lucide="calendar" style="width:14px;height:14px;"></i> Book Doctor
+            </a>
           </div>
         </div>
 
-        <!-- Doctor 4 -->
-        <div class="doctor-card">
-          <div class="doctor-photo">
-            <img src="chamber.jpg" alt="Oral surgeon portrait">
+        <!-- Doctor 4: Dr. Sharmin Akhter -->
+        <div class="specialist-card" data-doctor-id="4">
+          <div class="specialist-top">
+            <span class="specialist-bmdc-badge"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> BMDC Reg: 7493</span>
+            <span class="specialist-female-badge"><i data-lucide="heart" style="width:12px;height:12px;"></i> Female Surgeon</span>
           </div>
-          <div class="doctor-body">
-            <h3 class="doctor-name">Dr. Tanvir</h3>
-            <p class="doctor-role">Oral Surgeon &amp; Implantologist</p>
-            <p class="doctor-bio">BDS, BCS (Health), MS (Oral &amp; Maxillofacial Surgery). Performs surgical extractions, wisdom tooth removal and titanium dental implant placement.</p>
-            <div class="doctor-skills">
-              <span class="doctor-skill">Implants</span>
-              <span class="doctor-skill">Surgery</span>
-              <span class="doctor-skill">Wisdom Tooth</span>
-            </div>
-            <div class="doctor-contact">
-              <a href="tel:+8801313175779" aria-label="Call clinic"><i data-lucide="phone"></i></a>
-              <a href="index.html#appointment" aria-label="Book appointment"><i data-lucide="calendar"></i></a>
-            </div>
+          <h3 class="specialist-name">Dr. Sharmin Akhter</h3>
+          <p class="specialist-role">Oral &amp; Maxillofacial Surgeon</p>
+          <div class="specialist-degrees-box">
+            <strong>BDS (DU), MS (CMH on OMS)</strong><br>
+            Senior Specialist in Maxillofacial Surgery
+          </div>
+          <p class="specialist-bio">Senior surgeon performing complex surgical extractions, jaw trauma treatment, wisdom tooth surgeries, and cyst removal.</p>
+          <div class="specialist-skills-list">
+            <span class="specialist-skill-pill">Maxillofacial Surgery</span>
+            <span class="specialist-skill-pill">Oral Trauma</span>
+            <span class="specialist-skill-pill">Wisdom Tooth</span>
+          </div>
+          <div class="specialist-card-footer">
+            <span style="font-size:0.78rem; font-weight:700; color:var(--primary);">Senior Surgeon</span>
+            <a href="index.html#appointment" class="btn-book-specialist" data-doc-name="Dr. Sharmin Akhter">
+              <i data-lucide="calendar" style="width:14px;height:14px;"></i> Book Doctor
+            </a>
+          </div>
+        </div>
+
+        <!-- Doctor 5: Dr. Shila Abedin -->
+        <div class="specialist-card" data-doctor-id="5">
+          <div class="specialist-top">
+            <span class="specialist-bmdc-badge"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> BMDC Reg: 8931</span>
+            <span class="specialist-female-badge"><i data-lucide="heart" style="width:12px;height:12px;"></i> Senior Dentist</span>
+          </div>
+          <h3 class="specialist-name">Dr. Shila Abedin</h3>
+          <p class="specialist-role">Senior Dentist &amp; Orthodontist</p>
+          <div class="specialist-degrees-box">
+            <strong>BDS (DU), PGT (Conservative Dentistry BSMMU), PGT (DMC in OMS)</strong><br>
+            Specially Trained in Orthodontic Treatment
+          </div>
+          <p class="specialist-bio">Decades of clinical precision in corrective braces, restorative dentistry, teeth alignment, and conservative smile preservation.</p>
+          <div class="specialist-skills-list">
+            <span class="specialist-skill-pill">Orthodontics</span>
+            <span class="specialist-skill-pill">Conservative Care</span>
+            <span class="specialist-skill-pill">Braces</span>
+          </div>
+          <div class="specialist-card-footer">
+            <span style="font-size:0.78rem; font-weight:700; color:var(--primary);">Senior Specialist</span>
+            <a href="index.html#appointment" class="btn-book-specialist" data-doc-name="Dr. Shila Abedin">
+              <i data-lucide="calendar" style="width:14px;height:14px;"></i> Book Doctor
+            </a>
+          </div>
+        </div>
+
+        <!-- Doctor 6: Dr. Mohima Akhter Hira -->
+        <div class="specialist-card" data-doctor-id="6">
+          <div class="specialist-top">
+            <span class="specialist-bmdc-badge"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> BMDC Reg: 16168</span>
+            <span class="specialist-female-badge"><i data-lucide="heart" style="width:12px;height:12px;"></i> Female Dentist</span>
+          </div>
+          <h3 class="specialist-name">Dr. Mohima Akhter Hira</h3>
+          <p class="specialist-role">Oral &amp; Dental Surgeon</p>
+          <div class="specialist-degrees-box">
+            <strong>BDS (MMC)</strong><br>
+            Mymensingh Medical College Graduate
+          </div>
+          <p class="specialist-bio">Dedicated dental practitioner specializing in pain-free tooth-colored fillings, ultrasonic scaling, and gentle pediatric dentistry.</p>
+          <div class="specialist-skills-list">
+            <span class="specialist-skill-pill">General Dentistry</span>
+            <span class="specialist-skill-pill">Scaling &amp; Polish</span>
+            <span class="specialist-skill-pill">Cavity Fillings</span>
+          </div>
+          <div class="specialist-card-footer">
+            <span style="font-size:0.78rem; font-weight:700; color:var(--primary);">Kinetic Specialist</span>
+            <a href="index.html#appointment" class="btn-book-specialist" data-doc-name="Dr. Mohima Akhter Hira">
+              <i data-lucide="calendar" style="width:14px;height:14px;"></i> Book Doctor
+            </a>
+          </div>
+        </div>
+
+        <!-- Doctor 7: Dr. Munmun Rahman -->
+        <div class="specialist-card" data-doctor-id="7">
+          <div class="specialist-top">
+            <span class="specialist-bmdc-badge"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> BMDC Reg: 3014</span>
+            <span class="specialist-tag-badge"><i data-lucide="sparkles" style="width:12px;height:12px;"></i> Orthodontist</span>
+          </div>
+          <h3 class="specialist-name">Dr. Munmun Rahman</h3>
+          <p class="specialist-role">Orthodontist (Braces Specialist)</p>
+          <div class="specialist-degrees-box">
+            <strong>BDS, DDS (BMU), D Ortho (AFMI)</strong><br>
+            Armed Forces Medical Institute Certified Orthodontist
+          </div>
+          <p class="specialist-bio">Expert Orthodontist with advanced training in corrective metal &amp; ceramic braces, clear invisible aligners, and bite correction.</p>
+          <div class="specialist-skills-list">
+            <span class="specialist-skill-pill">Orthodontics</span>
+            <span class="specialist-skill-pill">Braces</span>
+            <span class="specialist-skill-pill">Clear Aligners</span>
+          </div>
+          <div class="specialist-card-footer">
+            <span style="font-size:0.78rem; font-weight:700; color:var(--primary);">Braces Specialist</span>
+            <a href="index.html#appointment" class="btn-book-specialist" data-doc-name="Dr. Munmun Rahman">
+              <i data-lucide="calendar" style="width:14px;height:14px;"></i> Book Doctor
+            </a>
+          </div>
+        </div>
+
+        <!-- Doctor 8: Dr. Shafiqul Hasan (Shihab) -->
+        <div class="specialist-card" data-doctor-id="8">
+          <div class="specialist-top">
+            <span class="specialist-bmdc-badge"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> BMDC Reg: 8670</span>
+            <span class="specialist-tag-badge"><i data-lucide="award" style="width:12px;height:12px;"></i> Senior Consultant</span>
+          </div>
+          <h3 class="specialist-name">Dr. Shafiqul Hasan (Shihab)</h3>
+          <p class="specialist-role">Consultant Orthodontist</p>
+          <div class="specialist-degrees-box">
+            <strong>BDS, BCS (Health), MS (Orthodontics in BMU - PG Hospital)</strong><br>
+            Former Incharge, Dept of Conservative Dentistry &amp; Endodontics (MMCH)
+          </div>
+          <p class="specialist-bio">Distinguished consultant with extensive expertise in endodontic treatments, intricate teeth alignment, and advanced orthodontic care.</p>
+          <div class="specialist-skills-list">
+            <span class="specialist-skill-pill">Advanced Orthodontics</span>
+            <span class="specialist-skill-pill">Endodontics</span>
+            <span class="specialist-skill-pill">Smile Alignment</span>
+          </div>
+          <div class="specialist-card-footer">
+            <span style="font-size:0.78rem; font-weight:700; color:var(--primary);">Consultant Surgeon</span>
+            <a href="index.html#appointment" class="btn-book-specialist" data-doc-name="Dr. Shafiqul Hasan (Shihab)">
+              <i data-lucide="calendar" style="width:14px;height:14px;"></i> Book Doctor
+            </a>
           </div>
         </div>
 
       </div>
 
       <div style="text-align:center; margin-top: 50px;" class="scroll-reveal">
-        <a href="index.html#appointment" class="btn btn-primary btn-lg">Book a Consultation <i data-lucide="arrow-right" class="icon-right"></i></a>
+        <a href="index.html#appointment" class="btn btn-primary btn-lg">Book a Consultation With Our Doctors <i data-lucide="arrow-right" class="icon-right"></i></a>
       </div>
     </div>
   </main>
@@ -210,7 +350,7 @@
         <h4>Quick Links</h4>
         <ul>
           <li><a href="index.html">Home</a></li>
-          <li><a href="index.html#services">Dental Services</a></li>
+          <li><a href="index.html#all-treatments">All Treatments</a></li>
           <li><a href="treatments.html">Treatments</a></li>
           <li><a href="dental-problems.html">Dental Tips</a></li>
           <li><a href="campaigns.html">Campaigns</a></li>
@@ -246,6 +386,9 @@
   </button>
 
   <script src="page-utils.js"></script>
+  <!-- Firebase Compat SDKs for live directory sync -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -269,7 +412,106 @@
       scrollBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
       initScrollReveal();
+
+      // Dynamic Doctors Directory Sync (Allows Dr. Nadia to edit names from Admin Panel)
+      function renderCustomDoctors(data) {
+        if (!data || !data.specialists) return;
+
+        // Update Founder if modified
+        if (data.founder) {
+          const fn = document.getElementById('founderName');
+          const fr = document.getElementById('founderRole');
+          const fd = document.getElementById('founderDegrees');
+          const fb = document.getElementById('founderBio');
+          const fp = document.getElementById('founderPhoto');
+          if (fn && data.founder.name) fn.textContent = data.founder.name;
+          if (fr && data.founder.role) fr.textContent = data.founder.role;
+          if (fd && data.founder.degrees) fd.innerHTML = data.founder.degrees;
+          if (fb && data.founder.bio) fb.textContent = data.founder.bio;
+          if (fp && data.founder.photo) fp.src = data.founder.photo;
+        }
+
+        // Render Specialists (NO PHOTOS, pure medical credentials)
+        const grid = document.getElementById('specialistCardsGrid');
+        const countBadge = document.getElementById('specialistsCountBadge');
+        if (!grid || !Array.isArray(data.specialists)) return;
+
+        if (countBadge) countBadge.textContent = `${data.specialists.length} Specialist Surgeons`;
+
+        grid.innerHTML = data.specialists.map((doc, idx) => {
+          const skillsHtml = (doc.specialties || []).map(s => `<span class="specialist-skill-pill">${s}</span>`).join('');
+          const isFemale = doc.isFemale ? `<span class="specialist-female-badge"><i data-lucide="heart" style="width:12px;height:12px;"></i> Female Dentist</span>` : '';
+          return `
+            <div class="specialist-card" data-doctor-id="${doc.id || (idx + 2)}">
+              <div class="specialist-top">
+                <span class="specialist-bmdc-badge"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> BMDC Reg: ${doc.bmdc || 'Verified'}</span>
+                ${isFemale}
+              </div>
+              <h3 class="specialist-name">${doc.name}</h3>
+              <p class="specialist-role">${doc.role || 'Dental Specialist'}</p>
+              <div class="specialist-degrees-box">
+                <strong>${doc.degrees || ''}</strong><br>
+                ${doc.institution || ''}
+              </div>
+              <p class="specialist-bio">${doc.bio || ''}</p>
+              <div class="specialist-skills-list">${skillsHtml}</div>
+              <div class="specialist-card-footer">
+                <span style="font-size:0.78rem; font-weight:700; color:var(--primary);">${doc.tag || 'Kinetic Specialist'}</span>
+                <a href="index.html#appointment" class="btn-book-specialist" data-doc-name="${doc.name}">
+                  <i data-lucide="calendar" style="width:14px;height:14px;"></i> Book Doctor
+                </a>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+
+      // 1. Try local cache first for instant render
+      const localData = localStorage.getItem('kinetic_doctors_directory');
+      if (localData) {
+        try {
+          renderCustomDoctors(JSON.parse(localData));
+        } catch (e) {
+          console.error("Local doctors parse error", e);
+        }
+      }
+
+      // 2. Fetch latest from Firebase Firestore
+      try {
+        const firebaseConfig = {
+          apiKey: "AIzaSyAi_iJkiNZunOEcXxX2kuZg70q-xYqioBQ",
+          authDomain: "kinetic-dental.firebaseapp.com",
+          projectId: "kinetic-dental",
+          storageBucket: "kinetic-dental.firebasestorage.app",
+          messagingSenderId: "523401059267",
+          appId: "1:523401059267:web:186d0b1b23405fea333b76",
+          measurementId: "G-Z1C46B6GSF"
+        };
+        if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+        if (typeof firebase !== 'undefined') {
+          firebase.firestore().collection('settings').doc('doctors_directory').onSnapshot((doc) => {
+            if (doc.exists) {
+              const liveData = doc.data();
+              localStorage.setItem('kinetic_doctors_directory', JSON.stringify(liveData));
+              renderCustomDoctors(liveData);
+            }
+          }, (err) => {
+            console.log("Firestore doctors observer:", err.message);
+          });
+        }
+      } catch (err) {
+        console.log("Firebase sync fallback to static HTML");
+      }
     });
   </script>
+  <!-- Floating WhatsApp Quick Dial -->
+  <a href="https://wa.me/8801313175779?text=Hello%20Kinetic%20Dental%2C%20I%20would%20like%20to%20consult%20or%20book%20an%20appointment." target="_blank" rel="noopener noreferrer" class="floating-whatsapp-btn" id="floatingWhatsappBtn" aria-label="Chat on WhatsApp">
+    <i data-lucide="message-circle" class="whatsapp-icon"></i>
+    <span class="whatsapp-label">WhatsApp Helpline</span>
+  </a>
 </body>
 </html>

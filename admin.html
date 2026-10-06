@@ -48,6 +48,7 @@
 
       <!-- Actions -->
       <div class="desktop-nav">
+        <a href="index.html" target="_blank" class="btn-preview-site"><i data-lucide="external-link" class="icon-sm"></i> Live Site ↗</a>
         <span class="nav-item active">Admin Panel</span>
         <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Dark Mode">
           <i data-lucide="moon" class="theme-icon-dark"></i>
@@ -107,6 +108,13 @@
             <i data-lucide="info" class="text-gold flex-shrink-0" style="width: 16px; height: 16px;"></i>
             <p id="authInfoTip"><strong>Authorized admins only.</strong> Sign up is limited to approved clinic email addresses. Use <strong>Sign Up</strong> once to create your account, then <strong>Sign In</strong> on future visits.</p>
           </div>
+
+          <div style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--neutral-border); text-align: center;">
+            <p style="font-size: 0.82rem; color: var(--text-body); margin-bottom: 8px;">Clinic Staff or Offline Access:</p>
+            <button type="button" class="btn btn-secondary" id="staffQuickAccessBtn" style="width: 100%; font-size: 0.84rem;">
+              <i data-lucide="key-round" class="icon-left"></i> Staff Quick Access (PIN / Offline Mode)
+            </button>
+          </div>
         </div>
       </div>
 
@@ -114,104 +122,965 @@
       <div class="admin-dashboard-wrapper hidden" id="dashboardSection">
         <div class="dashboard-header scroll-reveal reveal-active">
           <div>
-            <span class="section-tag">Internal System</span>
-            <h2 class="section-title" style="text-align: left; margin-bottom: 8px;">Appointment Submissions</h2>
-            <p>Review, update, and manage bookings saved via Formspree and Firebase.</p>
+            <span class="section-tag">Internal Clinic Management</span>
+            <h2 class="section-title" style="text-align: left; margin-bottom: 8px;">Kinetic Dental Administrator Suite</h2>
+            <p>Complete control over appointments, patient care, chamber hotlines, offers, doctors, treatments, and testimonials.</p>
           </div>
           <button class="btn btn-secondary" id="logoutBtnMain"><i data-lucide="log-out" class="icon-left"></i> Sign Out</button>
         </div>
 
-        <!-- Metric Counter Grid -->
-        <div class="dashboard-metrics-grid scroll-reveal reveal-active">
-          <div class="metric-card metric-total">
-            <div class="metric-icon"><i data-lucide="calendar-days"></i></div>
-            <div>
-              <h3 id="metricTotal">0</h3>
-              <p>Total Bookings</p>
+        <!-- Admin Main Navigation Tabs -->
+        <div class="admin-main-nav-tabs">
+          <button type="button" class="admin-main-tab-btn active" data-tab="appointments">
+            <i data-lucide="calendar-check" class="icon-sm"></i> Appointments (অ্যাপয়েন্টমেন্ট ও রোগী)
+          </button>
+          <button type="button" class="admin-main-tab-btn" data-tab="clinic">
+            <i data-lucide="settings-2" class="icon-sm"></i> Chamber &amp; Hotlines (চেম্বার ও হটলাইন)
+          </button>
+          <button type="button" class="admin-main-tab-btn" data-tab="offers">
+            <i data-lucide="sparkles" class="icon-sm"></i> Special Offers &amp; Posters (অফার ও পোস্টার)
+          </button>
+          <button type="button" class="admin-main-tab-btn" data-tab="doctors">
+            <i data-lucide="users" class="icon-sm"></i> Doctors Directory (ডাক্তারদের তালিকা)
+          </button>
+          <button type="button" class="admin-main-tab-btn" data-tab="treatments">
+            <i data-lucide="stethoscope" class="icon-sm"></i> Treatments &amp; Pricing (চিকিৎসা ও মূল্য)
+          </button>
+          <button type="button" class="admin-main-tab-btn" data-tab="testimonials">
+            <i data-lucide="message-square-quote" class="icon-sm"></i> Patient Reviews (রোগীদের রিভিউ)
+          </button>
+          <button type="button" class="admin-main-tab-btn" data-tab="hero">
+            <i data-lucide="layout-template" class="icon-sm"></i> Homepage &amp; Hero (হোমপেজ ও ব্যানার)
+          </button>
+          <button type="button" class="admin-main-tab-btn" data-tab="facilities">
+            <i data-lucide="award" class="icon-sm"></i> Special Facilities (বিশেষ সুবিধাসমূহ)
+          </button>
+          <button type="button" class="admin-main-tab-btn" data-tab="faq">
+            <i data-lucide="help-circle" class="icon-sm"></i> Tips &amp; FAQs (পরামর্শ ও প্রশ্ন)
+          </button>
+          <button type="button" class="admin-main-tab-btn" data-tab="campaigns">
+            <i data-lucide="heart-handshake" class="icon-sm"></i> Free Campaigns (ফ্রি ক্যাম্পেইন)
+          </button>
+          <button type="button" class="admin-main-tab-btn" data-tab="gallery">
+            <i data-lucide="image" class="icon-sm"></i> Chamber Gallery (চেম্বার গ্যালারি)
+          </button>
+        </div>
+
+        <!-- PANE 1: APPOINTMENTS -->
+        <div class="admin-content-pane active" id="paneAppointments">
+          <!-- Metric Counter Grid -->
+          <div class="dashboard-metrics-grid scroll-reveal reveal-active">
+            <div class="metric-card metric-total">
+              <div class="metric-icon"><i data-lucide="calendar-days"></i></div>
+              <div>
+                <h3 id="metricTotal">0</h3>
+                <p>Total Bookings</p>
+              </div>
+            </div>
+            <div class="metric-card metric-pending">
+              <div class="metric-icon"><i data-lucide="clock"></i></div>
+              <div>
+                <h3 id="metricPending">0</h3>
+                <p>Pending Review</p>
+              </div>
+            </div>
+            <div class="metric-card metric-confirmed">
+              <div class="metric-icon"><i data-lucide="check-circle-2"></i></div>
+              <div>
+                <h3 id="metricConfirmed">0</h3>
+                <p>Confirmed Spots</p>
+              </div>
+            </div>
+            <div class="metric-card metric-completed">
+              <div class="metric-icon"><i data-lucide="award"></i></div>
+              <div>
+                <h3 id="metricCompleted">0</h3>
+                <p>Completed Visits</p>
+              </div>
+            </div>
+            <div class="metric-card metric-replied">
+              <div class="metric-icon"><i data-lucide="message-circle"></i></div>
+              <div>
+                <h3 id="metricReplied">0</h3>
+                <p>Replied to Patients</p>
+              </div>
+            </div>
+            <div class="metric-card metric-value">
+              <div class="metric-icon"><i data-lucide="banknote"></i></div>
+              <div>
+                <h3 id="metricValue">BDT 0</h3>
+                <p>Est. Booking Value</p>
+              </div>
             </div>
           </div>
-          <div class="metric-card metric-pending">
-            <div class="metric-icon"><i data-lucide="clock"></i></div>
-            <div>
-              <h3 id="metricPending">0</h3>
-              <p>Pending Review</p>
+
+          <!-- Filters & Table Panel -->
+          <div class="dashboard-table-panel scroll-reveal reveal-active">
+            <!-- Action Toolbar -->
+            <div class="admin-toolbar-row">
+              <div class="admin-toolbar-group">
+                <button type="button" class="btn btn-primary" id="btnOpenNewAppointmentModal">
+                  <i data-lucide="calendar-plus" class="icon-left"></i> + New Appointment (নতুন বুকিং এন্ট্রি)
+                </button>
+              </div>
+              <div class="admin-toolbar-group">
+                <button type="button" class="btn btn-secondary" id="btnExportCSV">
+                  <i data-lucide="file-spreadsheet" class="icon-left"></i> Export CSV (Excel)
+                </button>
+                <button type="button" class="btn btn-secondary" id="btnPrintSchedule">
+                  <i data-lucide="printer" class="icon-left"></i> Print Day Sheet
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="metric-card metric-confirmed">
-            <div class="metric-icon"><i data-lucide="check-circle-2"></i></div>
-            <div>
-              <h3 id="metricConfirmed">0</h3>
-              <p>Confirmed Spots</p>
+
+            <div class="table-controls-bar">
+              <!-- Filter Tabs -->
+              <div class="filter-tabs">
+                <button class="tab-btn active" data-filter="all">All Booking Requests</button>
+                <button class="tab-btn" data-filter="today">Today (আজকের রোগী)</button>
+                <button class="tab-btn" data-filter="Pending">Pending</button>
+                <button class="tab-btn" data-filter="Confirmed">Confirmed</button>
+                <button class="tab-btn" data-filter="Completed">Completed</button>
+                <button class="tab-btn" data-filter="reply-pending">Awaiting Reply</button>
+                <button class="tab-btn" data-filter="reply-replied">Replied</button>
+              </div>
+              
+              <!-- Search -->
+              <div class="table-search-box">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="searchBar" placeholder="Search patient name or phone...">
+              </div>
             </div>
-          </div>
-          <div class="metric-card metric-completed">
-            <div class="metric-icon"><i data-lucide="award"></i></div>
-            <div>
-              <h3 id="metricCompleted">0</h3>
-              <p>Completed Visits</p>
-            </div>
-          </div>
-          <div class="metric-card metric-replied">
-            <div class="metric-icon"><i data-lucide="message-circle"></i></div>
-            <div>
-              <h3 id="metricReplied">0</h3>
-              <p>Replied to Patients</p>
+
+            <!-- Appointments List Container -->
+            <div class="table-responsive-wrapper">
+              <table class="appointments-table">
+                <thead>
+                  <tr>
+                    <th>Patient Info</th>
+                    <th>Contact Number</th>
+                    <th>Treatment / Service</th>
+                    <th>Preferred Slot</th>
+                    <th>Status</th>
+                    <th>Reply</th>
+                    <th>Notes / Symptoms</th>
+                    <th style="text-align: right;">Actions (Call · WA · Edit)</th>
+                  </tr>
+                </thead>
+                <tbody id="appointmentsTableBody">
+                  <tr>
+                    <td colspan="8" class="loading-state">
+                      <div class="loading-spinner"></div>
+                      <p>Loading database submissions...</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
 
-        <!-- Filters & Table Panel -->
-        <div class="dashboard-table-panel scroll-reveal reveal-active">
-          <div class="table-controls-bar">
-            <!-- Filter Tabs -->
-            <div class="filter-tabs">
-              <button class="tab-btn active" data-filter="all">All Booking Requests</button>
-              <button class="tab-btn" data-filter="Pending">Pending</button>
-              <button class="tab-btn" data-filter="Confirmed">Confirmed</button>
-              <button class="tab-btn" data-filter="Completed">Completed</button>
-              <button class="tab-btn" data-filter="reply-pending">Awaiting Reply</button>
-              <button class="tab-btn" data-filter="reply-replied">Replied</button>
+        <!-- PANE 2: CHAMBER & HOTLINES SETTINGS (NEW) -->
+        <div class="admin-content-pane" id="paneClinic">
+          <div class="admin-card-section">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; margin-bottom:15px;">
+              <div>
+                <h3><i data-lucide="phone-call" class="icon-sm text-primary"></i> Chamber Hotlines, Timings &amp; Live Ticker</h3>
+                <p class="section-desc" style="margin-bottom:6px;">ক্লিনিকের সার্বক্ষণিক হটলাইন নম্বর, হোয়াটসঅ্যাপ, চেম্বার বসার সময় এবং ওয়েবসাইটের লাইভ অ্যানাউন্সমেন্ট ব্যানার আপডেট করুন।</p>
+              </div>
             </div>
-            
-            <!-- Search -->
-            <div class="table-search-box">
-              <i data-lucide="search" class="search-icon"></i>
-              <input type="text" id="searchBar" placeholder="Search patient name or phone...">
+
+            <!-- Notice Box -->
+            <div style="background:var(--primary-light); border-left:4px solid var(--primary); padding:12px 16px; border-radius:var(--border-radius-sm); margin-bottom:24px; font-size:0.86rem; color:var(--text-title);">
+              <i data-lucide="info" class="icon-sm" style="display:inline; vertical-align:middle; margin-right:4px;"></i>
+              <strong>লাইভ সিনক্রোনাইজেশন:</strong> এখানে কোনো নম্বর বা সময় পরিবর্তন করে সংরক্ষণ করলে তা তাৎক্ষণিকভাবে ওয়েবসাইটের হেডার, হিরো বাটন, টপ বার ও ফুটারে হালনাগাদ হয়ে যাবে।
+            </div>
+
+            <form id="clinicSettingsForm">
+              <!-- Live Top Ticker Switch & Text -->
+              <div class="admin-toggle-switch">
+                <input type="checkbox" id="tickerActiveToggle" class="toggle-switch-input" checked>
+                <div>
+                  <strong style="font-size:0.95rem; display:block;">Live Announcement Ticker (টপ বার স্পেশাল নোটিশ ব্যানার)</strong>
+                  <span style="font-size:0.8rem; color:var(--text-body);">সুইচ অন থাকলে পুরো ওয়েবসাইটের সবার উপরে নোটিশটি চলবে।</span>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom:20px;">
+                <label for="tickerTextInput">Top Bar Announcement Text / নোটিশের লেখা</label>
+                <div class="input-wrapper">
+                  <i data-lucide="bell" class="input-icon"></i>
+                  <input type="text" id="tickerTextInput" placeholder="e.g. 🎉 শুক্রবার চেম্বার খোলা (সকাল ১০টা - রাত ৯টা) · জরুরি ডেন্টাল কেয়ার: 01313-175779">
+                </div>
+              </div>
+
+              <div class="admin-form-grid-2">
+                <div class="form-group">
+                  <label for="clinicPhone1Input">Primary Hotline / প্রধান হটলাইন <span class="required">*</span></label>
+                  <div class="input-wrapper">
+                    <i data-lucide="phone-call" class="input-icon"></i>
+                    <input type="text" id="clinicPhone1Input" placeholder="01313-175779" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="clinicPhone2Input">Secondary Hotline / দ্বিতীয় ফোন</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="phone" class="input-icon"></i>
+                    <input type="text" id="clinicPhone2Input" placeholder="01308-388577">
+                  </div>
+                </div>
+              </div>
+
+              <div class="admin-form-grid-2">
+                <div class="form-group">
+                  <label for="clinicWhatsappInput">WhatsApp Hotline (Country code সহ, e.g. 8801313175779) <span class="required">*</span></label>
+                  <div class="input-wrapper">
+                    <i data-lucide="message-circle" class="input-icon"></i>
+                    <input type="text" id="clinicWhatsappInput" placeholder="8801313175779" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="clinicEmergencyInput">Emergency Notice / জরুরি সেবা স্ট্যাটাস</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="alert-circle" class="input-icon"></i>
+                    <input type="text" id="clinicEmergencyInput" placeholder="24 Hours &amp; On-Call Emergency Service">
+                  </div>
+                </div>
+              </div>
+
+              <div class="admin-form-grid-2">
+                <div class="form-group">
+                  <label for="clinicHoursInput">Visiting Hours / চেম্বারের সময়সূচী <span class="required">*</span></label>
+                  <div class="input-wrapper">
+                    <i data-lucide="clock" class="input-icon"></i>
+                    <input type="text" id="clinicHoursInput" placeholder="10:00 AM – 02:00 PM &amp; 05:00 PM – 09:00 PM" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="clinicFridayInput">Friday Schedule / শুক্রবারের সময়সূচী</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="calendar" class="input-icon"></i>
+                    <input type="text" id="clinicFridayInput" placeholder="Friday Open: 10:00 AM – 02:00 PM &amp; 05:00 PM – 09:00 PM">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="clinicAddressInput">Chamber Full Address / চেম্বারের পূর্ণ ঠিকানা <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <textarea id="clinicAddressInput" rows="2" placeholder="Holding: 10, Road: 16, Block: C, Section: 12, Mirpur, Dhaka-1216 (Mirpur 12 Bus Stand সংলগ্ন)" required></textarea>
+                </div>
+              </div>
+
+              <div class="admin-form-grid-2">
+                <div class="form-group">
+                  <label for="clinicFbPageInput">Facebook Page Link</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="facebook" class="input-icon"></i>
+                    <input type="text" id="clinicFbPageInput" placeholder="https://www.facebook.com/kineticdentalcare">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="clinicFbGroupInput">Facebook Group Link</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="users" class="input-icon"></i>
+                    <input type="text" id="clinicFbGroupInput" placeholder="https://www.facebook.com/groups/kineticdentalcare">
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top:24px; text-align:right;">
+                <button type="submit" class="btn btn-primary" id="saveClinicSettingsBtn">
+                  <i data-lucide="save" class="icon-left"></i> Save &amp; Publish Clinic Info (চেম্বার তথ্য সংরক্ষণ ও প্রকাশ)
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- PANE 2: OFFERS & POSTERS MANAGEMENT -->
+        <div class="admin-content-pane" id="paneOffers">
+          <div class="admin-card-section">
+            <h3><i data-lucide="megaphone" class="icon-sm text-primary"></i> Special Offer &amp; Promotion Manager</h3>
+            <p class="section-desc">ওয়েবসাইটে কোনো ছাড়, ক্যাম্পেইন বা পোস্টার নোটিশ দিতে নিচের তথ্যগুলো আপডেট করুন। এটি সরাসরি হোমপেজের হিরো ও পপআপে প্রদর্শিত হবে।</p>
+
+            <form id="offerForm">
+              <!-- Status Toggle -->
+              <div class="admin-toggle-switch">
+                <input type="checkbox" id="offerActiveToggle" class="toggle-switch-input">
+                <div>
+                  <strong style="font-size:0.95rem; display:block;">Active Special Offer (অফার চালু / বন্ধ)</strong>
+                  <span style="font-size:0.8rem; color:var(--text-body);">সুইচ অন থাকলে ওয়েবসাইটে ভিজিটরদের কাছে স্বয়ংক্রিয়ভাবে অফারটি প্রদর্শিত হবে।</span>
+                </div>
+              </div>
+
+              <div class="admin-form-grid-2">
+                <div class="form-group">
+                  <label for="offerTitleInput">Offer Title / হেডিং <span class="required">*</span></label>
+                  <div class="input-wrapper">
+                    <i data-lucide="tag" class="input-icon"></i>
+                    <input type="text" id="offerTitleInput" placeholder="যেমন: ঈদুল ফিতর স্পেশাল ডেন্টাল প্যাকেজ" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="offerBadgeInput">Offer Badge Text / রিবন ট্যাগ</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="award" class="input-icon"></i>
+                    <input type="text" id="offerBadgeInput" placeholder="যেমন: 25% OFF · Limited Period">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="offerSubtitleInput">Offer Details / অফারের বিবরণ <span class="required">*</span></label>
+                <div class="input-wrapper">
+                  <textarea id="offerSubtitleInput" rows="3" placeholder="যেমন: দাঁতের স্কেলিং ও পলিশিং এবং টিথ হোয়াইটেনিং-এ ২৫% ছাড়! সাথে রয়েছে সম্পূর্ণ ফ্রি ডিজিটাল চেকআপ ও ওরাল হেলথ গাইড।" required></textarea>
+                </div>
+              </div>
+
+              <!-- Poster Image Selector -->
+              <div class="form-group">
+                <label>Offer Poster Image / পোস্টার ছবি (File Upload বা URL)</label>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:10px;">
+                  <label class="btn btn-secondary" style="cursor:pointer; font-size:0.84rem;">
+                    <i data-lucide="upload" class="icon-left"></i> ডিভাইস থেকে পোস্টার আপলোড করুন
+                    <input type="file" id="offerPosterFileInput" accept="image/*" style="display:none;">
+                  </label>
+                  <span style="align-self:center; font-size:0.82rem; color:var(--neutral-body);">অথবা লিংক লিখুন:</span>
+                </div>
+                <div class="input-wrapper">
+                  <i data-lucide="image" class="input-icon"></i>
+                  <input type="text" id="offerPosterUrlInput" placeholder="ইমেজ লিংক (e.g. achivment.jpeg, first.jpg, অথবা যেকোনো অনলাইন লিংক)">
+                </div>
+
+                <!-- Presets -->
+                <div class="poster-preset-pills">
+                  <span style="font-size:0.76rem; font-weight:700; align-self:center;">ক্লিনিক প্রিসেট:</span>
+                  <button type="button" class="preset-pill-btn" data-src="achivment.jpeg">🏆 Clinic Achievement Poster</button>
+                  <button type="button" class="preset-pill-btn" data-src="first.jpg">👩‍⚕️ Dr. Nadia Portrait</button>
+                  <button type="button" class="preset-pill-btn" data-src="chamber-3.jpeg">🏥 Chamber Suite</button>
+                  <button type="button" class="preset-pill-btn" data-src="our-program-1.jpeg">🤝 Community Camp</button>
+                </div>
+
+                <!-- Preview Box -->
+                <div class="poster-preview-box" id="posterPreviewBox">
+                  <img id="posterPreviewImg" src="achivment.jpeg" alt="Offer Poster Preview">
+                </div>
+              </div>
+
+              <!-- Display Settings -->
+              <div class="form-group" style="background:var(--bg-muted); padding:16px; border-radius:var(--border-radius-sm); margin-top:15px;">
+                <label style="font-weight:700; margin-bottom:8px; display:block;">প্রদর্শন অপশন (Display Locations)</label>
+                <div style="display:flex; flex-direction:column; gap:8px; font-size:0.88rem;">
+                  <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                    <input type="checkbox" id="offerShowInHero" checked>
+                    <span>হোমপেজের হিরো ব্যানারে এই পোস্টার ছবি দেখান (Replace Hero Main Image)</span>
+                  </label>
+                  <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                    <input type="checkbox" id="offerShowPopup" checked>
+                    <span>ওয়েবসাইটে প্রবেশ করলে স্বয়ংক্রিয় ওয়েলকাম পপআপ পোস্টার দেখান (Welcome Popup Modal)</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="admin-form-grid-2" style="margin-top:15px;">
+                <div class="form-group">
+                  <label for="offerCtaTextInput">CTA Button Text / বাটনের নাম</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="mouse-pointer-click" class="input-icon"></i>
+                    <input type="text" id="offerCtaTextInput" placeholder="যেমন: অফারটি গ্রহণ করুন / Book with Offer">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="offerTreatmentSelect">Target Treatment / সংশ্লিষ্ট চিকিৎসা</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="stethoscope" class="input-icon"></i>
+                    <select id="offerTreatmentSelect">
+                      <option value="Tooth Scaling & Polishing">Tooth Scaling & Polishing (স্কেলিং ও পলিশিং)</option>
+                      <option value="Teeth Whitening (Bleaching)">Tooth Whitening (টিথ হোয়াইটেনিং)</option>
+                      <option value="Root Canal Therapy (RCT)">Root Canal (রুট ক্যানেল)</option>
+                      <option value="Braces & Clear Aligners">Braces & Aligners (ব্রেসেস)</option>
+                      <option value="Customized Night Guard (Bruxism)">Night Guard (নাইট গার্ড)</option>
+                      <option value="General Consultation">All Treatments / General (সকল চিকিৎসা)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; gap:14px; margin-top:24px; flex-wrap:wrap;">
+                <button type="submit" class="btn btn-primary" id="saveOfferBtn">
+                  <i data-lucide="save" class="icon-left"></i> Save &amp; Publish Offer (অফার সংরক্ষণ ও প্রকাশ করুন)
+                </button>
+                <button type="button" class="btn btn-secondary" id="previewOfferBtn">
+                  <i data-lucide="eye" class="icon-left"></i> Preview Modal
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- PANE 3: DOCTORS DIRECTORY MANAGEMENT -->
+        <div class="admin-content-pane" id="paneDoctors">
+          <div class="admin-card-section">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; margin-bottom:15px;">
+              <div>
+                <h3><i data-lucide="user-cog" class="icon-sm text-primary"></i> Doctors Portfolio &amp; Name Manager</h3>
+                <p class="section-desc" style="margin-bottom:6px;">ডাক্তারদের নাম, বিএমডিসি রেজিস্ট্রেশন, ডিগ্রি ও স্পেশালাইজেশন পরিবর্তন করুন।</p>
+              </div>
+              <button type="button" class="btn btn-primary" id="addNewDoctorBtn">
+                <i data-lucide="user-plus" class="icon-left"></i> Add New Specialist
+              </button>
+            </div>
+
+            <!-- Client Notice Box -->
+            <div style="background:var(--primary-light); border-left:4px solid var(--primary); padding:12px 16px; border-radius:var(--border-radius-sm); margin-bottom:24px; font-size:0.86rem; color:var(--text-title);">
+              <i data-lucide="info" class="icon-sm" style="display:inline; vertical-align:middle; margin-right:4px;"></i>
+              <strong>ডাক্তারদের পোর্টফোলিও নিয়ম:</strong> ডাঃ নাফিসা আনজুম নাদিয়া (Founder) ব্যতিত অন্যান্য কোনো ডাক্তারের ফটো থাকবে না। শুধুমাত্র তাদের নাম, ডিগ্রি, বিএমডিসি ও বিশেষত্ব কার্ড আকারে সুন্দরভাবে প্রদর্শিত হবে।
+            </div>
+
+            <!-- Founder Profile Summary Card -->
+            <div style="background:var(--bg-muted); border:1px solid var(--neutral-border); border-radius:var(--border-radius-md); padding:18px 22px; margin-bottom:25px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <img src="doctors.jpeg" alt="Founder Photo" style="width:65px; height:65px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);" id="adminFounderThumb">
+                <div>
+                  <span class="specialist-tag-badge" style="margin-bottom:4px;"><i data-lucide="award" style="width:12px;height:12px;"></i> Founder &amp; Chief Surgeon</span>
+                  <h4 style="font-size:1.15rem; color:var(--text-title); margin:2px 0;" id="adminFounderName">Dr. Nafisa Anzum Nadia</h4>
+                  <span style="font-size:0.82rem; color:var(--primary); font-weight:700;">BMDC Reg: 10471 · BDS (DU), PGT (DMC in OMS)</span>
+                </div>
+              </div>
+              <button type="button" class="btn btn-secondary" id="editFounderBtn" style="font-size:0.82rem;">
+                <i data-lucide="edit-3" class="icon-left"></i> Edit Founder Info
+              </button>
+            </div>
+
+            <!-- Specialists Table -->
+            <h4 style="font-family:var(--font-heading); margin-bottom:12px;">Specialist Surgeons Directory</h4>
+            <div class="table-responsive-wrapper">
+              <table class="appointments-table" style="font-size:0.86rem;">
+                <thead>
+                  <tr>
+                    <th>Doctor Name</th>
+                    <th>BMDC Reg</th>
+                    <th>Designation / Role</th>
+                    <th>Qualifications &amp; College</th>
+                    <th>Specializations</th>
+                    <th style="text-align:right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminDoctorsTableBody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top:24px; text-align:right;">
+              <button type="button" class="btn btn-primary" id="saveDoctorsDirectoryBtn">
+                <i data-lucide="save" class="icon-left"></i> Save &amp; Publish Doctors Directory
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANE 4: TREATMENTS & PRICING MANAGEMENT -->
+        <div class="admin-content-pane" id="paneTreatments">
+          <div class="admin-card-section">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; margin-bottom:15px;">
+              <div>
+                <h3><i data-lucide="stethoscope" class="icon-sm text-primary"></i> Treatments &amp; Pricing Manager</h3>
+                <p class="section-desc" style="margin-bottom:6px;">হোমপেজের "All Treatments" গ্রিডে দেখানো প্রতিটি চিকিৎসার নাম, বিবরণ ও মূল্য পরিবর্তন করুন।</p>
+              </div>
+              <button type="button" class="btn btn-primary" id="addNewTreatmentBtn">
+                <i data-lucide="plus-circle" class="icon-left"></i> Add New Treatment
+              </button>
+            </div>
+
+            <div class="table-responsive-wrapper">
+              <table class="appointments-table" style="font-size:0.86rem;">
+                <thead>
+                  <tr>
+                    <th>Treatment</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Status Badge</th>
+                    <th style="text-align:right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminTreatmentsTableBody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top:24px; text-align:right;">
+              <button type="button" class="btn btn-primary" id="saveTreatmentsDirectoryBtn">
+                <i data-lucide="save" class="icon-left"></i> Save &amp; Publish Treatments
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANE 6: PATIENT TESTIMONIALS (NEW) -->
+        <div class="admin-content-pane" id="paneTestimonials">
+          <div class="admin-card-section">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; margin-bottom:15px;">
+              <div>
+                <h3><i data-lucide="message-square-quote" class="icon-sm text-primary"></i> Patient Reviews &amp; Testimonials Manager</h3>
+                <p class="section-desc" style="margin-bottom:6px;">ওয়েবসাইটে প্রদর্শিত সন্তুষ্ট রোগীদের পজিটিভ রিভিউ, রেটিং ও মন্তব্য পরিচালনা করুন।</p>
+              </div>
+              <button type="button" class="btn btn-primary" id="addNewTestimonialBtn">
+                <i data-lucide="plus-circle" class="icon-left"></i> Add New Review (নতুন রিভিউ যুক্ত করুন)
+              </button>
+            </div>
+
+            <div id="adminTestimonialsList" style="margin-top:15px;">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div style="margin-top:24px; text-align:right;">
+              <button type="button" class="btn btn-primary" id="saveTestimonialsBtn">
+                <i data-lucide="save" class="icon-left"></i> Save &amp; Publish Reviews
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANE 7: HOMEPAGE & HERO (NEW) -->
+        <div class="admin-content-pane" id="paneHero">
+          <div class="admin-card-section">
+            <h3><i data-lucide="layout-template" class="icon-sm text-primary"></i> Homepage Hero &amp; Brand Headline Editor</h3>
+            <p class="section-desc">ওয়েবসাইটের একদম শুরুতে প্রদর্শিত প্রধান ব্যানার টেক্সট, ট্যাগলাইন এবং বিশ্বাসযোগ্যতার পরিসংখ্যান পরিবর্তন করুন।</p>
+
+            <form id="heroContentForm" class="booking-form">
+              <div class="admin-form-grid-2">
+                <div class="form-group">
+                  <label for="heroTaglineInput">Top Tagline Badge / ট্যাগলাইন ব্যাজ</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="tag" class="input-icon"></i>
+                    <input type="text" id="heroTaglineInput" placeholder="Open Today in Mirpur 12 · 8 Specialist Doctors" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="heroBrandHighlightInput">Brand Highlight Title / মূল ব্র্যান্ডিং নাম</label>
+                  <div class="input-wrapper">
+                    <i data-lucide="sparkles" class="input-icon"></i>
+                    <input type="text" id="heroBrandHighlightInput" placeholder="Kinetic Dental Center" required>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="heroTitleInput">Main Hero Headline / মূল শিরোনাম</label>
+                <div class="input-wrapper">
+                  <i data-lucide="heading" class="input-icon"></i>
+                  <input type="text" id="heroTitleInput" placeholder="Painless &amp; High-Tech Dental Care —" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="heroDescInput">Hero Description / বিস্তারিত বিবরণ</label>
+                <div class="input-wrapper">
+                  <textarea id="heroDescInput" rows="3" placeholder="Experience Dhaka’s trusted gentle dental care led by Dr. Nadia..." required></textarea>
+                </div>
+              </div>
+
+              <h4 style="margin: 24px 0 14px; font-size:1.05rem; color:var(--text-title); display:flex; align-items:center; gap:8px;">
+                <i data-lucide="bar-chart-2" class="icon-sm text-primary"></i> 4-Metric Trust Strip (বিশ্বস্ততার ৪টি মেট্রিক সংখ্যা)
+              </h4>
+              <div class="admin-form-grid-2">
+                <div class="form-group">
+                  <label for="heroStat1Num">Metric 1 (Number / সংখ্যা)</label>
+                  <input type="text" id="heroStat1Num" placeholder="1,000+">
+                  <label for="heroStat1Lbl" style="margin-top:6px;">Metric 1 (Label / শিরোনাম)</label>
+                  <input type="text" id="heroStat1Lbl" placeholder="Happy Smiles">
+                </div>
+                <div class="form-group">
+                  <label for="heroStat2Num">Metric 2 (Number / সংখ্যা)</label>
+                  <input type="text" id="heroStat2Num" placeholder="8 Doctors">
+                  <label for="heroStat2Lbl" style="margin-top:6px;">Metric 2 (Label / শিরোনাম)</label>
+                  <input type="text" id="heroStat2Lbl" placeholder="BMDC Specialists">
+                </div>
+                <div class="form-group">
+                  <label for="heroStat3Num">Metric 3 (Number / সংখ্যা)</label>
+                  <input type="text" id="heroStat3Num" placeholder="100%">
+                  <label for="heroStat3Lbl" style="margin-top:6px;">Metric 3 (Label / শিরোনাম)</label>
+                  <input type="text" id="heroStat3Lbl" placeholder="Sterile Safety">
+                </div>
+                <div class="form-group">
+                  <label for="heroStat4Num">Metric 4 (Number / সংখ্যা)</label>
+                  <input type="text" id="heroStat4Num" placeholder="24/7">
+                  <label for="heroStat4Lbl" style="margin-top:6px;">Metric 4 (Label / শিরোনাম)</label>
+                  <input type="text" id="heroStat4Lbl" placeholder="Emergency Care">
+                </div>
+              </div>
+
+              <h4 style="margin: 24px 0 14px; font-size:1.05rem; color:var(--text-title); display:flex; align-items:center; gap:8px;">
+                <i data-lucide="user-check" class="icon-sm text-primary"></i> Founder &amp; Female Dental Floating Cards
+              </h4>
+              <div class="admin-form-grid-2">
+                <div class="form-group">
+                  <label for="heroFounderNameInput">Founder Name / প্রতিষ্ঠাতা ডাক্তার</label>
+                  <input type="text" id="heroFounderNameInput" placeholder="Dr. Nafisa Nadia">
+                  <label for="heroFounderRoleInput" style="margin-top:6px;">Founder Designation / পদবি</label>
+                  <input type="text" id="heroFounderRoleInput" placeholder="Founder &amp; Chief Surgeon">
+                </div>
+                <div class="form-group">
+                  <label for="heroFemaleTitleInput">Female Team Card Title / নারী ডেন্টিস্ট কার্ড শিরোনাম</label>
+                  <input type="text" id="heroFemaleTitleInput" placeholder="Female Dentist Team">
+                  <label for="heroFemaleSubtitleInput" style="margin-top:6px;">Female Team Card Subtitle / সাবটাইটেল</label>
+                  <input type="text" id="heroFemaleSubtitleInput" placeholder="100% Privacy &amp; Care">
+                </div>
+              </div>
+
+              <div style="margin-top:24px; text-align:right;">
+                <button type="submit" class="btn btn-primary" id="saveHeroBtn">
+                  <i data-lucide="save" class="icon-left"></i> Save &amp; Publish Hero Content
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- PANE 8: SPECIAL FACILITIES (NEW) -->
+        <div class="admin-content-pane" id="paneFacilities">
+          <div class="admin-card-section">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; margin-bottom:15px;">
+              <div>
+                <h3><i data-lucide="award" class="icon-sm text-primary"></i> Chamber Special Facilities Manager</h3>
+                <p class="section-desc" style="margin-bottom:6px;">চেম্বারের বিশেষ সুবিধাসমূহ (Digital X-Ray, Female Dentist, 24h Emergency ইত্যাদি) পরিচালনা করুন।</p>
+              </div>
+              <button type="button" class="btn btn-primary" id="addNewFacilityBtn">
+                <i data-lucide="plus-circle" class="icon-left"></i> Add New Facility (নতুন সুবিধা)
+              </button>
+            </div>
+
+            <div id="adminFacilitiesList" style="margin-top:15px;">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div style="margin-top:24px; text-align:right;">
+              <button type="button" class="btn btn-primary" id="saveFacilitiesBtn">
+                <i data-lucide="save" class="icon-left"></i> Save &amp; Publish Facilities
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANE 9: DENTAL TIPS & FAQS (NEW) -->
+        <div class="admin-content-pane" id="paneFaq">
+          <div class="admin-card-section">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; margin-bottom:15px;">
+              <div>
+                <h3><i data-lucide="help-circle" class="icon-sm text-primary"></i> Frequently Asked Questions (FAQ Manager)</h3>
+                <p class="section-desc" style="margin-bottom:6px;">রোগীদের সাধারণ প্রশ্ন ও ডাক্তারের উত্তর যোগ, এডিট বা ডিলিট করুন।</p>
+              </div>
+              <button type="button" class="btn btn-primary" id="addNewFaqBtn">
+                <i data-lucide="plus-circle" class="icon-left"></i> Add New FAQ (নতুন প্রশ্ন যোগ করুন)
+              </button>
+            </div>
+
+            <div id="adminFaqList" style="margin-top:15px;">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div style="margin-top:24px; text-align:right;">
+              <button type="button" class="btn btn-primary" id="saveFaqBtn">
+                <i data-lucide="save" class="icon-left"></i> Save &amp; Publish FAQs
+              </button>
             </div>
           </div>
 
-          <!-- Appointments List Container -->
-          <div class="table-responsive-wrapper">
-            <table class="appointments-table">
-              <thead>
-                <tr>
-                  <th>Patient Info</th>
-                  <th>Contact Number</th>
-                  <th>Treatment / Service</th>
-                  <th>Preferred Slot</th>
-                  <th>Status</th>
-                  <th>Reply</th>
-                  <th>Notes / Symptoms</th>
-                  <th style="text-align: right;">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="appointmentsTableBody">
-                <tr>
-                  <td colspan="8" class="loading-state">
-                    <div class="loading-spinner"></div>
-                    <p>Loading database submissions...</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <!-- Doctor's Advice Section -->
+          <div class="admin-card-section" style="margin-top:20px;">
+            <h3><i data-lucide="book-open" class="icon-sm text-primary"></i> Dr. Nadia's Key Dental Health Advice (ডাক্তারের বিশেষ ৩টি পরামর্শ)</h3>
+            <p class="section-desc">ওয়েবসাইটে প্রদর্শিত ৩টি স্বাস্থ্য পরামর্শ কার্ডের বিবরণ এডিট করুন।</p>
+
+            <form id="adviceForm" class="booking-form">
+              <div class="form-group">
+                <label for="adviceRule1Text">1. Daily Oral Rules / দৈনন্দিন ডেন্টাল রুলস (প্রতি লাইন ১টি পয়েন্ট)</label>
+                <textarea id="adviceRule1Text" rows="4" placeholder="সকাল ও রাতে নিয়ম করে প্রতিদিন ২ বার দাঁত ব্রাশ করতে হবে।&#10;ফ্লোরাইড সমৃদ্ধ ভালো মানের টুথপেস্ট ব্যবহার করুন।"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="adviceRule2Text">2. Tooth Grinding (Bruxism) / দাঁতে দাঁত ঘর্ষণের সমাধান ও নাইট গার্ড (প্রতি লাইন ১টি পয়েন্ট)</label>
+                <textarea id="adviceRule2Text" rows="4" placeholder="ঘুমের মাঝে দাঁতে দাঁত ঘষা একটি ক্ষতিকর অভ্যাসজনিত রোগ।&#10;একমাত্র কার্যকর সমাধান হলো ডেন্টাল Night Guard।"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="adviceRule3Text">3. Traumatic Injury / আঘাতপ্রাপ্ত দাঁত কালো হওয়া ও জরুরি সমাধান (প্রতি লাইন ১টি পয়েন্ট)</label>
+                <textarea id="adviceRule3Text" rows="4" placeholder="হাড়/কাটা বা পাথরে কামড়, ধাক্কা বা বলের আঘাতে ব্যথা হলে দ্রুত BDS ডাক্তারের শরণাপন্ন হন।&#10;ফেলে রাখলে দাঁত কালো বা বিবর্ণ হয়ে যায়।"></textarea>
+              </div>
+
+              <div style="margin-top:20px; text-align:right;">
+                <button type="submit" class="btn btn-primary" id="saveAdviceBtn">
+                  <i data-lucide="save" class="icon-left"></i> Save &amp; Publish Advice Points
+                </button>
+              </div>
+            </form>
           </div>
         </div>
+
+        <!-- PANE 10: FREE CAMPAIGNS (NEW) -->
+        <div class="admin-content-pane" id="paneCampaigns">
+          <div class="admin-card-section">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; margin-bottom:15px;">
+              <div>
+                <h3><i data-lucide="heart-handshake" class="icon-sm text-primary"></i> Free Dental Campaigns &amp; Community Camps</h3>
+                <p class="section-desc" style="margin-bottom:6px;">বিনামূল্যে ডেন্টাল ক্যাম্প এবং সামাজিক সচেতনতামূলক প্রোগ্রাম পরিচালনা করুন (campaigns.html-এ প্রদর্শিত)।</p>
+              </div>
+              <button type="button" class="btn btn-primary" id="addNewCampaignBtn">
+                <i data-lucide="plus-circle" class="icon-left"></i> Add New Campaign (নতুন ক্যাম্প)
+              </button>
+            </div>
+
+            <div id="adminCampaignsList" style="margin-top:15px;">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div style="margin-top:24px; text-align:right;">
+              <button type="button" class="btn btn-primary" id="saveCampaignsBtn">
+                <i data-lucide="save" class="icon-left"></i> Save &amp; Publish Campaigns
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANE 11: CHAMBER TOUR GALLERY (NEW) -->
+        <div class="admin-content-pane" id="paneGallery">
+          <div class="admin-card-section">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; margin-bottom:15px;">
+              <div>
+                <h3><i data-lucide="image" class="icon-sm text-primary"></i> Virtual Chamber Tour Gallery Manager</h3>
+                <p class="section-desc" style="margin-bottom:6px;">হোমপেজে প্রদর্শিত চেম্বার ও অপারেশন থিয়েটারের ছবি এবং ক্যাপশন পরিবর্তন করুন।</p>
+              </div>
+            </div>
+
+            <div class="admin-gallery-grid" id="adminGalleryList" style="margin-top:15px;">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div style="margin-top:24px; text-align:right;">
+              <button type="button" class="btn btn-primary" id="saveGalleryBtn">
+                <i data-lucide="save" class="icon-left"></i> Save &amp; Publish Chamber Gallery
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
   </main>
 
-  <!-- Admin Reply Modal -->
+  <!-- Doctor Edit Modal -->
+  <div class="modal" id="doctorEditModal">
+    <div class="modal-card reply-modal-card" style="max-width:540px;">
+      <div class="reply-modal-header">
+        <h3 id="doctorModalTitle"><i data-lucide="user-check" class="icon-sm"></i> Edit Doctor Details</h3>
+        <button type="button" class="reply-modal-close" id="doctorEditModalClose" aria-label="Close">&times;</button>
+      </div>
+      <form id="doctorEditForm" class="booking-form" style="padding-top:10px;">
+        <input type="hidden" id="editDoctorId">
+        <input type="hidden" id="editDoctorIsFounder" value="false">
+
+        <div class="form-group">
+          <label for="docNameInput">Doctor Full Name / নাম <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <i data-lucide="user" class="input-icon"></i>
+            <input type="text" id="docNameInput" placeholder="e.g. Dr. Marufa Arefin" required>
+          </div>
+        </div>
+
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label for="docBmdcInput">BMDC Reg No <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i data-lucide="shield-check" class="input-icon"></i>
+              <input type="text" id="docBmdcInput" placeholder="e.g. 11141" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="docRoleInput">Designation / Role <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i data-lucide="briefcase" class="input-icon"></i>
+              <input type="text" id="docRoleInput" placeholder="e.g. Oral & Dental Surgeon" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="docDegreesInput">Degrees &amp; Institutions / ডিগ্রি ও প্রতিষ্ঠান <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <input type="text" id="docDegreesInput" placeholder="e.g. BDS (Shaheed Suhrawardy Medical College), PGT in OMS" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="docBioInput">Clinical Focus / ছোট বিবরণ</label>
+          <div class="input-wrapper">
+            <textarea id="docBioInput" rows="2" placeholder="e.g. Specialist in oral surgery, tooth restorations, and surgical extractions."></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="docSkillsInput">Specializations (Comma separated) / বিশেষত্ব</label>
+          <div class="input-wrapper">
+            <input type="text" id="docSkillsInput" placeholder="e.g. Oral Surgery, Extractions, Restorations">
+          </div>
+        </div>
+
+        <div class="form-group" style="display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" id="docIsFemaleInput" style="width:18px; height:18px;">
+          <label for="docIsFemaleInput" style="margin:0; font-size:0.86rem; cursor:pointer;">Female Dentist Badge (নারী ডেন্টিস্ট ব্যাজ যুক্ত করুন)</label>
+        </div>
+
+        <div class="reply-modal-actions" style="margin-top:16px;">
+          <button type="button" class="btn btn-secondary" id="doctorEditCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="doctorEditSaveBtn">
+            <i data-lucide="check" class="icon-left"></i> Update Doctor
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Treatment Edit Modal -->
+  <div class="modal" id="treatmentEditModal">
+    <div class="modal-card reply-modal-card" style="max-width:600px;">
+      <div class="reply-modal-header">
+        <h3 id="treatmentModalTitle"><i data-lucide="stethoscope" class="icon-sm"></i> Edit Treatment</h3>
+        <button type="button" class="reply-modal-close" id="treatmentEditModalClose" aria-label="Close">&times;</button>
+      </div>
+      <form id="treatmentEditForm" class="booking-form" style="padding-top:10px; max-height:70vh; overflow-y:auto;">
+        <input type="hidden" id="editTreatmentIdx" value="-1">
+
+        <div class="form-group">
+          <label for="trtTitleInput">Treatment Name (English) <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <i data-lucide="stethoscope" class="input-icon"></i>
+            <input type="text" id="trtTitleInput" placeholder="e.g. Tooth Scaling & Polishing" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="trtTitleBnInput">Treatment Name (বাংলা)</label>
+          <div class="input-wrapper">
+            <input type="text" id="trtTitleBnInput" placeholder="e.g. দাঁতের স্কেলিং ও পলিশিং">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="trtDescInput">Short Description <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <textarea id="trtDescInput" rows="2" placeholder="e.g. Ultrasonic cleaning to remove stubborn tartar and plaque." required></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="trtSymptomsInput">লক্ষণ / সমাধান (Symptoms text shown on card)</label>
+          <div class="input-wrapper">
+            <input type="text" id="trtSymptomsInput" placeholder="e.g. দাঁতের হলুদ দাগ, পাথর জমা, মুখে দুর্গন্ধ">
+          </div>
+        </div>
+
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label for="trtPriceLabelInput">Price Label</label>
+            <div class="input-wrapper">
+              <input type="text" id="trtPriceLabelInput" placeholder="e.g. Starting From">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="trtPriceValInput">Price Value <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i data-lucide="banknote" class="input-icon"></i>
+              <input type="text" id="trtPriceValInput" placeholder="e.g. BDT 1,200" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label for="trtCategoryInput">Filter Category</label>
+            <div class="input-wrapper">
+              <select id="trtCategoryInput">
+                <option value="general">General &amp; Scaling</option>
+                <option value="rct">Root Canal (RCT)</option>
+                <option value="cosmetic">Cosmetic &amp; Whitening</option>
+                <option value="ortho">Braces &amp; Aligners</option>
+                <option value="bruxism">Night Guard (Bruxism)</option>
+                <option value="emergency">Emergency &amp; Surgery</option>
+                <option value="kids">Kids Dentistry</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="trtBadgeInput">Status Badge Text</label>
+            <div class="input-wrapper">
+              <input type="text" id="trtBadgeInput" placeholder="e.g. Available">
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label for="trtIconInput">Icon (<a href="https://lucide.dev/icons" target="_blank" rel="noopener">lucide.dev</a> name)</label>
+            <div class="input-wrapper">
+              <i data-lucide="shapes" class="input-icon"></i>
+              <input type="text" id="trtIconInput" placeholder="e.g. sparkles">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="trtLinkTypeInput">"View Details" Button Links To</label>
+            <div class="input-wrapper">
+              <select id="trtLinkTypeInput">
+                <option value="details">Treatments Gallery Page</option>
+                <option value="appointment">Booking Form</option>
+                <option value="call">Call Hotline Directly</option>
+                <option value="tips">Dental Tips Page</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="trtBookBtnTextInput">Book Button Text</label>
+          <div class="input-wrapper">
+            <input type="text" id="trtBookBtnTextInput" placeholder="e.g. Book Treatment">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="trtKeywordsInput">Search Keywords (space separated, বাংলা + English)</label>
+          <div class="input-wrapper">
+            <input type="text" id="trtKeywordsInput" placeholder="e.g. scaling polishing পাথর স্কেলিং">
+          </div>
+        </div>
+
+        <div class="reply-modal-actions" style="margin-top:16px;">
+          <button type="button" class="btn btn-secondary" id="treatmentEditCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="treatmentEditSaveBtn">
+            <i data-lucide="check" class="icon-left"></i> Update Treatment
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Toast Notification -->
+  <div id="adminToast" class="admin-toast">
+    <i data-lucide="check-circle" class="icon-sm"></i>
+    <span id="adminToastMsg">Changes saved successfully!</span>
+  </div>
+
+  <!-- Reply to Patient Modal -->
   <div class="modal" id="replyModal">
     <div class="modal-card reply-modal-card">
       <div class="reply-modal-header">
@@ -241,6 +1110,406 @@
       </form>
     </div>
   </div>
+
+  <!-- New Manual Appointment Modal -->
+  <div class="modal" id="newAppointmentModal">
+    <div class="modal-card reply-modal-card" style="max-width:580px;">
+      <div class="reply-modal-header">
+        <h3><i data-lucide="calendar-plus" class="icon-sm"></i> Add New Appointment (নতুন বুকিং এন্ট্রি)</h3>
+        <button type="button" class="reply-modal-close" id="newAppointmentModalClose" aria-label="Close">&times;</button>
+      </div>
+      <form id="newAppointmentForm" class="booking-form" style="padding-top:10px; max-height:75vh; overflow-y:auto;">
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label for="newPtName">Patient Full Name / রোগীর নাম <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i data-lucide="user" class="input-icon"></i>
+              <input type="text" id="newPtName" placeholder="e.g. মোঃ রফিকুল ইসলাম" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="newPtPhone">Phone Number / মোবাইল নম্বর <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i data-lucide="phone" class="input-icon"></i>
+              <input type="tel" id="newPtPhone" placeholder="01XXXXXXXXX" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label for="newPtTreatment">Treatment / কাঙ্ক্ষিত চিকিৎসা <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i data-lucide="stethoscope" class="input-icon"></i>
+              <select id="newPtTreatment" required>
+                <option value="Tooth Scaling & Polishing">Tooth Scaling &amp; Polishing (স্কেলিং ও পলিশিং)</option>
+                <option value="Teeth Whitening (Bleaching)">Tooth Whitening (টিথ হোয়াইটেনিং)</option>
+                <option value="Root Canal Therapy (RCT)">Root Canal (রুট ক্যানেল)</option>
+                <option value="Braces & Clear Aligners">Braces &amp; Aligners (ব্রেসেস)</option>
+                <option value="Customized Night Guard (Bruxism)">Night Guard (নাইট গার্ড)</option>
+                <option value="Traumatic Injury & Emergency">Traumatic Injury &amp; Pain Relief</option>
+                <option value="Pediatric Dentistry (Kids)">Kids Dentistry (শিশুদের চিকিৎসা)</option>
+                <option value="Wisdom Tooth & Surgery">Wisdom Tooth &amp; Surgery</option>
+                <option value="Cosmetic Fillings & Veneers">Cosmetic Fillings &amp; Veneers</option>
+                <option value="General Consultation">General Dental Consultation</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="newPtDoctor">Assign Doctor / দায়িত্বপ্রাপ্ত ডাক্তার</label>
+            <div class="input-wrapper">
+              <i data-lucide="user-check" class="input-icon"></i>
+              <select id="newPtDoctor">
+                <option value="Dr. Nafisa Anzum Nadia">Dr. Nafisa Anzum Nadia (Founder &amp; Chief Surgeon)</option>
+                <option value="Dr. Marufa Arefin">Dr. Marufa Arefin (Oral &amp; Dental Surgeon)</option>
+                <option value="Dr. Umme Kulsum">Dr. Umme Kulsum (Dental Surgeon)</option>
+                <option value="Dr. Sharmin Akhter">Dr. Sharmin Akhter (Maxillofacial Surgeon)</option>
+                <option value="Dr. Shila Abedin">Dr. Shila Abedin (Senior Dentist &amp; Orthodontist)</option>
+                <option value="Dr. Mohima Akhter Hira">Dr. Mohima Akhter Hira (Dental Surgeon)</option>
+                <option value="Dr. Munmun Rahman">Dr. Munmun Rahman (Orthodontist)</option>
+                <option value="Dr. Shafiqul Hasan (Shihab)">Dr. Shafiqul Hasan (Consultant)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label for="newPtDate">Appointment Date / তারিখ <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i data-lucide="calendar" class="input-icon"></i>
+              <input type="date" id="newPtDate" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="newPtSlot">Time Slot / সময়সূচী <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i data-lucide="clock" class="input-icon"></i>
+              <select id="newPtSlot" required>
+                <option value="Morning Slot (10:00 AM - 02:00 PM)">Morning: 10:00 AM - 02:00 PM</option>
+                <option value="Evening Slot (05:00 PM - 09:00 PM)" selected>Evening: 05:00 PM - 09:00 PM</option>
+                <option value="Emergency (On-Call)">Emergency (On-Call Immediate)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label for="newPtStatus">Initial Status / অবস্থা</label>
+            <div class="input-wrapper">
+              <select id="newPtStatus">
+                <option value="Confirmed" selected>Confirmed (কনফার্মড)</option>
+                <option value="Pending">Pending Review (পেন্ডিং)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="newPtSource">Booking Source / সূত্র</label>
+            <div class="input-wrapper">
+              <select id="newPtSource">
+                <option value="Phone Call">Phone Call (ফোনে বুকিং)</option>
+                <option value="Walk-in">Walk-in (সরাসরি চেম্বারে আগমন)</option>
+                <option value="WhatsApp">WhatsApp Inquiry</option>
+                <option value="Doctor Referral">Doctor Referral</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="newPtNotes">Symptoms / Notes (রোগীর সমস্যা বা চিকিৎসকের নোট)</label>
+          <div class="input-wrapper">
+            <textarea id="newPtNotes" rows="2" placeholder="e.g. তীব্র দাঁতের ব্যথা, গত ৩ দিন ধরে খাবার চিবোতে সমস্যা হচ্ছে..."></textarea>
+          </div>
+        </div>
+
+        <div class="reply-modal-actions" style="margin-top:16px;">
+          <button type="button" class="btn btn-secondary" id="newAppointmentCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="newAppointmentSubmitBtn">
+            <i data-lucide="check" class="icon-left"></i> Save Appointment (বুকিং সংরক্ষণ করুন)
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Testimonial Edit Modal -->
+  <div class="modal" id="testimonialEditModal">
+    <div class="modal-card reply-modal-card" style="max-width:540px;">
+      <div class="reply-modal-header">
+        <h3 id="testimonialModalTitle"><i data-lucide="message-square-plus" class="icon-sm"></i> Add / Edit Patient Review</h3>
+        <button type="button" class="reply-modal-close" id="testimonialModalClose" aria-label="Close">&times;</button>
+      </div>
+      <form id="testimonialEditForm" class="booking-form" style="padding-top:10px;">
+        <input type="hidden" id="editTestimonialIdx" value="-1">
+
+        <div class="form-group">
+          <label for="tstNameInput">Patient Name / রোগীর নাম <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <i data-lucide="user" class="input-icon"></i>
+            <input type="text" id="tstNameInput" placeholder="e.g. তাহমিনা সুলতানা" required>
+          </div>
+        </div>
+
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label for="tstTreatmentInput">Treatment Received / চিকিৎসা <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <input type="text" id="tstTreatmentInput" placeholder="e.g. Teeth Whitening &amp; Scaling" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="tstRatingInput">Star Rating (1-5)</label>
+            <div class="input-wrapper">
+              <select id="tstRatingInput">
+                <option value="5" selected>⭐⭐⭐⭐⭐ (5 Stars)</option>
+                <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+                <option value="3">⭐⭐⭐ (3 Stars)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="tstCommentInput">Review / রোগীর মন্তব্য <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <textarea id="tstCommentInput" rows="3" placeholder="e.g. ডেন্টাল ট্রিটমেন্ট নিয়ে আমার ভয় ছিল, কিন্তু ডাঃ নাদিয়া আপু একদম ব্যথাহীনভাবে স্কেলিং ও রুট ক্যানেল করে দিয়েছেন। চেম্বারের পরিবেশ চমৎকার ও জীবাণুমুক্ত।" required></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="tstDateInput">Date / তারিখ</label>
+          <div class="input-wrapper">
+            <input type="text" id="tstDateInput" placeholder="e.g. March 2026">
+          </div>
+        </div>
+
+        <div class="reply-modal-actions" style="margin-top:16px;">
+          <button type="button" class="btn btn-secondary" id="testimonialCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="testimonialSaveBtn">
+            <i data-lucide="check" class="icon-left"></i> Save Review
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Facility Edit Modal -->
+  <div class="modal" id="facilityEditModal">
+    <div class="modal-card reply-modal-card" style="max-width:540px;">
+      <div class="reply-modal-header">
+        <h3 id="facilityModalTitle"><i data-lucide="award" class="icon-sm"></i> Edit Facility (সুবিধা পরিচালনা)</h3>
+        <button type="button" class="reply-modal-close" id="facilityModalClose" aria-label="Close">&times;</button>
+      </div>
+      <form id="facilityEditForm" class="booking-form" style="padding-top:10px;">
+        <input type="hidden" id="editFacilityIdx" value="-1">
+
+        <div class="form-group">
+          <label for="facTitleInput">Facility Title (English) <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <input type="text" id="facTitleInput" placeholder="e.g. Digital X-Ray Facilities" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="facTitleBnInput">Title (বাংলা)</label>
+          <div class="input-wrapper">
+            <input type="text" id="facTitleBnInput" placeholder="e.g. ডিজিটাল এক্স-রে সুবিধা">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="facDescInput">Description / বিবরণ <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <textarea id="facDescInput" rows="3" placeholder="e.g. High-resolution instant imaging for quick, accurate diagnosis with minimal radiation exposure." required></textarea>
+          </div>
+        </div>
+
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label for="facIconInput">Lucide Icon</label>
+            <div class="input-wrapper">
+              <select id="facIconInput">
+                <option value="scan-line">scan-line (এক্স-রে)</option>
+                <option value="user-check">user-check (মহিলা ডাক্তার)</option>
+                <option value="phone-incoming">phone-incoming (জরুরি কল)</option>
+                <option value="shield-check">shield-check (জীবাণুমুক্ত)</option>
+                <option value="heart-handshake">heart-handshake (বিনামূল্যে চিকিৎসা)</option>
+                <option value="award">award (পুরস্কার/স্বীকৃতি)</option>
+                <option value="sparkles">sparkles (আধুনিক)</option>
+                <option value="stethoscope">stethoscope (চিকিৎসক)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="facStyleInput">Card Style Highlight</label>
+            <div class="input-wrapper">
+              <select id="facStyleInput">
+                <option value="default">Standard / স্বাভাবিক</option>
+                <option value="highlight-female">Female Special (গোলাপি বর্ডার)</option>
+                <option value="highlight-free">Humanitarian / Free (সবুজ বর্ডার)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="reply-modal-actions" style="margin-top:16px;">
+          <button type="button" class="btn btn-secondary" id="facilityCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="facilitySaveBtn">
+            <i data-lucide="check" class="icon-left"></i> Save Facility
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FAQ Edit Modal -->
+  <div class="modal" id="faqEditModal">
+    <div class="modal-card reply-modal-card" style="max-width:580px;">
+      <div class="reply-modal-header">
+        <h3 id="faqModalTitle"><i data-lucide="help-circle" class="icon-sm"></i> Edit FAQ (প্রশ্নোত্তর)</h3>
+        <button type="button" class="reply-modal-close" id="faqModalClose" aria-label="Close">&times;</button>
+      </div>
+      <form id="faqEditForm" class="booking-form" style="padding-top:10px;">
+        <input type="hidden" id="editFaqIdx" value="-1">
+
+        <div class="form-group">
+          <label for="faqQuestionInput">Question / প্রশ্ন <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <input type="text" id="faqQuestionInput" placeholder="e.g. How often should I visit the dentist for scaling?" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="faqAnswerInput">Answer / উত্তর <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <textarea id="faqAnswerInput" rows="4" placeholder="e.g. It is generally recommended to undergo dental scaling and polishing every 6 months to remove calculus and plaque..." required></textarea>
+          </div>
+        </div>
+
+        <div class="reply-modal-actions" style="margin-top:16px;">
+          <button type="button" class="btn btn-secondary" id="faqCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="faqSaveBtn">
+            <i data-lucide="check" class="icon-left"></i> Save FAQ
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Campaign Edit Modal -->
+  <div class="modal" id="campaignEditModal">
+    <div class="modal-card reply-modal-card" style="max-width:600px;">
+      <div class="reply-modal-header">
+        <h3 id="campaignModalTitle"><i data-lucide="heart-handshake" class="icon-sm"></i> Edit Free Campaign (ক্যাম্প পরিচালনা)</h3>
+        <button type="button" class="reply-modal-close" id="campaignModalClose" aria-label="Close">&times;</button>
+      </div>
+      <form id="campaignEditForm" class="booking-form" style="padding-top:10px; max-height:75vh; overflow-y:auto;">
+        <input type="hidden" id="editCampaignIdx" value="-1">
+
+        <div class="form-group">
+          <label for="cmpTitleInput">Camp Title (English) <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <input type="text" id="cmpTitleInput" placeholder="e.g. Mirpur Kids Smile Camp" required>
+          </div>
+        </div>
+
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label for="cmpBadgeInput">Badge Text</label>
+            <div class="input-wrapper">
+              <input type="text" id="cmpBadgeInput" placeholder="e.g. School Camp">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cmpLocationInput">Location / স্থান <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <input type="text" id="cmpLocationInput" placeholder="e.g. Mirpur 12 Primary School" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cmpImageInput">Camp Photo / ছবির পাথ বা নাম</label>
+          <div class="input-wrapper">
+            <input type="text" id="cmpImageInput" placeholder="e.g. our-program-2.jpeg">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cmpDescEnInput">Description (English) <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <textarea id="cmpDescEnInput" rows="2" placeholder="e.g. Free dental check-ups and fluoride application for over 200 children..." required></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cmpDescBnInput">Description (বাংলা)</label>
+          <div class="input-wrapper">
+            <textarea id="cmpDescBnInput" rows="2" placeholder="e.g. ২০০+ শিশুর বিনামূল্যে দাঁত পরীক্ষা ও ফ্লোরাইড প্রয়োগ..."></textarea>
+          </div>
+        </div>
+
+        <div class="reply-modal-actions" style="margin-top:16px;">
+          <button type="button" class="btn btn-secondary" id="campaignCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="campaignSaveBtn">
+            <i data-lucide="check" class="icon-left"></i> Save Campaign
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Chamber Gallery Edit Modal -->
+  <div class="modal" id="galleryEditModal">
+    <div class="modal-card reply-modal-card" style="max-width:520px;">
+      <div class="reply-modal-header">
+        <h3><i data-lucide="image" class="icon-sm"></i> Edit Chamber Gallery Item</h3>
+        <button type="button" class="reply-modal-close" id="galleryModalClose" aria-label="Close">&times;</button>
+      </div>
+      <form id="galleryEditForm" class="booking-form" style="padding-top:10px;">
+        <input type="hidden" id="editGalleryIdx" value="-1">
+
+        <div class="form-group">
+          <label for="galTitleInput">Title / নাম <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <input type="text" id="galTitleInput" placeholder="e.g. Operating Chamber" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="galSubtitleInput">Subtitle / ক্যাপশন</label>
+          <div class="input-wrapper">
+            <input type="text" id="galSubtitleInput" placeholder="e.g. State-of-the-art dental chair & lighting">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="galImageInput">Image Filename or URL <span class="required">*</span></label>
+          <div class="input-wrapper">
+            <input type="text" id="galImageInput" placeholder="e.g. chamber.jpg" required>
+          </div>
+        </div>
+
+        <div class="reply-modal-actions" style="margin-top:16px;">
+          <button type="button" class="btn btn-secondary" id="galleryCancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="gallerySaveBtn">
+            <i data-lucide="check" class="icon-left"></i> Update Gallery Photo
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Hidden Print Schedule Container for Browser Printing -->
+  <div id="printScheduleArea" style="display:none;"></div>
 
   <!-- Footer -->
   <footer class="footer">

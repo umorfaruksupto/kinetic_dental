@@ -12,19 +12,21 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Top Announcement Bar -->
+  <!-- Top Announcement Bar (Tech Dental Style) -->
   <div class="top-bar">
     <div class="container top-bar-content">
       <div class="top-info">
-        <a href="tel:+8801313175779" class="top-link"><i data-lucide="phone" class="icon-sm"></i> +880 1313-175779</a>
-        <a href="tel:+8801308388577" class="top-link"><i data-lucide="phone" class="icon-sm"></i> +880 1308-388577</a>
-        <span class="top-link hide-mobile"><i data-lucide="clock" class="icon-sm"></i> Fri–Thu: 10AM–2PM &amp; 5PM–9PM</span>
+        <span class="top-link"><span class="top-badge-hotline">24/7 Emergency</span> Hotline:</span>
+        <a href="tel:+8801313175779" class="top-link"><i data-lucide="phone" class="icon-sm"></i> 01313-175779</a>
+        <a href="tel:+8801308388577" class="top-link"><i data-lucide="phone" class="icon-sm"></i> 01308-388577</a>
+        <span class="top-link hide-mobile"><i data-lucide="map-pin" class="icon-sm"></i> Mirpur 12, Dhaka (Near Bus Stand)</span>
+        <span class="top-link hide-mobile"><i data-lucide="clock" class="icon-sm"></i> 10AM-2PM &amp; 5PM-9PM (Friday Open)</span>
       </div>
       <div class="top-socials">
         <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" aria-label="Facebook Page"><i data-lucide="facebook"></i></a>
@@ -46,12 +48,10 @@
 
       <nav class="desktop-nav">
         <a href="index.html" class="nav-item">Home</a>
-        <a href="index.html#services" class="nav-item">Services</a>
-        <a href="treatments.html" class="nav-item">Treatments</a>
-        <a href="dental-problems.html" class="nav-item active">Dental Tips</a>
-        <a href="campaigns.html" class="nav-item">Campaigns</a>
+        <a href="index.html#all-treatments" class="nav-item">Treatments</a>
         <a href="doctors.html" class="nav-item">Doctors</a>
-        <a href="index.html#contact" class="nav-item">Contact Us</a>
+        <a href="dental-problems.html" class="nav-item active">Dental Tips</a>
+        <a href="index.html#contact" class="nav-item">Contact</a>
         <a href="index.html#appointment" class="btn btn-primary btn-nav">Book Appointment</a>
       </nav>
 
@@ -68,12 +68,11 @@
   <div class="mobile-drawer" id="mobileDrawer">
     <nav class="mobile-nav">
       <a href="index.html" class="mobile-nav-item">Home</a>
-      <a href="index.html#services" class="mobile-nav-item">Services</a>
-      <a href="treatments.html" class="mobile-nav-item">Treatments</a>
-      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips</a>
-      <a href="campaigns.html" class="mobile-nav-item">Campaigns</a>
-      <a href="doctors.html" class="mobile-nav-item">Doctors</a>
-      <a href="index.html#contact" class="mobile-nav-item">Contact Us</a>
+      <a href="index.html#all-treatments" class="mobile-nav-item">Treatments (চিকিৎসা সমূহ)</a>
+      <a href="doctors.html" class="mobile-nav-item">Doctors (৮ জন ডাক্তার)</a>
+      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips (ডাক্তারের পরামর্শ)</a>
+      <a href="campaigns.html" class="mobile-nav-item">Free Campaigns (ফ্রি ক্যাম্পেইন)</a>
+      <a href="index.html#contact" class="mobile-nav-item">Contact Us (যোগাযোগ)</a>
       <a href="index.html#appointment" class="btn btn-primary mobile-booking-btn">Book Appointment</a>
     </nav>
   </div>
@@ -99,6 +98,83 @@
       </div>
 
       <div class="posts-grid scroll-reveal">
+
+        <!-- Article 1: Daily Dental Rules (Dr. Nadia's Guidelines) -->
+        <article class="post-card" id="daily-rules">
+          <div class="post-thumb">
+            <img src="treatment-1.jpeg" alt="Daily dental care rules">
+          </div>
+          <div class="post-body">
+            <span class="post-tag" style="background:var(--primary-light); color:var(--primary);">Daily Care · প্রতিদিনের যত্ন</span>
+            <div class="post-meta">
+              <span class="post-author"><i data-lucide="user-check" class="icon-sm"></i> Dr. Nafisa Anzum Nadia</span>
+              <span><i data-lucide="calendar" class="icon-sm"></i> Dr's Advice</span>
+            </div>
+            <h3>Essential Daily Dental Care Rules</h3>
+            <p class="post-title-bn">সকাল ও রাতে দাঁতের যত্নের আবশ্যকীয় নিয়মাবলী</p>
+            <p>Maintaining strong teeth requires disciplined daily oral hygiene. Brush twice daily using fluoride toothpaste and a soft-bristled brush. Consult a dentist immediately if enamel wears down or after any injury.</p>
+            <div class="post-text-bn" style="background:var(--bg-muted); padding:12px; border-radius:8px; margin:10px 0; border-left:3px solid var(--primary);">
+              <ul style="padding-left:18px; margin:0; line-height:1.6;">
+                <li>সকাল ও রাতে নিয়ম করে প্রতিদিন ২ বার দাঁত ব্রাশ করতে হবে।</li>
+                <li>ফ্লোরাইড সমৃদ্ধ ভালো মানের টুথপেস্ট ব্যবহার করতে হবে।</li>
+                <li>সবসময় নরম (Soft-bristled) ব্রাশ ব্যবহার করতে হবে।</li>
+                <li>এনামেল বেশি ক্ষয় হয়ে গেলে ফিলিং অথবা রুট ক্যানেল প্রয়োজন হতে পারে, সেক্ষেত্রে ডেন্টিস্টের পরামর্শ অনুযায়ী ডেন্টাল চিকিৎসা গ্রহণ করা।</li>
+                <li>দাঁতে কোনো আঘাত পেলে দ্রুত বিডিএস ডেন্টিস্টের শরণাপন্ন হয়ে চিকিৎসা গ্রহণ করা।</li>
+              </ul>
+            </div>
+            <a href="index.html#appointment" class="post-tag" style="background:var(--primary); color:#fff;">Book Checkup &rarr;</a>
+          </div>
+        </article>
+
+        <!-- Article 2: Tooth Grinding / Bruxism Solution (Night Guard) -->
+        <article class="post-card" id="bruxism">
+          <div class="post-thumb">
+            <img src="treatment-9.jpeg" alt="Tooth grinding bruxism night guard">
+          </div>
+          <div class="post-body">
+            <span class="post-tag" style="background:hsl(270, 75%, 94%); color:hsl(270, 70%, 40%);">Bruxism · অভ্যাসজনিত রোগ</span>
+            <div class="post-meta">
+              <span class="post-author"><i data-lucide="user-check" class="icon-sm"></i> Dr. Nafisa Anzum Nadia</span>
+              <span><i data-lucide="calendar" class="icon-sm"></i> Special Tip</span>
+            </div>
+            <h3>Tooth Grinding / Bruxism Solution</h3>
+            <p class="post-title-bn">"ঘুমের মাঝে দাঁতে দাঁত ঘর্ষনের সমাধান”</p>
+            <p>Teeth grinding during sleep (bruxism) causes loud jaw noises, severe enamel wear, and extreme tooth sensitivity. A custom-fabricated medical Night/Mouth Guard is the proven clinical solution.</p>
+            <div class="post-text-bn" style="background:var(--bg-muted); padding:12px; border-radius:8px; margin:10px 0; border-left:3px solid hsl(270, 70%, 50%);">
+              <p style="margin-bottom:8px;"><strong>ঘুমের মাঝে দাঁতে দাঁত ঘষা একটি অভ্যাসজনিত রোগ।</strong> যাদের ঘুমের মাঝে দাঁতে দাঁত ঘষার অভ্যাস রয়েছে, তাদের জন্য একমাত্র কার্যকর সমাধান হলো <strong>"Night / Mouth Guard"</strong>।</p>
+              <p style="margin-bottom:6px;">🔹 <strong>Night Guard ব্যবহারে কি লাভ হয়:</strong></p>
+              <ul style="padding-left:18px; margin:0 0 8px 0; line-height:1.6;">
+                <li>👉 ঘুমের মাঝে দাঁতে দাঁত ঘর্ষণের ফলে যে কিড়মিড় আওয়াজ হয়, তা প্রতিহত করবে।</li>
+                <li>👉 দাঁতে দাঁত ঘর্ষণের ফলে পরবর্তীতে সব দাঁতে ক্ষয় সৃষ্টি হয় ও শির শির অনুভূত হয়। Night Guard তা সম্পূর্ণ প্রতিরোধ করবে।</li>
+              </ul>
+              <p style="margin:0; font-size:0.86rem; color:var(--text-body);">🔹 খুব সহজেই ডেন্টিস্টের কাছে গিয়ে আপনার দাঁতের মাপ দিয়ে customized night guard বানিয়ে ব্যবহার করে এ সমস্যার স্থায়ী সমাধান করতে পারেন।</p>
+            </div>
+            <a href="index.html#appointment" class="post-tag" style="background:var(--primary); color:#fff;">Get Night Guard &rarr;</a>
+          </div>
+        </article>
+
+        <!-- Article 3: Traumatic Injury & Discoloration -->
+        <article class="post-card" id="traumatic-injury">
+          <div class="post-thumb">
+            <img src="treatment-6.jpeg" alt="Tooth discoloration due to trauma">
+          </div>
+          <div class="post-body">
+            <span class="post-tag" style="background:hsl(0, 75%, 93%); color:hsl(0, 75%, 45%);">Trauma &amp; Injury · আঘাতপ্রাপ্ত দাঁত</span>
+            <div class="post-meta">
+              <span class="post-author"><i data-lucide="user-check" class="icon-sm"></i> Dr. Nafisa Anzum Nadia</span>
+              <span><i data-lucide="calendar" class="icon-sm"></i> Urgent Warning</span>
+            </div>
+            <h3>Tooth Discoloration Due to Traumatic Injury</h3>
+            <p class="post-title-bn">🦷 আঘাত প্রাপ্ত দাঁত কালো হয়ে যাওয়া 🦷</p>
+            <p>A blunt force injury from sports, bone bites or accidents cuts off tooth blood supply, turning it dark. Without timely root canal therapy and capping, bone infections, cysts, or tumors can develop.</p>
+            <div class="post-text-bn" style="background:var(--bg-muted); padding:12px; border-radius:8px; margin:10px 0; border-left:3px solid hsl(0, 75%, 50%);">
+              <p style="margin-bottom:8px;">খাওয়ার সময় হাড়/কাটা বা পাথরে কামড় লেগে, কোন কিছুর সাথে ধাক্কা বা বলের আঘাত—এসবের কারণে দাঁতে ব্যথা পেলে দেরি না করে দ্রুত নিকটস্থ <strong>BDS ডাক্তারের শরণাপন্ন</strong> হতে হবে।</p>
+              <p style="margin-bottom:8px;">যেরকম ছিল সে অবস্থায় রেখে দিলে ধীরে ধীরে দাঁতটি কালো হয়ে যেতে পারে। দাঁত কালো বা discolor হয়ে গেলে বুঝতে হবে <strong>সেই দাঁতে আর প্রাণ নেই!</strong> মানে দাঁতটি আর বেঁচে নেই। তখন দাঁতের ভেতরে ইনফেকশন হয়ে হাড়ের নীচে হতে পারে সিস্ট বা টিউমার।</p>
+              <p style="margin:0;">তখন রুট ক্যানাল ট্রিটমেন্ট করে দাঁতে ক্রাউন বা ক্যাপ লাগাতে হবে। ভিতরের ইনফেকশন এর জন্য আলাদা জটিল চিকিৎসা লাগবে। তাই আঘাতপ্রাপ্ত হওয়ার পর পরই চিকিৎসা নিলে ক্ষতি অনেক লাঘব করা সম্ভব।</p>
+            </div>
+            <a href="index.html#appointment" class="post-tag" style="background:hsl(0, 75%, 45%); color:#fff;">Emergency Consultation &rarr;</a>
+          </div>
+        </article>
 
         <article class="post-card">
           <div class="post-thumb">
@@ -275,6 +351,46 @@
             <div class="faq-answer-block faq-answer-bn">
               <span class="lang-tag">বাংলা</span>
               <p>৬ মাসে একবার স্কেলিং ও পলিশিং করান। এতে ব্রাশে যায় না এমন টার্টার উঠে যায় এবং মাড়ি ফোলা, রক্ত পড়া ও দুর্গন্ধ রোধ হয়।</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <button class="faq-trigger" type="button">
+            <span class="faq-trigger-text">
+              <span>What is a Night Guard and how does it solve tooth grinding (Bruxism)?</span>
+              <span class="faq-q-bn">ঘুমের মাঝে দাঁত ঘষা (Bruxism)-র সমাধান কী এবং নাইট গার্ড কীভাবে সাহায্য করে?</span>
+            </span>
+            <i data-lucide="chevron-down" class="faq-arrow"></i>
+          </button>
+          <div class="faq-content">
+            <div class="faq-answer-block">
+              <span class="lang-tag">English</span>
+              <p>Teeth grinding during sleep (bruxism) damages enamel and causes intense sensitivity. A customized Night Guard acts as a durable protective barrier, eliminating grinding noise and shielding your teeth from long-term wear.</p>
+            </div>
+            <div class="faq-answer-block faq-answer-bn">
+              <span class="lang-tag">বাংলা</span>
+              <p>ঘুমের মাঝে দাঁতে দাঁত ঘষা একটি অভ্যাসজনিত রোগ। একমাত্র সমাধান হলো customized night/mouth guard। এটি ঘুমের ঘর্ষণের কিড়মিড় আওয়াজ প্রতিহত করে এবং দাঁতের মারাত্মক ক্ষয় ও শিরশির অনুভূতি বন্ধ করে। চেম্বারে মাপ দিয়ে সহজেই এটি বানিয়ে নেওয়া যায়।</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <button class="faq-trigger" type="button">
+            <span class="faq-trigger-text">
+              <span>Why does a tooth turn black after injury and what treatment is needed?</span>
+              <span class="faq-q-bn">দাঁতে আঘাত পেয়ে কালো হয়ে যাওয়ার কারণ কী এবং কী চিকিৎসা প্রয়োজন?</span>
+            </span>
+            <i data-lucide="chevron-down" class="faq-arrow"></i>
+          </button>
+          <div class="faq-content">
+            <div class="faq-answer-block">
+              <span class="lang-tag">English</span>
+              <p>A blunt impact (from sports, bone bites or falls) destroys internal blood vessels, meaning the tooth has lost vitality (dead tooth). Root canal therapy (RCT) and a protective dental crown are essential to stop deep bone cysts or tumors.</p>
+            </div>
+            <div class="faq-answer-block faq-answer-bn">
+              <span class="lang-tag">বাংলা</span>
+              <p>খাওয়ার সময় হাড়/পাথরে কামড় বা বলের আঘাতে ব্যথা পেলে কালক্ষেপণ না করে দ্রুত বিডিএস ডাক্তারের কাছে যেতে হবে। দাঁত কালো হয়ে যাওয়া মানে দাঁতে আর প্রাণ নেই। ফেলে রাখলে হাড়ের নিচে সিস্ট বা টিউমার হতে পারে। রুট ক্যানাল (RCT) ও ক্যাপ লাগিয়ে দাঁতটি রক্ষা করা যায়।</p>
             </div>
           </div>
         </div>
@@ -560,7 +676,7 @@
         <h4>Quick Links</h4>
         <ul>
           <li><a href="index.html">Home</a></li>
-          <li><a href="index.html#services">Dental Services</a></li>
+          <li><a href="index.html#all-treatments">All Treatments</a></li>
           <li><a href="treatments.html">Treatments</a></li>
           <li><a href="dental-problems.html">Dental Tips</a></li>
           <li><a href="campaigns.html">Campaigns</a></li>
@@ -623,5 +739,10 @@
       initFaqAccordion();
     });
   </script>
+  <!-- Floating WhatsApp Quick Dial -->
+  <a href="https://wa.me/8801313175779?text=Hello%20Kinetic%20Dental%2C%20I%20would%20like%20to%20consult%20or%20book%20an%20appointment." target="_blank" rel="noopener noreferrer" class="floating-whatsapp-btn" id="floatingWhatsappBtn" aria-label="Chat on WhatsApp">
+    <i data-lucide="message-circle" class="whatsapp-icon"></i>
+    <span class="whatsapp-label">WhatsApp Helpline</span>
+  </a>
 </body>
 </html>

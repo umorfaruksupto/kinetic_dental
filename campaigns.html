@@ -12,19 +12,21 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Top Announcement Bar -->
+  <!-- Top Announcement Bar (Tech Dental Style) -->
   <div class="top-bar">
     <div class="container top-bar-content">
       <div class="top-info">
-        <a href="tel:+8801313175779" class="top-link"><i data-lucide="phone" class="icon-sm"></i> +880 1313-175779</a>
-        <a href="tel:+8801308388577" class="top-link"><i data-lucide="phone" class="icon-sm"></i> +880 1308-388577</a>
-        <span class="top-link hide-mobile"><i data-lucide="clock" class="icon-sm"></i> Fri–Thu: 10AM–2PM &amp; 5PM–9PM</span>
+        <span class="top-link"><span class="top-badge-hotline">24/7 Emergency</span> Hotline:</span>
+        <a href="tel:+8801313175779" class="top-link"><i data-lucide="phone" class="icon-sm"></i> 01313-175779</a>
+        <a href="tel:+8801308388577" class="top-link"><i data-lucide="phone" class="icon-sm"></i> 01308-388577</a>
+        <span class="top-link hide-mobile"><i data-lucide="map-pin" class="icon-sm"></i> Mirpur 12, Dhaka (Near Bus Stand)</span>
+        <span class="top-link hide-mobile"><i data-lucide="clock" class="icon-sm"></i> 10AM-2PM &amp; 5PM-9PM (Friday Open)</span>
       </div>
       <div class="top-socials">
         <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" aria-label="Facebook Page"><i data-lucide="facebook"></i></a>
@@ -46,12 +48,10 @@
 
       <nav class="desktop-nav">
         <a href="index.html" class="nav-item">Home</a>
-        <a href="index.html#services" class="nav-item">Services</a>
-        <a href="treatments.html" class="nav-item">Treatments</a>
-        <a href="dental-problems.html" class="nav-item">Dental Tips</a>
-        <a href="campaigns.html" class="nav-item active">Campaigns</a>
+        <a href="index.html#all-treatments" class="nav-item">Treatments</a>
         <a href="doctors.html" class="nav-item">Doctors</a>
-        <a href="index.html#contact" class="nav-item">Contact Us</a>
+        <a href="dental-problems.html" class="nav-item">Dental Tips</a>
+        <a href="index.html#contact" class="nav-item">Contact</a>
         <a href="index.html#appointment" class="btn btn-primary btn-nav">Book Appointment</a>
       </nav>
 
@@ -68,12 +68,11 @@
   <div class="mobile-drawer" id="mobileDrawer">
     <nav class="mobile-nav">
       <a href="index.html" class="mobile-nav-item">Home</a>
-      <a href="index.html#services" class="mobile-nav-item">Services</a>
-      <a href="treatments.html" class="mobile-nav-item">Treatments</a>
-      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips</a>
-      <a href="campaigns.html" class="mobile-nav-item">Campaigns</a>
-      <a href="doctors.html" class="mobile-nav-item">Doctors</a>
-      <a href="index.html#contact" class="mobile-nav-item">Contact Us</a>
+      <a href="index.html#all-treatments" class="mobile-nav-item">Treatments (চিকিৎসা সমূহ)</a>
+      <a href="doctors.html" class="mobile-nav-item">Doctors (৮ জন ডাক্তার)</a>
+      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips (ডাক্তারের পরামর্শ)</a>
+      <a href="campaigns.html" class="mobile-nav-item active">Free Campaigns (ফ্রি ক্যাম্পেইন)</a>
+      <a href="index.html#contact" class="mobile-nav-item">Contact Us (যোগাযোগ)</a>
       <a href="index.html#appointment" class="btn btn-primary mobile-booking-btn">Book Appointment</a>
     </nav>
   </div>
@@ -98,7 +97,7 @@
         <p class="section-subtitle">Each camp provides free consultation, basic treatment and oral hygiene education — English &amp; বাংলা।</p>
       </div>
 
-      <div class="campaign-grid scroll-reveal">
+      <div class="campaign-grid scroll-reveal" id="campaignsGridContainer">
 
         <!-- Campaign 1 -->
         <div class="campaign-card">
@@ -209,7 +208,7 @@
         <h4>Quick Links</h4>
         <ul>
           <li><a href="index.html">Home</a></li>
-          <li><a href="index.html#services">Dental Services</a></li>
+          <li><a href="index.html#all-treatments">All Treatments</a></li>
           <li><a href="treatments.html">Treatments</a></li>
           <li><a href="dental-problems.html">Dental Tips</a></li>
           <li><a href="campaigns.html">Campaigns</a></li>
@@ -244,8 +243,48 @@
     <i data-lucide="chevron-up"></i>
   </button>
 
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
   <script src="page-utils.js"></script>
   <script>
+    function escapeHTML(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function renderPublicCampaigns(list) {
+      const container = document.getElementById('campaignsGridContainer');
+      if (!container || !Array.isArray(list) || !list.length) return;
+
+      container.innerHTML = list.map(camp => `
+        <div class="campaign-card">
+          <div class="campaign-thumb">
+            <img src="${escapeHTML(camp.image || 'our-program-2.jpeg')}" alt="${escapeHTML(camp.title || 'Free Dental Camp')}">
+            ${camp.badge ? `<span class="campaign-badge">${escapeHTML(camp.badge)}</span>` : ''}
+          </div>
+          <div class="campaign-info">
+            <h3>${escapeHTML(camp.title || '')}</h3>
+            ${camp.location ? `<span class="campaign-location"><i data-lucide="map-pin" class="icon-sm"></i> ${escapeHTML(camp.location)}</span>` : ''}
+            ${camp.descEn ? `<p>${escapeHTML(camp.descEn)}</p>` : ''}
+            ${camp.descBn ? `<p class="campaign-text-bn">${escapeHTML(camp.descBn)}</p>` : ''}
+          </div>
+        </div>
+      `).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+      if (typeof hideCardsWithoutImages === 'function') {
+        hideCardsWithoutImages('.campaign-card');
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       if (typeof lucide !== 'undefined') lucide.createIcons();
 
@@ -269,7 +308,52 @@
 
       initScrollReveal();
       hideCardsWithoutImages('.campaign-card');
+
+      // 1. Initial cached render from localStorage
+      const cachedCmp = localStorage.getItem('kinetic_campaigns');
+      if (cachedCmp) {
+        try {
+          const parsed = JSON.parse(cachedCmp);
+          if (Array.isArray(parsed) && parsed.length) {
+            renderPublicCampaigns(parsed);
+          }
+        } catch (e) {}
+      }
+
+      // 2. Fetch live updates from Firebase Firestore
+      try {
+        const firebaseConfig = {
+          apiKey: "AIzaSyAi_iJkiNZunOEcXxX2kuZg70q-xYqioBQ",
+          authDomain: "kinetic-dental.firebaseapp.com",
+          projectId: "kinetic-dental",
+          storageBucket: "kinetic-dental.firebasestorage.app",
+          messagingSenderId: "523401059267",
+          appId: "1:523401059267:web:186d0b1b23405fea333b76",
+          measurementId: "G-Z1C46B6GSF"
+        };
+        if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+        if (typeof firebase !== 'undefined') {
+          firebase.firestore().collection('settings').doc('campaigns').onSnapshot((doc) => {
+            if (doc.exists && Array.isArray(doc.data().list)) {
+              const liveList = doc.data().list;
+              localStorage.setItem('kinetic_campaigns', JSON.stringify(liveList));
+              renderPublicCampaigns(liveList);
+            }
+          }, (err) => {
+            console.log("Firestore campaigns observer:", err.message);
+          });
+        }
+      } catch (err) {
+        console.log("Firebase sync fallback to static campaigns");
+      }
     });
   </script>
+  <!-- Floating WhatsApp Quick Dial -->
+  <a href="https://wa.me/8801313175779?text=Hello%20Kinetic%20Dental%2C%20I%20would%20like%20to%20consult%20or%20book%20an%20appointment." target="_blank" rel="noopener noreferrer" class="floating-whatsapp-btn" id="floatingWhatsappBtn" aria-label="Chat on WhatsApp">
+    <i data-lucide="message-circle" class="whatsapp-icon"></i>
+    <span class="whatsapp-label">WhatsApp Helpline</span>
+  </a>
 </body>
 </html>
