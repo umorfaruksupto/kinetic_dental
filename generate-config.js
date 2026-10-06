@@ -1,6 +1,34 @@
 const fs = require('fs');
 const path = require('path');
 
+// Load .env or .env.local if present (zero external dependencies)
+function loadEnvFile(fileName) {
+  const filePath = path.join(__dirname, fileName);
+  if (fs.existsSync(filePath)) {
+    try {
+      const content = fs.readFileSync(filePath, 'utf8');
+      const lines = content.split('\n');
+      for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line || line.startsWith('#')) continue;
+        const eqIdx = line.indexOf('=');
+        if (eqIdx !== -1) {
+          const key = line.slice(0, eqIdx).trim();
+          const val = line.slice(eqIdx + 1).trim().replace(/^["']|["']$/g, '');
+          if (!process.env[key]) {
+            process.env[key] = val;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Could not read ' + fileName, e.message);
+    }
+  }
+}
+
+loadEnvFile('.env.local');
+loadEnvFile('.env');
+
 // Extract Firebase credentials from environment variables (e.g. Vercel)
 // If not present in env, uses existing project defaults for seamless local development
 const apiKey = process.env.FIREBASE_API_KEY || 'AIzaSyAi_iJkiNZunOEcXxX2kuZg70q-xYqioBQ';
