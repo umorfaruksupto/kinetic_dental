@@ -182,24 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Staff Quick Access & Auth State observer
-  let isStaffMode = false;
-  const staffQuickAccessBtn = document.getElementById('staffQuickAccessBtn');
-  if (staffQuickAccessBtn) {
-    staffQuickAccessBtn.addEventListener('click', () => {
-      isStaffMode = true;
-      authSection.classList.add('hidden');
-      dashboardSection.classList.remove('hidden');
-      logoutBtnTop?.classList.remove('hidden');
-      clearAuthError();
-      showAdminToast('Signed in as Authorized Clinic Staff!');
-      startFirestoreListener();
-    });
-  }
-
   // Auth State observer
   window.auth.onAuthStateChanged((user) => {
-    if (isStaffMode) return;
     if (user) {
       if (!isAllowedAdminEmail(user.email || '')) {
         window.auth.signOut();
@@ -256,7 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Sign out triggers
   const handleSignOut = () => {
-    isStaffMode = false;
     authSection.classList.remove('hidden');
     dashboardSection.classList.add('hidden');
     logoutBtnTop?.classList.add('hidden');

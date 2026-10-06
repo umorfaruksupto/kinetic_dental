@@ -2245,17 +2245,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 10px;
 }
 
-.auth-info-tip {
-  display: flex;
-  gap: 12px;
-  background-color: var(--primary-light);
-  border-radius: var(--border-radius-sm);
-  padding: 16px;
-  margin-top: 24px;
-  font-size: 0.82rem;
-  color: var(--text-body);
-  border: 1px solid var(--neutral-border);
-}
+
 
 /* Secure Dashboard View Layout */
 .admin-dashboard-wrapper {
