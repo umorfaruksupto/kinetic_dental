@@ -929,14 +929,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (offerPopupModal) offerPopupModal.classList.add('show');
   });
 
-  // Load from local cache first
+  const DEFAULT_OFFER = {
+    active: true,
+    title: 'স্পেশাল ডেন্টাল কেয়ার অফার',
+    subtitle: 'দাঁতের স্কেলিং ও পলিশিং এবং টিথ হোয়াইটেনিং-এ বিশেষ ছাড়! সাথে রয়েছে সম্পূর্ণ ফ্রি ডিজিটাল চেকআপ ও ওরাল হেলথ গাইড।',
+    badge: 'Special Offer · Limited Period',
+    image: 'achivment.jpeg',
+    showInHero: false,
+    showPopup: true,
+    ctaText: 'অফারটি গ্রহণ করুন / Book with Offer',
+    treatment: 'Tooth Scaling & Polishing'
+  };
+
+  // Load from local cache first, or apply default offer
   const cachedOffer = localStorage.getItem('kinetic_active_offer');
   if (cachedOffer) {
     try {
       applyOfferData(JSON.parse(cachedOffer));
     } catch (e) {
       console.error("Local offer parse error", e);
+      applyOfferData(DEFAULT_OFFER);
     }
+  } else {
+    applyOfferData(DEFAULT_OFFER);
   }
 
   // Sync live from Firebase Firestore
