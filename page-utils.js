@@ -181,10 +181,135 @@ function initGlobalClinicSettings() {
   }
 }
 
+/**
+ * Convert Google Drive share link to direct viewable image URL.
+ * Also handles standard image URLs untouched.
+ */
+function formatDriveImageUrl(url) {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+
+  // Google Drive patterns: /file/d/{id} or ?id={id}
+  const matchFileD = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (matchFileD && matchFileD[1]) {
+    return `https://lh3.googleusercontent.com/d/${matchFileD[1]}`;
+  }
+
+  const matchId = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (matchId && matchId[1]) {
+    return `https://lh3.googleusercontent.com/d/${matchId[1]}`;
+  }
+
+  return trimmed;
+}
+
+/**
+ * Point an <img> at an admin-provided image link (Google Drive or direct URL).
+ * The closest [data-image-wrap] gets `is-empty` while there is no usable image.
+ */
+function setManagedImage(img, rawUrl) {
+  if (!img) return;
+  const wrap = img.closest('[data-image-wrap]');
+  const src = formatDriveImageUrl(rawUrl || '');
+  if (!src) {
+    img.removeAttribute('src');
+    wrap?.classList.add('is-empty');
+    return;
+  }
+  img.onload = () => wrap?.classList.remove('is-empty');
+  img.onerror = () => wrap?.classList.add('is-empty');
+  if (img.getAttribute('src') !== src) img.src = src;
+}
+
+/**
+ * Admin-managed site images (settings/site_images): cached render first, then live updates.
+ */
+function watchSiteImages(callback) {
+  try {
+    const cached = localStorage.getItem('kinetic_site_images');
+    if (cached) callback(JSON.parse(cached));
+  } catch (e) { /* ignore bad cache */ }
+
+  if (!window.db) return;
+  window.db.collection('settings').doc('site_images').onSnapshot((doc) => {
+    // An offline cache miss is not "no images"; only trust a missing doc when the server says so
+    if (!doc.exists && doc.metadata.fromCache) return;
+    const data = doc.exists ? doc.data() : {};
+    localStorage.setItem('kinetic_site_images', JSON.stringify(data));
+    callback(data);
+  }, (err) => console.log('Site images observer:', err.message));
+}
+
+/**
+ * Universal safe HTML escaping utility.
+ */
+function escapeHTML(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+const escHTML = escapeHTML;
+
+/**
+ * Universal mobile navigation drawer & scroll-to-top initializer.
+ * Eliminates repeating boilerplate across all subpages.
+ */
+function initCommonPageUI() {
+  // 1. Mobile Drawer
+  const toggleBtn = document.getElementById('menuToggleBtn') || document.getElementById('mobileNavToggleBtn');
+  const mobileDrawer = document.getElementById('mobileDrawer');
+  const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+  const drawerOverlay = document.getElementById('drawerOverlay');
+
+  function toggleMenu(forceOpen) {
+    if (!mobileDrawer) return;
+    const isOpen = typeof forceOpen === 'boolean' ? forceOpen : !mobileDrawer.classList.contains('open');
+    mobileDrawer.classList.toggle('open', isOpen);
+    drawerOverlay?.classList.toggle('open', isOpen);
+    drawerOverlay?.classList.toggle('active', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+
+    if (toggleBtn) {
+      toggleBtn.querySelector('.menu-icon')?.classList.toggle('hidden', isOpen);
+      toggleBtn.querySelector('.close-icon')?.classList.toggle('hidden', !isOpen);
+    }
+  }
+
+  toggleBtn?.addEventListener('click', () => toggleMenu());
+  drawerCloseBtn?.addEventListener('click', () => toggleMenu(false));
+  drawerOverlay?.addEventListener('click', () => toggleMenu(false));
+
+  document.querySelectorAll('.mobile-nav-item, .mobile-booking-btn').forEach((link) => {
+    link.addEventListener('click', () => toggleMenu(false));
+  });
+
+  // 2. Header shadow + scroll to top button
+  const header = document.querySelector('.main-header');
+  const scrollBtn = document.getElementById('scrollTopBtn');
+  const onScroll = () => {
+    header?.classList.toggle('shrink', window.scrollY > 8);
+    scrollBtn?.classList.toggle('show', window.scrollY > 600);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  scrollBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+}
+
 // Auto-run on DOM ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initGlobalClinicSettings);
+  document.addEventListener('DOMContentLoaded', () => {
+    initGlobalClinicSettings();
+    initCommonPageUI();
+  });
 } else {
   initGlobalClinicSettings();
+  initCommonPageUI();
 }
+
+
 

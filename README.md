@@ -75,4 +75,21 @@ This preserves search rankings and ensures old bookmarks reach the new domain.
 
 ## Admin access
 
-Authorized clinic emails can create an account at `admin.html` via **Sign Up**, then use **Sign In** on future visits. Enable **Email/Password** in Firebase Authentication and configure Firestore rules so authenticated admins can read/write `appointments`.
+Authorized clinic emails can create an account at `admin.html` via **Sign Up**, then use **Sign In** on future visits. Enable **Email/Password** in Firebase Authentication and publish the clinic-admin Firestore rules shown in the dashboard's **Admin & security** section. Appointment data stays out of persistent browser storage.
+
+## Website content and sync
+
+Clinic details, offers, doctors, treatments, homepage copy, FAQs, campaigns, success stories, facilities, and gallery items are managed from the matching section in `admin.html` and stored in Cloud Firestore. Public pages keep their live Firestore listeners, so saved content updates across open pages without a manual refresh. The shared Firebase bootstrap enables Firestore's multi-tab IndexedDB cache where supported, allowing repeat visits to render the last synchronized content while the live listener reconnects. If browser persistence is unavailable, Firebase realtime sync and the existing local content cache continue to work.
+
+### Images
+
+The site ships no photos. Every image comes from a Google Drive link set in `admin.html`. In Drive, share the file as *Anyone with the link* and paste the link; it is converted to a direct image URL automatically.
+
+- **Site images** tab (`settings/site_images`): homepage hero, About photo, founder photo, and homepage before/after results.
+- Chamber gallery, offer poster, success stories, dental tips and campaigns keep their photo fields in their own tabs.
+
+An empty field hides that photo (the hero and founder photo show a branded placeholder instead). `first.jpg` is kept only as the social-share (Open Graph) image, and `tooth-mark.svg` is the logo.
+
+### Publish Firestore rules
+
+The repository now includes [firestore.rules](firestore.rules) and [firebase.json](firebase.json). Install the Firebase CLI, log in to the `kinetic-dental` Firebase project, then run `firebase deploy --only firestore:rules` from this folder. This must be done once in the Firebase project before the restricted rules take effect.

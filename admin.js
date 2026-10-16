@@ -3,6 +3,10 @@
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Remove sensitive data and the obsolete client-side admin bypass from older sessions.
+  localStorage.removeItem('kinetic_appointments_cache');
+  sessionStorage.removeItem('kinetic_master_auth');
+
   // Initialize Lucide Icons
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
@@ -52,6 +56,29 @@ document.addEventListener('DOMContentLoaded', () => {
     return date.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
   }
 
+  function formatDate(d) {
+    if (!d) return 'Synced';
+    return formatReplyTimestamp(d) || 'Synced';
+  }
+
+  function formatDriveImageUrl(url) {
+    if (!url || typeof url !== 'string') return '';
+    const trimmed = url.trim();
+    if (!trimmed) return '';
+
+    const matchFileD = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (matchFileD && matchFileD[1]) {
+      return `https://lh3.googleusercontent.com/d/${matchFileD[1]}`;
+    }
+
+    const matchId = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (matchId && matchId[1]) {
+      return `https://lh3.googleusercontent.com/d/${matchId[1]}`;
+    }
+
+    return trimmed;
+  }
+
   /* --------------------------------------------------------------------------
      1. Theme Management
      -------------------------------------------------------------------------- */
@@ -90,17 +117,52 @@ document.addEventListener('DOMContentLoaded', () => {
   /* --------------------------------------------------------------------------
      2. Admin Email Whitelist & Authentication
      -------------------------------------------------------------------------- */
-  const ALLOWED_ADMIN_EMAILS = new Set([
+  const DEFAULT_ADMIN_EMAILS = [
     'kineticdental29@gmail.com',
     'drnadiakineticdental@gmail.com',
-    'drnafisanadiaanzum@gamil.com',
     'drnafisanadiaanzum@gmail.com',
-    'kinetocdentalwebsite@gmail.com',
-    'kineticdentalwebsite@gmail.com'
-  ]);
+    /* 'drnafisanadiaanzum@gmail.com', */ // corrected below
+    'kineticdentalwebsite@gmail.com',
+    /* 'kinetocdentalwebsite@gmail.com', */ // typo of above, kept disabled
+    'admin@kineticdentalcare.com',
+    'kineticdentalcare@gmail.com'
+  ];
+
+  let authorizedAdminEmails = new Set(DEFAULT_ADMIN_EMAILS.map(e => e.toLowerCase()));
+  let customAdminEmails = [];
+  let activeAdminEmail = '';
+
+  // Load custom authorized emails from localStorage & Firestore
+  function loadAuthorizedAdmins() {
+    try {
+      const cached = localStorage.getItem('kinetic_authorized_admins');
+      if (cached) {
+        const list = JSON.parse(cached);
+        if (Array.isArray(list)) {
+          customAdminEmails = list;
+          list.forEach(e => {
+            if (e && typeof e === 'string') authorizedAdminEmails.add(e.trim().toLowerCase());
+          });
+        }
+      }
+    } catch (e) {}
+
+    if (window.db) {
+      window.db.collection('settings').doc('admin_users').get().then(doc => {
+        if (doc.exists && Array.isArray(doc.data().emails)) {
+          customAdminEmails = doc.data().emails;
+          customAdminEmails.forEach(e => authorizedAdminEmails.add(e.trim().toLowerCase()));
+          localStorage.setItem('kinetic_authorized_admins', JSON.stringify(customAdminEmails));
+          renderAuthorizedEmailsList();
+        }
+      }).catch(e => console.log('Admin users load note:', e.message));
+    }
+  }
+  loadAuthorizedAdmins();
 
   function isAllowedAdminEmail(email) {
-    return ALLOWED_ADMIN_EMAILS.has(email.trim().toLowerCase());
+    if (!email) return false;
+    return authorizedAdminEmails.has(email.trim().toLowerCase());
   }
 
   function showAuthError(message) {
@@ -125,9 +187,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const authSubmitLabel = document.getElementById('authSubmitLabel');
   const authSubmitIcon = document.getElementById('authSubmitIcon');
   const passwordField = document.getElementById('adminPassword');
-  
   const emailField = document.getElementById('adminEmail');
   const authGeneralError = document.getElementById('authGeneralError');
+
+  // Forgot Password elements
+  const btnOpenForgotPassword = document.getElementById('btnOpenForgotPassword');
+  const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+  const forgotPasswordModalClose = document.getElementById('forgotPasswordModalClose');
+  const forgotPasswordCancelBtn = document.getElementById('forgotPasswordCancelBtn');
+  const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+  const resetEmailInput = document.getElementById('resetEmailInput');
+  const resetFeedbackMsg = document.getElementById('resetFeedbackMsg');
   
   let authMode = 'signin';
   let unsubscribeFirestore = null;
@@ -161,14 +231,80 @@ document.addEventListener('DOMContentLoaded', () => {
   signInTab?.addEventListener('click', () => setAuthMode('signin'));
   signUpTab?.addEventListener('click', () => setAuthMode('signup'));
 
+  // Forgot password modal triggers
+  btnOpenForgotPassword?.addEventListener('click', () => {
+    if (resetEmailInput && emailField?.value) {
+      resetEmailInput.value = emailField.value.trim();
+    }
+    if (resetFeedbackMsg) resetFeedbackMsg.style.display = 'none';
+    forgotPasswordModal?.classList.add('active');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  });
+
+  function closeForgotPasswordModal() {
+    forgotPasswordModal?.classList.remove('active');
+    if (forgotPasswordForm) forgotPasswordForm.reset();
+  }
+  forgotPasswordModalClose?.addEventListener('click', closeForgotPasswordModal);
+  forgotPasswordCancelBtn?.addEventListener('click', closeForgotPasswordModal);
+  forgotPasswordModal?.addEventListener('click', (e) => {
+    if (e.target === forgotPasswordModal) closeForgotPasswordModal();
+  });
+
+  forgotPasswordForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const rEmail = resetEmailInput?.value.trim().toLowerCase();
+    if (!rEmail) return;
+
+    if (!isAllowedAdminEmail(rEmail)) {
+      if (resetFeedbackMsg) {
+        resetFeedbackMsg.style.display = 'block';
+        resetFeedbackMsg.style.background = '#fef2f2';
+        resetFeedbackMsg.style.color = '#ef4444';
+        resetFeedbackMsg.textContent = 'This email is not authorized for clinic administration.';
+      }
+      return;
+    }
+
+    if (window.auth) {
+      const btn = document.getElementById('btnSubmitPasswordReset');
+      if (btn) btn.disabled = true;
+
+      window.auth.sendPasswordResetEmail(rEmail)
+        .then(() => {
+          if (resetFeedbackMsg) {
+            resetFeedbackMsg.style.display = 'block';
+            resetFeedbackMsg.style.background = '#ecfdf5';
+            resetFeedbackMsg.style.color = '#065f46';
+            resetFeedbackMsg.textContent = 'Password reset email sent! Check your inbox (and spam folder) for the reset link.';
+          }
+          showAdminToast('Password reset link sent to ' + rEmail);
+          setTimeout(closeForgotPasswordModal, 3000);
+        })
+        .catch((err) => {
+          if (resetFeedbackMsg) {
+            resetFeedbackMsg.style.display = 'block';
+            resetFeedbackMsg.style.background = '#fef2f2';
+            resetFeedbackMsg.style.color = '#ef4444';
+            resetFeedbackMsg.textContent = 'Failed: ' + err.message;
+          }
+        })
+        .finally(() => {
+          if (btn) btn.disabled = false;
+        });
+    } else {
+      alert('Firebase Auth service is unavailable.');
+    }
+  });
+
   function handleFirebaseAuthError(err) {
     console.error('Auth failed:', err);
     if (err.code === 'auth/configuration-not-found') {
-      showAuthError('<strong>Setup Required:</strong> Email/Password authentication is disabled in your Firebase console. Please go to <strong>Firebase Console &gt; Authentication &gt; Sign-in Method</strong> and enable <strong>Email/Password</strong>.');
+      showAuthError('<strong>Setup Required:</strong> Email/Password authentication is disabled in Firebase. Go to <strong>Firebase Console &gt; Authentication &gt; Sign-in Method</strong> and enable <strong>Email/Password</strong>.');
     } else if (err.code === 'auth/email-already-in-use') {
-      showAuthError('This email is already registered. Switch to <strong>Sign In</strong> and use your password.');
+      showAuthError('This email is already registered. Switch to <strong>Sign In</strong> and enter your password.');
     } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
-      showAuthError('Incorrect email or password. If this is your first visit, use <strong>Sign Up</strong> with an authorized clinic email.');
+      showAuthError('Incorrect email or password. If this is your first visit, switch to <strong>Sign Up</strong> to register your authorized email.');
     } else {
       showAuthError(`${authMode === 'signup' ? 'Sign Up' : 'Sign In'} failed: ${err.message}`);
     }
@@ -179,21 +315,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (user) {
       if (!isAllowedAdminEmail(user.email || '')) {
         window.auth.signOut();
-        showAuthError('Access denied. This email is not authorized for admin access.');
+        showAuthError('Access denied. This email (' + (user.email || '') + ') is not on the authorized clinic admin whitelist.');
         return;
       }
 
-      authSection.classList.add('hidden');
-      dashboardSection.classList.remove('hidden');
+      activeAdminEmail = user.email || 'Admin';
+      authSection?.classList.add('hidden');
+      dashboardSection?.classList.remove('hidden');
       logoutBtnTop?.classList.remove('hidden');
       clearAuthError();
-      
+      updateAdminProfileUI();
       startFirestoreListener();
     } else {
-      authSection.classList.remove('hidden');
-      dashboardSection.classList.add('hidden');
+      authSection?.classList.remove('hidden');
+      dashboardSection?.classList.add('hidden');
       logoutBtnTop?.classList.add('hidden');
-      
+
       if (unsubscribeFirestore) {
         unsubscribeFirestore();
         unsubscribeFirestore = null;
@@ -204,14 +341,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      
-      const email = emailField.value.trim();
-      const password = passwordField.value;
-      
       clearAuthError();
 
+      const email = emailField.value.trim();
+      const password = passwordField.value;
+
       if (!isAllowedAdminEmail(email)) {
-        showAuthError('Access denied. Only authorized clinic admin emails can register or sign in.');
+        showAuthError('Access denied. Use an email authorized for clinic administration.');
         return;
       }
 
@@ -232,8 +368,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Sign out triggers
   const handleSignOut = () => {
-    authSection.classList.remove('hidden');
-    dashboardSection.classList.add('hidden');
+    authSection?.classList.remove('hidden');
+    dashboardSection?.classList.add('hidden');
     logoutBtnTop?.classList.add('hidden');
     if (window.auth && window.auth.currentUser) {
       window.auth.signOut().catch(err => console.error("Signout error:", err));
@@ -242,6 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
       unsubscribeFirestore();
       unsubscribeFirestore = null;
     }
+    showAdminToast('Signed out of admin dashboard.');
   };
 
   if (logoutBtnTop) logoutBtnTop.addEventListener('click', handleSignOut);
@@ -260,83 +397,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchBar = document.getElementById('searchBar');
   const filterTabs = document.querySelectorAll('.tab-btn');
 
-  const SAMPLE_APPOINTMENTS = [
-    {
-      id: 'apt-sample-1',
-      name: 'Mrs. Nusrat Jahan',
-      phone: '01712-345678',
-      treatment: 'Tooth Scaling & Polishing',
-      doctor: 'Dr. Nafisa Anzum Nadia',
-      date: new Date().toISOString().split('T')[0],
-      time: 'Morning Slot (10:00 AM - 02:00 PM)',
-      status: 'Confirmed',
-      replyStatus: 'replied',
-      replies: [{ message: 'Your scaling appointment is confirmed for today at 11 AM.' }],
-      notes: 'দাঁতের হলুদ দাগ ও মাড়ির সমস্যা।',
-      createdAt: new Date()
-    },
-    {
-      id: 'apt-sample-2',
-      name: 'Md. Tanvir Hossain',
-      phone: '01819-876543',
-      treatment: 'Root Canal Therapy (RCT)',
-      doctor: 'Dr. Marufa Arefin',
-      date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-      time: 'Evening Slot (05:00 PM - 09:00 PM)',
-      status: 'Pending',
-      replyStatus: 'pending',
-      notes: 'তীব্র দাঁতের ব্যথা, ঠাণ্ডা বা গরম লাগলে শিরশির করে।',
-      createdAt: new Date()
-    },
-    {
-      id: 'apt-sample-3',
-      name: 'Farhana Kabir',
-      phone: '01911-223344',
-      treatment: 'Teeth Whitening (Bleaching)',
-      doctor: 'Dr. Nafisa Anzum Nadia',
-      date: new Date().toISOString().split('T')[0],
-      time: 'Evening Slot (05:00 PM - 09:00 PM)',
-      status: 'Completed',
-      replyStatus: 'replied',
-      notes: 'দাঁত সাদা করার প্যাকেজ সম্পন্ন হয়েছে।',
-      createdAt: new Date()
-    }
-  ];
-
   function startFirestoreListener() {
-    const cachedApts = localStorage.getItem('kinetic_appointments_cache');
-    if (cachedApts) {
-      try {
-        const parsed = JSON.parse(cachedApts);
-        if (Array.isArray(parsed) && parsed.length) {
-          appointmentsList = parsed;
-          calculateMetrics();
-          renderTable();
-        }
-      } catch (e) {}
-    } else {
-      appointmentsList = [...SAMPLE_APPOINTMENTS];
-      calculateMetrics();
-      renderTable();
-    }
+    // Do not persist patient details in localStorage between admin sessions.
+    appointmentsList = [];
+
+    calculateMetrics();
+    renderTable();
 
     if (!window.db) return;
 
     try {
       unsubscribeFirestore = window.db.collection('appointments')
         .orderBy('createdAt', 'desc')
-        .onSnapshot((snapshot) => {
-          if (!snapshot.empty) {
-            const list = [];
-            snapshot.forEach((doc) => {
+        .onSnapshot({ includeMetadataChanges: true }, (snapshot) => {
+          const syncStatus = document.getElementById('adminDbStatusDisplay');
+          if (syncStatus) {
+            const isCached = snapshot.metadata.fromCache;
+            syncStatus.textContent = isCached ? 'Cached · reconnecting' : 'Live · synced';
+            syncStatus.style.color = isCached ? '#b7791f' : '#10b981';
+          }
+          const list = [];
+          snapshot.forEach((doc) => {
+            // Exclude any legacy sample records
+            if (doc.id && !doc.id.startsWith('apt-sample-')) {
               list.push({
                 id: doc.id,
                 ...doc.data()
               });
-            });
-            appointmentsList = list;
-            localStorage.setItem('kinetic_appointments_cache', JSON.stringify(appointmentsList));
-          }
+            }
+          });
+          appointmentsList = list;
           calculateMetrics();
           renderTable();
         }, (err) => {
@@ -438,11 +528,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Empty list check
     if (filtered.length === 0) {
+      const isSearchOrFilter = Boolean(currentSearch || (currentFilter && currentFilter !== 'all'));
       tableBody.innerHTML = `
         <tr>
-          <td colspan="8" class="loading-state">
-            <i data-lucide="inbox" style="width: 32px; height:32px; margin:0 auto 12px; display:block; opacity:0.5;"></i>
-            <p>No matching appointment records found.</p>
+          <td colspan="8" class="loading-state" style="padding: 40px 20px;">
+            <i data-lucide="inbox" style="width: 44px; height: 44px; margin: 0 auto 12px; display: block; opacity: 0.4;"></i>
+            <h4 style="margin-bottom: 6px; color: var(--text-title); font-size: 1.1rem;">${isSearchOrFilter ? 'No Matching Records Found' : 'No Appointment Records Found'}</h4>
+            <p style="color: var(--text-body); max-width: 480px; margin: 0 auto; font-size: 0.88rem;">
+              ${isSearchOrFilter 
+                ? 'Try adjusting your search query or filter tab to view other appointments.' 
+                : 'No appointment requests yet. Patient bookings submitted through the website or manual entries added using "+ New Appointment" will appear here in real time.'}
+            </p>
           </td>
         </tr>
       `;
@@ -709,7 +805,6 @@ document.addEventListener('DOMContentLoaded', () => {
       appointmentsList.unshift(newBooking);
       calculateMetrics();
       renderTable();
-      localStorage.setItem('kinetic_appointments_cache', JSON.stringify(appointmentsList));
 
       if (window.db) {
         window.db.collection('appointments').doc(newBooking.id).set({
@@ -732,7 +827,6 @@ document.addEventListener('DOMContentLoaded', () => {
       item.status = status;
       calculateMetrics();
       renderTable();
-      localStorage.setItem('kinetic_appointments_cache', JSON.stringify(appointmentsList));
     }
 
     if (window.db) {
@@ -758,7 +852,6 @@ document.addEventListener('DOMContentLoaded', () => {
     appointmentsList = appointmentsList.filter(a => a.id !== id);
     calculateMetrics();
     renderTable();
-    localStorage.setItem('kinetic_appointments_cache', JSON.stringify(appointmentsList));
 
     if (window.db) {
       window.db.collection('appointments').doc(id).delete()
@@ -923,14 +1016,18 @@ document.addEventListener('DOMContentLoaded', () => {
      -------------------------------------------------------------------------- */
   const DEFAULT_OFFER = {
     active: true,
-    title: 'রমজান ও ঈদ স্পেশাল ডেন্টাল প্যাকেজ',
-    subtitle: 'দাঁতের স্কেলিং ও পলিশিং এবং টিথ হোয়াইটেনিং-এ ২৫% ছাড়! সাথে রয়েছে সম্পূর্ণ ফ্রি ডিজিটাল চেকআপ ও ওরাল হেলথ গাইড।',
-    badge: '25% OFF · Limited Period',
-    image: 'achivment.jpeg',
-    showInHero: true,
+    title: 'স্পেশাল ডেন্টাল কেয়ার অফার',
+    subtitle: 'দাঁতের স্কেলিং ও পলিশিং এবং টিথ হোয়াইটেনিং-এ বিশেষ ছাড়! সাথে রয়েছে সম্পূর্ণ ফ্রি ডিজিটাল চেকআপ ও ওরাল হেলথ গাইড।',
+    badge: 'Limited Period Offer',
+    image: '',
+    showInHero: false,
     showPopup: true,
     ctaText: 'অফারটি গ্রহণ করুন / Book with Offer',
-    treatment: 'Tooth Scaling & Polishing'
+    treatments: ['Tooth Scaling & Polishing'],
+    treatment: 'Tooth Scaling & Polishing',
+    originalPrice: 'BDT 2,000',
+    offerPrice: 'BDT 1,500',
+    discountPercent: '25%'
   };
 
   const offerForm = document.getElementById('offerForm');
@@ -945,6 +1042,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const offerShowPopup = document.getElementById('offerShowPopup');
   const offerCtaTextInput = document.getElementById('offerCtaTextInput');
   const offerTreatmentSelect = document.getElementById('offerTreatmentSelect');
+  const offerOriginalPriceInput = document.getElementById('offerOriginalPriceInput');
+  const offerPriceInput = document.getElementById('offerPriceInput');
+  const offerDiscountPercentInput = document.getElementById('offerDiscountPercentInput');
   const saveOfferBtn = document.getElementById('saveOfferBtn');
   const previewOfferBtn = document.getElementById('previewOfferBtn');
 
@@ -958,18 +1058,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (offerBadgeInput) offerBadgeInput.value = activeOfferState.badge || '';
     if (offerSubtitleInput) offerSubtitleInput.value = activeOfferState.subtitle || '';
     if (offerPosterUrlInput) offerPosterUrlInput.value = activeOfferState.image || '';
-    if (posterPreviewImg && activeOfferState.image) posterPreviewImg.src = activeOfferState.image;
+    if (posterPreviewImg && activeOfferState.image) {
+      const pSrc = typeof formatDriveImageUrl === 'function' ? formatDriveImageUrl(activeOfferState.image) : activeOfferState.image;
+      posterPreviewImg.src = pSrc;
+    }
     if (offerShowInHero) offerShowInHero.checked = activeOfferState.showInHero !== false;
     if (offerShowPopup) offerShowPopup.checked = activeOfferState.showPopup !== false;
     if (offerCtaTextInput) offerCtaTextInput.value = activeOfferState.ctaText || '';
-    if (offerTreatmentSelect && activeOfferState.treatment) offerTreatmentSelect.value = activeOfferState.treatment;
+    if (offerTreatmentSelect) {
+      const selectedTreatments = Array.isArray(activeOfferState.treatments) ? activeOfferState.treatments : [activeOfferState.treatment].filter(Boolean);
+      Array.from(offerTreatmentSelect.options).forEach(option => { option.selected = selectedTreatments.includes(option.value); });
+    }
+    if (offerOriginalPriceInput) offerOriginalPriceInput.value = activeOfferState.originalPrice || '';
+    if (offerPriceInput) offerPriceInput.value = activeOfferState.offerPrice || '';
+    if (offerDiscountPercentInput) offerDiscountPercentInput.value = activeOfferState.discountPercent || '';
   }
 
   // Handle image URL changes & preview
   offerPosterUrlInput?.addEventListener('input', () => {
     const val = offerPosterUrlInput.value.trim();
     if (posterPreviewImg && val) {
-      posterPreviewImg.src = val;
+      const pSrc = typeof formatDriveImageUrl === 'function' ? formatDriveImageUrl(val) : val;
+      posterPreviewImg.src = pSrc;
     }
   });
 
@@ -1023,11 +1133,15 @@ document.addEventListener('DOMContentLoaded', () => {
         title: offerTitleInput?.value.trim() || '',
         badge: offerBadgeInput?.value.trim() || 'Special Offer',
         subtitle: offerSubtitleInput?.value.trim() || '',
-        image: offerPosterUrlInput?.value.trim() || 'achivment.jpeg',
+        image: offerPosterUrlInput?.value.trim() || '',
         showInHero: Boolean(offerShowInHero?.checked),
         showPopup: Boolean(offerShowPopup?.checked),
         ctaText: offerCtaTextInput?.value.trim() || 'Claim Offer',
-        treatment: offerTreatmentSelect?.value || 'Tooth Scaling & Polishing',
+        treatments: offerTreatmentSelect ? Array.from(offerTreatmentSelect.selectedOptions).map(option => option.value) : [],
+        treatment: offerTreatmentSelect ? (Array.from(offerTreatmentSelect.selectedOptions).map(option => option.value).join(', ') || 'General Consultation') : 'General Consultation',
+        originalPrice: offerOriginalPriceInput?.value.trim() || '',
+        offerPrice: offerPriceInput?.value.trim() || '',
+        discountPercent: offerDiscountPercentInput?.value.trim() || '',
         updatedAt: new Date().toISOString()
       };
 
@@ -1068,7 +1182,7 @@ document.addEventListener('DOMContentLoaded', () => {
       role: 'Founder & Chief Dental Surgeon',
       degrees: '<strong>BDS (DU), PGT (DMC in OMS)</strong><br>Specially Trained in Aesthetic Dentistry (Smile Design & Precision RCT)',
       bio: 'Founder and visionary leader of Kinetic Dental & Healthcare Center in Mirpur 12. With extensive clinical experience in aesthetic dentistry, smile makeovers, and painless root canal therapy, Dr. Nadia ensures every patient receives personalized, sterile, and gentle clinical care.',
-      photo: 'first.jpg'
+      photo: ''
     },
     specialists: [
       {
@@ -1430,6 +1544,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const trtLinkTypeInput = document.getElementById('trtLinkTypeInput');
   const trtBookBtnTextInput = document.getElementById('trtBookBtnTextInput');
   const trtKeywordsInput = document.getElementById('trtKeywordsInput');
+  const trtImageInput = document.getElementById('trtImageInput');
+  const trtDetailsInput = document.getElementById('trtDetailsInput');
 
   function renderAdminTreatmentsTable() {
     if (!adminTreatmentsTableBody) return;
@@ -1498,6 +1614,8 @@ document.addEventListener('DOMContentLoaded', () => {
       trtLinkTypeInput.value = t.linkType || 'details';
       trtBookBtnTextInput.value = t.bookButtonText || 'Book Treatment';
       trtKeywordsInput.value = t.keywords || '';
+      trtImageInput.value = t.image || '';
+      trtDetailsInput.value = t.details || '';
     } else {
       treatmentModalTitle.innerHTML = `<i data-lucide="plus-circle" class="icon-sm"></i> Add New Treatment`;
       trtTitleInput.value = '';
@@ -1512,6 +1630,8 @@ document.addEventListener('DOMContentLoaded', () => {
       trtLinkTypeInput.value = 'details';
       trtBookBtnTextInput.value = 'Book Treatment';
       trtKeywordsInput.value = '';
+      trtImageInput.value = '';
+      trtDetailsInput.value = '';
     }
 
     treatmentEditModal.classList.add('active');
@@ -1551,6 +1671,8 @@ document.addEventListener('DOMContentLoaded', () => {
         linkType: trtLinkTypeInput.value,
         bookButtonText: trtBookBtnTextInput.value.trim() || 'Book Treatment',
         keywords: trtKeywordsInput.value.trim(),
+        image: trtImageInput.value.trim(),
+        details: trtDetailsInput.value.trim(),
         treatmentName: trtTitleInput.value.trim()
       };
 
@@ -1703,217 +1825,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }).catch(e => console.log("Clinic settings initial load:", e.message));
   }
 
-  /* --------------------------------------------------------------------------
-     11. Patient Reviews & Testimonials Management
-     -------------------------------------------------------------------------- */
-  const DEFAULT_TESTIMONIALS = [
-    {
-      name: "তাহমিনা সুলতানা",
-      treatment: "Teeth Whitening & Scaling",
-      rating: 5,
-      comment: "ডেন্টাল ট্রিটমেন্ট নিয়ে আমার ভয় ছিল, কিন্তু ডাঃ নাদিয়া আপু একদম ব্যথাহীনভাবে স্কেলিং ও হোয়াইটেনিং করে দিয়েছেন। চেম্বারের পরিবেশ চমৎকার ও ১০০% জীবাণুমুক্ত।",
-      date: "February 2026"
-    },
-    {
-      name: "ইঞ্জিঃ রফিকুল ইসলাম",
-      treatment: "Root Canal Therapy (RCT)",
-      rating: 5,
-      comment: "দাঁতের প্রচণ্ড ব্যথায় রাতে ঘুমাতে পারছিলাম না। Kinetic Dental-এর জরুরি সেবায় তাৎক্ষণিক রুট ক্যানেল করে ক্যাপ বসিয়ে দেওয়া হয়। অত্যন্ত পেশাদার ও আন্তরিক টিম।",
-      date: "January 2026"
-    },
-    {
-      name: "শামীমা আক্তার",
-      treatment: "Clear Aligners / Braces",
-      rating: 5,
-      comment: "মেয়ের বাঁকা দাঁতের জন্য এখানে আসি। এখানকার নারী চিকিৎসকদের যত্ন ও আন্তরিকতা সত্যি প্রশংসনীয়। মিরপুর ১২-তে এমন বিশ্বমানের ডেন্টাল কেয়ার পেয়ে আমরা খুবই সন্তুষ্ট।",
-      date: "March 2026"
-    }
-  ];
 
-  let testimonialsState = [...DEFAULT_TESTIMONIALS];
-
-  const adminTestimonialsList = document.getElementById('adminTestimonialsList');
-  const addNewTestimonialBtn = document.getElementById('addNewTestimonialBtn');
-  const saveTestimonialsBtn = document.getElementById('saveTestimonialsBtn');
-  const testimonialEditModal = document.getElementById('testimonialEditModal');
-  const testimonialModalClose = document.getElementById('testimonialModalClose');
-  const testimonialCancelBtn = document.getElementById('testimonialCancelBtn');
-  const testimonialEditForm = document.getElementById('testimonialEditForm');
-  const editTestimonialIdx = document.getElementById('editTestimonialIdx');
-  const tstNameInput = document.getElementById('tstNameInput');
-  const tstTreatmentInput = document.getElementById('tstTreatmentInput');
-  const tstRatingInput = document.getElementById('tstRatingInput');
-  const tstCommentInput = document.getElementById('tstCommentInput');
-  const tstDateInput = document.getElementById('tstDateInput');
-
-  function renderAdminTestimonials() {
-    if (!adminTestimonialsList) return;
-
-    if (!testimonialsState.length) {
-      adminTestimonialsList.innerHTML = `<div style="text-align:center; padding:24px; color:var(--text-body);">কোনো রিভিউ তালিকাভুক্ত নেই। "+ Add New Review" বাটনে ক্লিক করে যুক্ত করুন।</div>`;
-      return;
-    }
-
-    adminTestimonialsList.innerHTML = testimonialsState.map((t, idx) => {
-      const stars = '⭐'.repeat(t.rating || 5);
-      return `
-        <div class="admin-testimonial-card">
-          <div style="flex:1;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px; flex-wrap:wrap;">
-              <strong style="font-size:1.05rem; color:var(--text-title);">${escapeHTML(t.name)}</strong>
-              <span class="badge status-completed" style="font-size:0.75rem;">${escapeHTML(t.treatment)}</span>
-              <span style="font-size:0.85rem;">${stars}</span>
-            </div>
-            <p style="font-size:0.9rem; color:var(--text-body); margin:6px 0; font-style:italic;">"${escapeHTML(t.comment)}"</p>
-            <span style="font-size:0.78rem; color:var(--text-muted);">${escapeHTML(t.date || 'Recent')}</span>
-          </div>
-          <div style="display:flex; gap:8px; align-items:center;">
-            <button type="button" class="action-btn-status btn-edit-tst" data-idx="${idx}" title="Edit review" style="color:var(--primary); font-weight:700;">
-              <i data-lucide="edit-3" style="width:14px;height:14px;"></i> Edit
-            </button>
-            <button type="button" class="action-btn-status btn-del-tst" data-idx="${idx}" title="Delete review" style="color:#ef4444; font-weight:700;">
-              <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
-            </button>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-
-    adminTestimonialsList.querySelectorAll('.btn-edit-tst').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const idx = parseInt(btn.getAttribute('data-idx'), 10);
-        openTestimonialEditModal(testimonialsState[idx], idx);
-      });
-    });
-
-    adminTestimonialsList.querySelectorAll('.btn-del-tst').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const idx = parseInt(btn.getAttribute('data-idx'), 10);
-        if (confirm(`Are you sure you want to remove the review by "${testimonialsState[idx].name}"?`)) {
-          testimonialsState.splice(idx, 1);
-          renderAdminTestimonials();
-          saveTestimonialsToStorage();
-        }
-      });
-    });
-  }
-
-  function openTestimonialEditModal(t, idx) {
-    if (!testimonialEditModal) return;
-    editTestimonialIdx.value = String(idx);
-
-    if (t) {
-      document.getElementById('testimonialModalTitle').innerHTML = `<i data-lucide="edit-3" class="icon-sm"></i> Edit Patient Review`;
-      tstNameInput.value = t.name || '';
-      tstTreatmentInput.value = t.treatment || '';
-      tstRatingInput.value = String(t.rating || 5);
-      tstCommentInput.value = t.comment || '';
-      tstDateInput.value = t.date || '';
-    } else {
-      document.getElementById('testimonialModalTitle').innerHTML = `<i data-lucide="plus-circle" class="icon-sm"></i> Add New Review`;
-      tstNameInput.value = '';
-      tstTreatmentInput.value = '';
-      tstRatingInput.value = '5';
-      tstCommentInput.value = '';
-      tstDateInput.value = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    }
-
-    testimonialEditModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-  }
-
-  function closeTestimonialEditModal() {
-    if (!testimonialEditModal) return;
-    testimonialEditModal.classList.remove('active');
-    document.body.style.overflow = '';
-    if (testimonialEditForm) testimonialEditForm.reset();
-  }
-
-  if (addNewTestimonialBtn) {
-    addNewTestimonialBtn.addEventListener('click', () => openTestimonialEditModal(null, -1));
-  }
-  if (testimonialModalClose) testimonialModalClose.addEventListener('click', closeTestimonialEditModal);
-  if (testimonialCancelBtn) testimonialCancelBtn.addEventListener('click', closeTestimonialEditModal);
-  if (testimonialEditModal) {
-    testimonialEditModal.addEventListener('click', (e) => {
-      if (e.target === testimonialEditModal) closeTestimonialEditModal();
-    });
-  }
-
-  if (testimonialEditForm) {
-    testimonialEditForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const idx = parseInt(editTestimonialIdx.value, 10);
-      const testimonialObj = {
-        name: tstNameInput.value.trim(),
-        treatment: tstTreatmentInput.value.trim(),
-        rating: parseInt(tstRatingInput.value, 10) || 5,
-        comment: tstCommentInput.value.trim(),
-        date: tstDateInput.value.trim() || 'Recent'
-      };
-
-      if (idx >= 0 && idx < testimonialsState.length) {
-        testimonialsState[idx] = testimonialObj;
-      } else {
-        testimonialsState.push(testimonialObj);
-      }
-
-      closeTestimonialEditModal();
-      renderAdminTestimonials();
-      saveTestimonialsToStorage();
-      showAdminToast('রিভিউ সফলভাবে আপডেট হয়েছে!');
-    });
-  }
-
-  function saveTestimonialsToStorage() {
-    localStorage.setItem('kinetic_testimonials', JSON.stringify(testimonialsState));
-    if (window.db) {
-      window.db.collection('settings').doc('testimonials').set({ reviews: testimonialsState }, { merge: true })
-        .catch(err => console.warn("Firestore save testimonials error:", err));
-    }
-  }
-
-  if (saveTestimonialsBtn) {
-    saveTestimonialsBtn.addEventListener('click', () => {
-      saveTestimonialsToStorage();
-      showAdminToast('রোগীদের রিভিউ সফলভাবে সংরক্ষণ ও প্রকাশ হয়েছে!');
-    });
-  }
-
-  // Load testimonials from cache
-  const cachedTestimonials = localStorage.getItem('kinetic_testimonials');
-  if (cachedTestimonials) {
-    try {
-      const parsed = JSON.parse(cachedTestimonials);
-      testimonialsState = Array.isArray(parsed) && parsed.length ? parsed : [...DEFAULT_TESTIMONIALS];
-    } catch (e) {
-      testimonialsState = [...DEFAULT_TESTIMONIALS];
-    }
-  }
-  renderAdminTestimonials();
-
-  if (window.db) {
-    window.db.collection('settings').doc('testimonials').get().then(doc => {
-      if (doc.exists && Array.isArray(doc.data().reviews) && doc.data().reviews.length) {
-        testimonialsState = doc.data().reviews;
-        localStorage.setItem('kinetic_testimonials', JSON.stringify(testimonialsState));
-        renderAdminTestimonials();
-      }
-    }).catch(e => console.log("Testimonials initial load:", e.message));
-  }
 
   /* --------------------------------------------------------------------------
-     12. Homepage Hero & Brand Content Editor
+     12. Homepage Hero & Upfront Medical Centre Editor
      -------------------------------------------------------------------------- */
   const DEFAULT_HERO_CONTENT = {
-    tagline: 'Open Today in Mirpur 12 · 8 Specialist Doctors',
-    brandHighlight: 'Kinetic Dental Center',
-    title: 'Painless & High-Tech Dental Care —',
-    description: 'Experience Dhaka’s trusted gentle dental care led by Dr. Nadia & senior BMDC specialist surgeons. 100% sterile Class-B autoclave environment, digital RVG diagnosis, and specialized female dental suites.',
+    medicalCentreImage: '',
+    medicalTitle: 'Kinetic Medical & Dental Centre',
+    medicalSubtitle: 'Modern Operatory · Digital X-Ray · Sterile Care',
+    showMedicalBadge: true,
+    tagline: 'Thoughtful dental care in Mirpur 12',
+    brandHighlight: 'our priority.',
+    title: 'Your smile,',
+    description: 'Modern dental treatment in Mirpur 12, delivered with comfort, privacy, and thoughtful attention at every visit.',
     stat1Num: '1,000+',
     stat1Lbl: 'Happy Smiles',
     stat2Num: '8 Doctors',
@@ -1929,6 +1854,18 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const heroContentForm = document.getElementById('heroContentForm');
+  const heroMedicalFileInput = document.getElementById('heroMedicalFileInput');
+  const heroMedicalUrlInput = document.getElementById('heroMedicalUrlInput');
+  const heroMedicalPreviewImg = document.getElementById('heroMedicalPreviewImg');
+  const heroMedicalPreviewStatus = document.getElementById('heroMedicalPreviewStatus');
+  const heroMedicalTitleInput = document.getElementById('heroMedicalTitleInput');
+  const heroMedicalSubtitleInput = document.getElementById('heroMedicalSubtitleInput');
+  const heroShowMedicalBadgeInput = document.getElementById('heroShowMedicalBadgeInput');
+  const clinicOverviewMedicalImg = document.getElementById('clinicOverviewMedicalImg');
+  const clinicOverviewMedicalTitle = document.getElementById('clinicOverviewMedicalTitle');
+  const clinicOverviewMedicalSubtitle = document.getElementById('clinicOverviewMedicalSubtitle');
+  const btnGoToHeroSettings = document.getElementById('btnGoToHeroSettings');
+
   const heroTaglineInput = document.getElementById('heroTaglineInput');
   const heroBrandHighlightInput = document.getElementById('heroBrandHighlightInput');
   const heroTitleInput = document.getElementById('heroTitleInput');
@@ -1946,8 +1883,110 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroFemaleTitleInput = document.getElementById('heroFemaleTitleInput');
   const heroFemaleSubtitleInput = document.getElementById('heroFemaleSubtitleInput');
 
+  // Client-side lightweight image compression for Firestore safety
+  function compressImageFile(file, maxWidth, maxHeight, quality, callback) {
+    if (!file || !file.type || !file.type.startsWith('image/')) {
+      return callback(new Error('Selected file is not an image.'));
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width;
+        let h = img.height;
+        if (w > maxWidth || h > maxHeight) {
+          const ratio = Math.min(maxWidth / w, maxHeight / h);
+          w = Math.round(w * ratio);
+          h = Math.round(h * ratio);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', quality || 0.85);
+        callback(null, dataUrl);
+      };
+      img.onerror = () => callback(new Error('Failed to load image for compression.'));
+      img.src = e.target.result;
+    };
+    reader.onerror = (err) => callback(err);
+    reader.readAsDataURL(file);
+  }
+
+  // Handle Medical Centre File Upload
+  heroMedicalFileInput?.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 8 * 1024 * 1024) {
+      alert('ইমেজ ফাইলটি ৮ মেগাবাইটের চেয়ে ছোট হওয়া প্রয়োজন।');
+      return;
+    }
+
+    if (heroMedicalPreviewStatus) {
+      heroMedicalPreviewStatus.textContent = 'ছবি প্রসেসিং ও অপটিমাইজেশন চলছে...';
+    }
+
+    compressImageFile(file, 1280, 1280, 0.84, (err, dataUrl) => {
+      if (err) {
+        alert('ইমেজ প্রসেস করতে সমস্যা হয়েছে: ' + err.message);
+        if (heroMedicalPreviewStatus) heroMedicalPreviewStatus.textContent = 'ছবি প্রসেস ব্যর্থ হয়েছে।';
+        return;
+      }
+      if (heroMedicalUrlInput) heroMedicalUrlInput.value = dataUrl;
+      if (heroMedicalPreviewImg) heroMedicalPreviewImg.src = dataUrl;
+      if (clinicOverviewMedicalImg) clinicOverviewMedicalImg.src = dataUrl;
+      if (heroMedicalPreviewStatus) {
+        heroMedicalPreviewStatus.textContent = 'ডিভাইস থেকে ছবি আপলোড হয়েছে। সেভ করলে লাইভ সাইটে প্রদর্শিত হবে।';
+      }
+    });
+  });
+
+  // Handle Medical Centre URL Input Live Sync
+  heroMedicalUrlInput?.addEventListener('input', () => {
+    const rawVal = heroMedicalUrlInput.value.trim();
+    const formatted = typeof formatDriveImageUrl === 'function' ? formatDriveImageUrl(rawVal) : rawVal;
+    const finalSrc = formatted || 'tooth-mark.svg';
+    if (heroMedicalPreviewImg) heroMedicalPreviewImg.src = finalSrc;
+    if (clinicOverviewMedicalImg) clinicOverviewMedicalImg.src = finalSrc;
+    if (heroMedicalPreviewStatus) {
+      heroMedicalPreviewStatus.textContent = rawVal ? 'ছবির লিংক যুক্ত করা হয়েছে।' : 'কোনো ছবি সেট করা নেই (ডিফল্ট প্রদর্শিত হবে)।';
+    }
+  });
+
+  // Handle Preset Buttons
+  document.querySelectorAll('.hero-preset-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const src = btn.getAttribute('data-src') || '';
+      if (heroMedicalUrlInput) heroMedicalUrlInput.value = src;
+      if (heroMedicalPreviewImg) heroMedicalPreviewImg.src = src;
+      if (clinicOverviewMedicalImg) clinicOverviewMedicalImg.src = src;
+      if (heroMedicalPreviewStatus) {
+        heroMedicalPreviewStatus.textContent = 'প্রিসেট ছবি নির্বাচিত হয়েছে: ' + src;
+      }
+    });
+  });
+
+  // Quick jump from Clinic pane to Hero pane
+  btnGoToHeroSettings?.addEventListener('click', () => {
+    const heroTabBtn = document.querySelector('.admin-main-tab-btn[data-tab="siteimages"]');
+    if (heroTabBtn) heroTabBtn.click();
+  });
+
   function populateHeroForm(data) {
     const d = { ...DEFAULT_HERO_CONTENT, ...(data || {}) };
+    const medImg = d.medicalCentreImage || '';
+    if (heroMedicalUrlInput) heroMedicalUrlInput.value = medImg;
+    const resolvedImg = typeof formatDriveImageUrl === 'function' ? formatDriveImageUrl(medImg) : medImg;
+    if (heroMedicalPreviewImg) heroMedicalPreviewImg.src = resolvedImg || 'tooth-mark.svg';
+    if (clinicOverviewMedicalImg) clinicOverviewMedicalImg.src = resolvedImg || 'tooth-mark.svg';
+    if (heroMedicalTitleInput) heroMedicalTitleInput.value = d.medicalTitle || 'Kinetic Medical & Dental Centre';
+    if (heroMedicalSubtitleInput) heroMedicalSubtitleInput.value = d.medicalSubtitle || 'Modern Operatory · Digital X-Ray · Sterile Care';
+    if (heroShowMedicalBadgeInput) heroShowMedicalBadgeInput.checked = d.showMedicalBadge !== false;
+    if (clinicOverviewMedicalTitle && d.medicalTitle) clinicOverviewMedicalTitle.textContent = d.medicalTitle;
+    if (clinicOverviewMedicalSubtitle && d.medicalSubtitle) clinicOverviewMedicalSubtitle.textContent = d.medicalSubtitle;
+
     if (heroTaglineInput) heroTaglineInput.value = d.tagline || '';
     if (heroBrandHighlightInput) heroBrandHighlightInput.value = d.brandHighlight || '';
     if (heroTitleInput) heroTitleInput.value = d.title || '';
@@ -1991,6 +2030,10 @@ document.addEventListener('DOMContentLoaded', () => {
     heroContentForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const heroData = {
+        ...(heroMedicalUrlInput ? { medicalCentreImage: heroMedicalUrlInput.value.trim() } : {}),
+        medicalTitle: heroMedicalTitleInput ? heroMedicalTitleInput.value.trim() : 'Kinetic Medical & Dental Centre',
+        medicalSubtitle: heroMedicalSubtitleInput ? heroMedicalSubtitleInput.value.trim() : 'Modern Operatory · Digital X-Ray · Sterile Care',
+        showMedicalBadge: heroShowMedicalBadgeInput ? heroShowMedicalBadgeInput.checked : true,
         tagline: heroTaglineInput.value.trim(),
         brandHighlight: heroBrandHighlightInput.value.trim(),
         title: heroTitleInput.value.trim(),
@@ -2013,13 +2056,13 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('kinetic_hero_content', JSON.stringify(heroData));
       if (window.db) {
         window.db.collection('settings').doc('hero_content').set(heroData, { merge: true })
-          .then(() => showAdminToast('হোমপেজ ব্যানার ও পরিসংখ্যান সফলভাবে সেভ ও পাবলিশ হয়েছে!'))
+          .then(() => showAdminToast('মেডিকেল সেন্টার ছবি ও হোমপেজ ব্যানার সফলভাবে সেভ ও পাবলিশ হয়েছে!'))
           .catch(err => {
             console.warn('Hero save error:', err);
             showAdminToast('লোকালে সংরক্ষিত (Firebase: ' + err.message + ')', 'error');
           });
       } else {
-        showAdminToast('হোমপেজ ব্যানার ও পরিসংখ্যান সফলভাবে সেভ হয়েছে!');
+        showAdminToast('মেডিকেল সেন্টার ছবি ও হোমপেজ ব্যানার সফলভাবে সেভ হয়েছে!');
       }
     });
   }
@@ -2083,6 +2126,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const facDescInput = document.getElementById('facDescInput');
   const facIconInput = document.getElementById('facIconInput');
   const facStyleInput = document.getElementById('facStyleInput');
+  const facImageInput = document.getElementById('facImageInput');
   const saveFacilitiesBtn = document.getElementById('saveFacilitiesBtn');
 
   function renderAdminFacilities() {
@@ -2138,12 +2182,14 @@ document.addEventListener('DOMContentLoaded', () => {
       facDescInput.value = item.desc || '';
       facIconInput.value = item.icon || 'award';
       facStyleInput.value = item.style || 'default';
+      facImageInput.value = item.image || '';
     } else {
       facTitleInput.value = '';
       facTitleBnInput.value = '';
       facDescInput.value = '';
       facIconInput.value = 'award';
       facStyleInput.value = 'default';
+      facImageInput.value = '';
     }
 
     facilityEditModal.classList.add('active');
@@ -2189,7 +2235,8 @@ document.addEventListener('DOMContentLoaded', () => {
         titleBn: facTitleBnInput.value.trim(),
         desc: facDescInput.value.trim(),
         icon: facIconInput.value || 'award',
-        style: facStyleInput.value || 'default'
+        style: facStyleInput.value || 'default',
+        image: facImageInput.value.trim()
       };
 
       if (idx >= 0 && idx < facilitiesState.length) {
@@ -2283,11 +2330,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
-  const DEFAULT_ADVICE = {
-    rule1: 'সকাল ও রাতে নিয়ম করে প্রতিদিন ২ বার দাঁত ব্রাশ করতে হবে。\nফ্লোরাইড সমৃদ্ধ ভালো মানের টুথপেস্ট ব্যবহার করুন。\nসবসময় নরম (Soft-bristle) ব্রাশ ব্যবহার করতে হবে。\nএনামেল বেশি ক্ষয় হয়ে গেলে ফিলিং অথবা রুট ক্যানেল লাগতে পারে。\nদাঁতে আঘাত পেলে কালক্ষেপণ না করে দ্রুত ডেন্টিস্ট দেখান。',
-    rule2: 'ঘুমের মাঝে দাঁতে দাঁত ঘষা একটি ক্ষতিকর অভ্যাসজনিত রোগ。\nএকমাত্র কার্যকর সমাধান হলো ডেন্টাল Night / Mouth Guard。\nঘুমের ঘর্ষণে সৃষ্ট কিড়মিড় আওয়াজ সম্পূর্ণ প্রতিহত করে。\nদাঁতের মারাত্মক ক্ষয় ও শির শির অনুভূতি স্থায়ীভাবে প্রতিরোধ করে。\nচেম্বারে দাঁতের মাপ দিয়ে খুব সহজেই কাস্টমাইজড নাইট গার্ড তৈরি সম্ভব。',
-    rule3: 'হাড়/কাটা বা পাথরে কামড়, ধাক্কা বা বলের আঘাতে ব্যথা হলে দ্রুত BDS ডাক্তারের শরণাপন্ন হন。\nফেলে রাখলে দাঁত কালো বা বিবর্ণ হয়ে যায় — যার অর্থ দাঁতে আর প্রাণ নেই!\nদাঁতের ভেতরে ইনফেকশন হয়ে হাড়ের নিচে সিস্ট বা টিউমার হতে পারে。\nরুট ক্যানাল ট্রিটমেন্ট (RCT) করে ক্রাউন বা ক্যাপ লাগিয়ে দাঁত রক্ষা করা যায়。\nতাৎক্ষণিক চিকিৎসা নিলে দাঁতের ক্ষতি ও খরচ অনেক লাঘব সম্ভব。'
-  };
 
   let faqsState = [...DEFAULT_FAQS];
   const adminFaqList = document.getElementById('adminFaqList');
@@ -2301,10 +2343,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const faqAnswerInput = document.getElementById('faqAnswerInput');
   const saveFaqBtn = document.getElementById('saveFaqBtn');
 
-  const adviceForm = document.getElementById('adviceForm');
-  const adviceRule1Text = document.getElementById('adviceRule1Text');
-  const adviceRule2Text = document.getElementById('adviceRule2Text');
-  const adviceRule3Text = document.getElementById('adviceRule3Text');
 
   function renderAdminFaqs() {
     if (!adminFaqList) return;
@@ -2428,44 +2466,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Advice load & save
-  function populateAdvice(data) {
-    const adv = { ...DEFAULT_ADVICE, ...(data || {}) };
-    if (adviceRule1Text) adviceRule1Text.value = adv.rule1 || '';
-    if (adviceRule2Text) adviceRule2Text.value = adv.rule2 || '';
-    if (adviceRule3Text) adviceRule3Text.value = adv.rule3 || '';
-  }
 
-  const cachedAdvice = localStorage.getItem('kinetic_advice');
-  if (cachedAdvice) {
-    try {
-      populateAdvice(JSON.parse(cachedAdvice));
-    } catch (e) {
-      populateAdvice(DEFAULT_ADVICE);
-    }
-  } else {
-    populateAdvice(DEFAULT_ADVICE);
-  }
-
-  if (adviceForm) {
-    adviceForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const advData = {
-        rule1: adviceRule1Text.value.trim(),
-        rule2: adviceRule2Text.value.trim(),
-        rule3: adviceRule3Text.value.trim(),
-        updatedAt: new Date().toISOString()
-      };
-      localStorage.setItem('kinetic_advice', JSON.stringify(advData));
-      if (window.db) {
-        window.db.collection('settings').doc('advice').set(advData, { merge: true })
-          .then(() => showAdminToast('ডাক্তারের পরামর্শ সফলভাবে সেভ ও পাবলিশ হয়েছে!'))
-          .catch(err => console.warn('Advice save error:', err));
-      } else {
-        showAdminToast('ডাক্তারের পরামর্শ সফলভাবে সেভ হয়েছে!');
-      }
-    });
-  }
 
   // Load FAQs initial
   const cachedFaqs = localStorage.getItem('kinetic_faqs');
@@ -2488,47 +2489,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }).catch(e => console.log('FAQs initial load:', e.message));
 
-    window.db.collection('settings').doc('advice').get().then(doc => {
-      if (doc.exists) {
-        const liveAdv = doc.data();
-        localStorage.setItem('kinetic_advice', JSON.stringify(liveAdv));
-        populateAdvice(liveAdv);
-      }
-    }).catch(e => console.log('Advice initial load:', e.message));
   }
 
   /* --------------------------------------------------------------------------
      15. Community Campaigns Manager
      -------------------------------------------------------------------------- */
-  const DEFAULT_CAMPAIGNS = [
-    {
-      id: 'cmp-1',
-      title: 'Mirpur Kids Smile Camp',
-      badge: 'School Camp',
-      location: 'Mirpur 12 Primary School',
-      image: 'our-program-2.jpeg',
-      descEn: 'Free dental check-ups and fluoride application for over 200 children, with oral hygiene education sessions for parents and teachers.',
-      descBn: '২০০+ শিশুর বিনামূল্যে দাঁত পরীক্ষা ও ফ্লোরাইড প্রয়োগ, পাশাপাশি অভিভাবক ও শিক্ষকদের জন্য মুখের স্বাস্থ্য শিক্ষা সেশন।'
-    },
-    {
-      id: 'cmp-2',
-      title: 'Friday Community Dental Day',
-      badge: 'Community',
-      location: 'Sujatnagar Jame Masjid Complex',
-      image: 'our-program-1.jpeg',
-      descEn: 'Free consultation and toothache emergency care for elderly community members and underprivileged local families.',
-      descBn: 'বয়োজ্যেষ্ঠ ও অসচ্ছল পরিবারের সদস্যদের জন্য বিনামূল্যে দাঁতের পরামর্শ ও জরুরি প্রাথমিক চিকিৎসাসেবা।'
-    },
-    {
-      id: 'cmp-3',
-      title: 'Oral Health Awareness Week',
-      badge: 'Awareness',
-      location: 'Kinetic Dental & Healthcare Center',
-      image: 'chamber.jpg',
-      descEn: 'Week-long complimentary digital checkups, scaling discounts, and distribution of dental care kits.',
-      descBn: 'সপ্তাহব্যাপী বিনামূল্যে ডিজিটাল চেকআপ, স্কেলিং ডিসকাউন্ট এবং স্বাস্থ্য সুরক্ষা কিট বিতরণ।'
-    }
-  ];
+  const DEFAULT_CAMPAIGNS = [];
 
   let campaignsState = [...DEFAULT_CAMPAIGNS];
   const adminCampaignsList = document.getElementById('adminCampaignsList');
@@ -2562,7 +2528,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <p class="admin-cms-desc">${escapeHTML(c.descEn || '')}</p>
           ${c.descBn ? `<p class="admin-cms-desc" style="color:var(--primary); font-size:0.84rem;">${escapeHTML(c.descBn)}</p>` : ''}
-          <div style="margin-top:6px; font-size:0.78rem; opacity:0.8;">ছবি: <code>${escapeHTML(c.image || 'our-program-1.jpeg')}</code></div>
+          <div style="margin-top:6px; font-size:0.78rem; opacity:0.8;">ছবি: <code>${escapeHTML(c.image || '—')}</code></div>
         </div>
         <div class="admin-cms-actions">
           <button type="button" class="btn-action-icon" onclick="window.editCampaignItem(${idx})" title="Edit Campaign">
@@ -2599,14 +2565,14 @@ document.addEventListener('DOMContentLoaded', () => {
       cmpTitleInput.value = item.title || '';
       cmpBadgeInput.value = item.badge || 'Community';
       cmpLocationInput.value = item.location || '';
-      cmpImageInput.value = item.image || 'our-program-1.jpeg';
+      cmpImageInput.value = item.image || '';
       cmpDescEnInput.value = item.descEn || '';
       cmpDescBnInput.value = item.descBn || '';
     } else {
       cmpTitleInput.value = '';
       cmpBadgeInput.value = 'Community';
       cmpLocationInput.value = '';
-      cmpImageInput.value = 'our-program-1.jpeg';
+      cmpImageInput.value = '';
       cmpDescEnInput.value = '';
       cmpDescBnInput.value = '';
     }
@@ -2651,7 +2617,7 @@ document.addEventListener('DOMContentLoaded', () => {
         title: cmpTitleInput.value.trim(),
         badge: cmpBadgeInput.value.trim() || 'Community',
         location: cmpLocationInput.value.trim(),
-        image: cmpImageInput.value.trim() || 'our-program-1.jpeg',
+        image: cmpImageInput.value.trim(),
         descEn: cmpDescEnInput.value.trim(),
         descBn: cmpDescBnInput.value.trim()
       };
@@ -2689,7 +2655,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (cachedCmp) {
     try {
       const parsed = JSON.parse(cachedCmp);
-      campaignsState = Array.isArray(parsed) && parsed.length ? parsed : [...DEFAULT_CAMPAIGNS];
+      campaignsState = Array.isArray(parsed) ? parsed : [...DEFAULT_CAMPAIGNS];
     } catch (e) {
       campaignsState = [...DEFAULT_CAMPAIGNS];
     }
@@ -2698,7 +2664,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (window.db) {
     window.db.collection('settings').doc('campaigns').get().then(doc => {
-      if (doc.exists && Array.isArray(doc.data().list) && doc.data().list.length) {
+      if (doc.exists && Array.isArray(doc.data().list)) {
         campaignsState = doc.data().list;
         localStorage.setItem('kinetic_campaigns', JSON.stringify(campaignsState));
         renderAdminCampaigns();
@@ -2709,44 +2675,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* --------------------------------------------------------------------------
      16. Chamber Tour Gallery Manager
      -------------------------------------------------------------------------- */
-  const DEFAULT_GALLERY = [
-    {
-      id: 'gal-0',
-      title: 'Operating Chamber',
-      subtitle: 'State-of-the-art dental chair & lighting',
-      image: 'chamber.jpg'
-    },
-    {
-      id: 'gal-1',
-      title: 'Reception Desk',
-      subtitle: 'Welcoming waiting lounge for patients',
-      image: 'office.jpg'
-    },
-    {
-      id: 'gal-2',
-      title: 'Diagnostic Setup',
-      subtitle: 'Premium tools ready for clean and safe care',
-      image: 'chmaber.jpg'
-    },
-    {
-      id: 'gal-3',
-      title: 'Treatment Room',
-      subtitle: 'Comfortable, hygienic patient care space',
-      image: 'office-1.jpeg'
-    },
-    {
-      id: 'gal-4',
-      title: 'Modern Chamber',
-      subtitle: 'LED lighting and ergonomic dental chair',
-      image: 'chamber-3.jpeg'
-    },
-    {
-      id: 'gal-5',
-      title: 'Our Expert Team',
-      subtitle: 'Qualified dentists led by Dr. Nadia',
-      image: 'doctors.jpeg'
-    }
-  ];
+  const DEFAULT_GALLERY = [];
 
   let galleryState = [...DEFAULT_GALLERY];
   const adminGalleryList = document.getElementById('adminGalleryList');
@@ -2759,21 +2688,35 @@ document.addEventListener('DOMContentLoaded', () => {
   const galSubtitleInput = document.getElementById('galSubtitleInput');
   const galImageInput = document.getElementById('galImageInput');
   const saveGalleryBtn = document.getElementById('saveGalleryBtn');
+  const addNewGalleryBtn = document.getElementById('addNewGalleryBtn');
 
   function renderAdminGallery() {
     if (!adminGalleryList) return;
-    adminGalleryList.innerHTML = galleryState.map((g, idx) => `
+    if (!galleryState.length) {
+      adminGalleryList.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:30px; color:var(--text-body);">No gallery photos yet. Click "+ Add New Photo" to add one.</p>';
+      return;
+    }
+    adminGalleryList.innerHTML = galleryState.map((g, idx) => {
+      const rawImg = g.image || '';
+      const imgSrc = typeof formatDriveImageUrl === 'function' ? formatDriveImageUrl(rawImg) : rawImg;
+      return `
       <div class="admin-gallery-card">
-        <img src="${escapeHTML(g.image || 'chamber.jpg')}" alt="${escapeHTML(g.title)}" class="admin-gallery-thumb" onerror="this.src='chamber.jpg'">
+        <img src="${escapeHTML(imgSrc)}" alt="${escapeHTML(g.title)}" class="admin-gallery-thumb" onerror="this.style.visibility='hidden'">
         <div class="admin-gallery-body">
           <h4>${escapeHTML(g.title)}</h4>
           <p>${escapeHTML(g.subtitle || '')}</p>
-          <button type="button" class="btn btn-secondary btn-sm" onclick="window.editGalleryItem(${idx})" style="width:100%;">
-            <i data-lucide="edit-3" class="icon-left"></i> Change Photo &amp; Details
-          </button>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="window.editGalleryItem(${idx})" style="flex:1;">
+              <i data-lucide="edit-3" class="icon-left"></i> Edit
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="window.deleteGalleryItem(${idx})" style="color:#ef4444;" title="Delete Photo">
+              <i data-lucide="trash-2"></i>
+            </button>
+          </div>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
@@ -2798,6 +2741,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  window.deleteGalleryItem = (idx) => {
+    if (idx >= 0 && idx < galleryState.length) {
+      if (confirm(`Are you sure you want to remove "${galleryState[idx].title}" from the gallery?`)) {
+        galleryState.splice(idx, 1);
+        renderAdminGallery();
+        saveGalleryToStorage();
+        showAdminToast('Gallery photo deleted!');
+      }
+    }
+  };
+
+  if (addNewGalleryBtn) {
+    addNewGalleryBtn.addEventListener('click', () => {
+      editGalleryIdx.value = '-1';
+      if (galTitleInput) galTitleInput.value = '';
+      if (galSubtitleInput) galSubtitleInput.value = '';
+      if (galImageInput) galImageInput.value = '';
+      galleryEditModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    });
+  }
+
   if (galleryModalClose) galleryModalClose.addEventListener('click', closeGalleryEditModal);
   if (galleryCancelBtn) galleryCancelBtn.addEventListener('click', closeGalleryEditModal);
   if (galleryEditModal) {
@@ -2810,10 +2776,26 @@ document.addEventListener('DOMContentLoaded', () => {
     galleryEditForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const idx = parseInt(editGalleryIdx.value, 10);
-      if (idx >= 0 && idx < galleryState.length) {
-        galleryState[idx].title = galTitleInput.value.trim();
-        galleryState[idx].subtitle = galSubtitleInput.value.trim();
-        galleryState[idx].image = galImageInput.value.trim() || 'chamber.jpg';
+      const title = galTitleInput.value.trim();
+      const subtitle = galSubtitleInput.value.trim();
+      const imageRaw = galImageInput.value.trim();
+      const image = typeof formatDriveImageUrl === 'function' ? formatDriveImageUrl(imageRaw) : imageRaw;
+
+      if (idx === -1) {
+        galleryState.push({
+          id: 'gal-' + Date.now(),
+          title,
+          subtitle,
+          image
+        });
+        closeGalleryEditModal();
+        renderAdminGallery();
+        saveGalleryToStorage();
+        showAdminToast('নতুন চেম্বার ছবি যুক্ত হয়েছে!');
+      } else if (idx >= 0 && idx < galleryState.length) {
+        galleryState[idx].title = title;
+        galleryState[idx].subtitle = subtitle;
+        galleryState[idx].image = image;
 
         closeGalleryEditModal();
         renderAdminGallery();
@@ -2860,5 +2842,793 @@ document.addEventListener('DOMContentLoaded', () => {
     }).catch(e => console.log('Gallery initial load:', e.message));
   }
 
+  /* --------------------------------------------------------------------------
+     17. Successful Treatment Corner Management (Dynamic Treatments Gallery)
+     -------------------------------------------------------------------------- */
+  const DEFAULT_SUCCESSFUL_TREATMENTS = [];
+
+  let stState = [...DEFAULT_SUCCESSFUL_TREATMENTS];
+  const adminStTableBody = document.getElementById('adminStTableBody');
+  const addNewStBtn = document.getElementById('addNewStBtn');
+  const saveStBtn = document.getElementById('saveStBtn');
+  const stEditModal = document.getElementById('stEditModal');
+  const stModalClose = document.getElementById('stModalClose');
+  const stCancelBtn = document.getElementById('stCancelBtn');
+  const stEditForm = document.getElementById('stEditForm');
+  const editStIdx = document.getElementById('editStIdx');
+  const stDiseaseNameInput = document.getElementById('stDiseaseNameInput');
+  const stHeadingInput = document.getElementById('stHeadingInput');
+  const stDetailsInput = document.getElementById('stDetailsInput');
+  const stImageInput = document.getElementById('stImageInput');
+  const stModalTitle = document.getElementById('stModalTitle');
+
+  function renderAdminSt() {
+    if (!adminStTableBody) return;
+    if (!stState.length) {
+      adminStTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--neutral-body);">কোনো চিকিৎসার কেস পাওয়া যায়নি। নতুন কেস যুক্ত করুন।</td></tr>';
+      return;
+    }
+    adminStTableBody.innerHTML = stState.map((item, idx) => {
+      const rawImg = item.image || item.imageUrl || '';
+      const thumb = typeof formatDriveImageUrl === 'function' ? formatDriveImageUrl(rawImg) : rawImg;
+      return `
+        <tr>
+          <td style="width:70px;">
+            ${thumb ? `<img src="${escapeHTML(thumb)}" alt="${escapeHTML(item.heading || '')}" style="width:56px; height:42px; object-fit:cover; border-radius:4px; border:1px solid var(--neutral-border);" onerror="this.style.visibility='hidden'">` : '<span style="font-size:0.75rem; color:#94a3b8;">No img</span>'}
+          </td>
+          <td>
+            <strong style="color:var(--primary);">${escapeHTML(item.diseaseName || '')}</strong>
+          </td>
+          <td>
+            <strong>${escapeHTML(item.heading || '')}</strong>
+          </td>
+          <td style="max-width:240px; font-size:0.82rem; color:var(--text-body);">
+            ${escapeHTML(item.details || '')}
+          </td>
+          <td style="text-align:right; white-space:nowrap;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="window.editStItem(${idx})" title="Edit">
+              <i data-lucide="edit-3" class="icon-sm"></i>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="window.deleteStItem(${idx})" title="Delete" style="color:#ef4444; margin-left:6px;">
+              <i data-lucide="trash-2" class="icon-sm"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  function closeStModal() {
+    if (stEditModal) stEditModal.classList.remove('active');
+    if (stEditForm) stEditForm.reset();
+    if (editStIdx) editStIdx.value = '-1';
+  }
+
+  window.editStItem = (idx) => {
+    if (idx >= 0 && idx < stState.length) {
+      const item = stState[idx];
+      if (editStIdx) editStIdx.value = idx;
+      if (stModalTitle) stModalTitle.innerHTML = '<i data-lucide="edit-3" class="icon-sm"></i> Edit Treatment Case (চিকিৎসা কেস এডিট)';
+      if (stDiseaseNameInput) stDiseaseNameInput.value = item.diseaseName || '';
+      if (stHeadingInput) stHeadingInput.value = item.heading || '';
+      if (stDetailsInput) stDetailsInput.value = item.details || '';
+      if (stImageInput) stImageInput.value = item.image || item.imageUrl || '';
+      if (stEditModal) stEditModal.classList.add('active');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+  };
+
+  window.deleteStItem = (idx) => {
+    if (confirm('আপনি কি নিশ্চিত যে এই চিকিৎসা কেসটি ডিলিট করতে চান?')) {
+      stState.splice(idx, 1);
+      renderAdminSt();
+      saveStToStorage();
+      showAdminToast('চিকিৎসা কেস সফলভাবে মুছে ফেলা হয়েছে!');
+    }
+  };
+
+  addNewStBtn?.addEventListener('click', () => {
+    if (editStIdx) editStIdx.value = '-1';
+    if (stModalTitle) stModalTitle.innerHTML = '<i data-lucide="plus-circle" class="icon-sm"></i> Add New Treatment Case (নতুন চিকিৎসা কেস)';
+    if (stEditForm) stEditForm.reset();
+    if (stEditModal) stEditModal.classList.add('active');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  });
+
+  stModalClose?.addEventListener('click', closeStModal);
+  stCancelBtn?.addEventListener('click', closeStModal);
+
+  stEditForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const idx = parseInt(editStIdx.value, 10);
+    const dataObj = {
+      id: idx >= 0 ? (stState[idx].id || `st-${Date.now()}`) : `st-${Date.now()}`,
+      diseaseName: stDiseaseNameInput.value.trim(),
+      heading: stHeadingInput.value.trim(),
+      details: stDetailsInput.value.trim(),
+      image: stImageInput.value.trim()
+    };
+
+    if (idx >= 0 && idx < stState.length) {
+      stState[idx] = dataObj;
+    } else {
+      stState.unshift(dataObj);
+    }
+
+    closeStModal();
+    renderAdminSt();
+    saveStToStorage();
+    showAdminToast('সফল চিকিৎসা কেস সফলভাবে সংরক্ষিত হয়েছে!');
+  });
+
+  function saveStToStorage() {
+    localStorage.setItem('kinetic_successful_treatments', JSON.stringify(stState));
+    if (window.db) {
+      window.db.collection('settings').doc('successful_treatments').set({ list: stState }, { merge: true })
+        .catch(err => console.warn('Firestore successful_treatments save error:', err));
+    }
+  }
+
+  saveStBtn?.addEventListener('click', () => {
+    saveStToStorage();
+    showAdminToast('সকল চিকিৎসা কেস সফলভাবে সেভ ও পাবলিশ হয়েছে!');
+  });
+
+  // Load initial successful treatments
+  try {
+    const cachedSt = localStorage.getItem('kinetic_successful_treatments');
+    if (cachedSt) {
+      const parsed = JSON.parse(cachedSt);
+      stState = Array.isArray(parsed) && parsed.length ? parsed : [...DEFAULT_SUCCESSFUL_TREATMENTS];
+    }
+  } catch(e) {}
+  renderAdminSt();
+
+  if (window.db) {
+    window.db.collection('settings').doc('successful_treatments').get().then(doc => {
+      if (doc.exists && Array.isArray(doc.data().list) && doc.data().list.length) {
+        stState = doc.data().list;
+        localStorage.setItem('kinetic_successful_treatments', JSON.stringify(stState));
+        renderAdminSt();
+      }
+    }).catch(e => console.log('St initial load error:', e.message));
+  }
+
+  /* --------------------------------------------------------------------------
+     18. Dental Tips & Health Articles Blog Manager (Dynamic Blog Posts)
+     -------------------------------------------------------------------------- */
+  const DEFAULT_DENTAL_TIPS = [];
+
+  let dtState = [...DEFAULT_DENTAL_TIPS];
+  const adminDentalTipsTableBody = document.getElementById('adminDentalTipsTableBody');
+  const addNewDentalTipBtn = document.getElementById('addNewDentalTipBtn');
+  const saveDentalTipsBtn = document.getElementById('saveDentalTipsBtn');
+  const dtEditModal = document.getElementById('dtEditModal');
+  const dtModalClose = document.getElementById('dtModalClose');
+  const dtCancelBtn = document.getElementById('dtCancelBtn');
+  const dtEditForm = document.getElementById('dtEditForm');
+  const editDtIdx = document.getElementById('editDtIdx');
+  const dtTitleInput = document.getElementById('dtTitleInput');
+  const dtTitleBnInput = document.getElementById('dtTitleBnInput');
+  const dtTagInput = document.getElementById('dtTagInput');
+  const dtAuthorInput = document.getElementById('dtAuthorInput');
+  const dtImageInput = document.getElementById('dtImageInput');
+  const dtDescEnInput = document.getElementById('dtDescEnInput');
+  const dtDescBnInput = document.getElementById('dtDescBnInput');
+  const dtModalTitle = document.getElementById('dtModalTitle');
+
+  function renderAdminDentalTips() {
+    if (!adminDentalTipsTableBody) return;
+    if (!dtState.length) {
+      adminDentalTipsTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--neutral-body);">কোনো পরামর্শ পোস্ট পাওয়া যায়নি। নতুন পোস্ট যুক্ত করুন।</td></tr>';
+      return;
+    }
+    adminDentalTipsTableBody.innerHTML = dtState.map((item, idx) => {
+      const rawImg = item.image || item.imageUrl || '';
+      const thumb = typeof formatDriveImageUrl === 'function' ? formatDriveImageUrl(rawImg) : rawImg;
+      return `
+        <tr>
+          <td style="width:70px;">
+            ${thumb ? `<img src="${escapeHTML(thumb)}" alt="${escapeHTML(item.title || '')}" style="width:56px; height:42px; object-fit:cover; border-radius:4px; border:1px solid var(--neutral-border);" onerror="this.style.visibility='hidden'">` : '<span style="font-size:0.75rem; color:#94a3b8;">No img</span>'}
+          </td>
+          <td>
+            <strong>${escapeHTML(item.title || '')}</strong>
+            ${item.titleBn ? `<br><small style="color:var(--text-body);">${escapeHTML(item.titleBn)}</small>` : ''}
+          </td>
+          <td>
+            <span class="badge" style="background:var(--primary-light); color:var(--primary); font-weight:600; font-size:0.75rem; padding:3px 8px; border-radius:12px;">${escapeHTML(item.tag || 'Tips')}</span>
+          </td>
+          <td style="max-width:240px; font-size:0.82rem; color:var(--text-body);">
+            ${escapeHTML(item.descBn || item.descEn || '')}
+          </td>
+          <td style="text-align:right; white-space:nowrap;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="window.editDtItem(${idx})" title="Edit">
+              <i data-lucide="edit-3" class="icon-sm"></i>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="window.deleteDtItem(${idx})" title="Delete" style="color:#ef4444; margin-left:6px;">
+              <i data-lucide="trash-2" class="icon-sm"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  function closeDtModal() {
+    if (dtEditModal) dtEditModal.classList.remove('active');
+    if (dtEditForm) dtEditForm.reset();
+    if (editDtIdx) editDtIdx.value = '-1';
+  }
+
+  window.editDtItem = (idx) => {
+    if (idx >= 0 && idx < dtState.length) {
+      const item = dtState[idx];
+      if (editDtIdx) editDtIdx.value = idx;
+      if (dtModalTitle) dtModalTitle.innerHTML = '<i data-lucide="edit-3" class="icon-sm"></i> Edit Dental Tip / Blog (পরামর্শ পোস্ট এডিট)';
+      if (dtTitleInput) dtTitleInput.value = item.title || '';
+      if (dtTitleBnInput) dtTitleBnInput.value = item.titleBn || '';
+      if (dtTagInput) dtTagInput.value = item.tag || '';
+      if (dtAuthorInput) dtAuthorInput.value = item.author || 'Dr. Nafisa Anzum Nadia';
+      if (dtImageInput) dtImageInput.value = item.image || item.imageUrl || '';
+      if (dtDescEnInput) dtDescEnInput.value = item.descEn || '';
+      if (dtDescBnInput) dtDescBnInput.value = item.descBn || '';
+      if (dtEditModal) dtEditModal.classList.add('active');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+  };
+
+  window.deleteDtItem = (idx) => {
+    if (confirm('আপনি কি নিশ্চিত যে এই পরামর্শ পোস্টটি ডিলিট করতে চান?')) {
+      dtState.splice(idx, 1);
+      renderAdminDentalTips();
+      saveDtToStorage();
+      showAdminToast('পরামর্শ পোস্ট সফলভাবে মুছে ফেলা হয়েছে!');
+    }
+  };
+
+  addNewDentalTipBtn?.addEventListener('click', () => {
+    if (editDtIdx) editDtIdx.value = '-1';
+    if (dtModalTitle) dtModalTitle.innerHTML = '<i data-lucide="plus-circle" class="icon-sm"></i> Add New Tip / Article (নতুন পরামর্শ পোস্ট)';
+    if (dtEditForm) dtEditForm.reset();
+    if (dtEditModal) dtEditModal.classList.add('active');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  });
+
+  dtModalClose?.addEventListener('click', closeDtModal);
+  dtCancelBtn?.addEventListener('click', closeDtModal);
+
+  dtEditForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const idx = parseInt(editDtIdx.value, 10);
+    const dataObj = {
+      id: idx >= 0 ? (dtState[idx].id || `dt-${Date.now()}`) : `dt-${Date.now()}`,
+      slug: idx >= 0 ? (dtState[idx].slug || `tip-${Date.now()}`) : `tip-${Date.now()}`,
+      title: dtTitleInput.value.trim(),
+      titleBn: dtTitleBnInput.value.trim(),
+      tag: dtTagInput.value.trim(),
+      author: dtAuthorInput.value.trim() || 'Dr. Nafisa Anzum Nadia',
+      image: dtImageInput.value.trim(),
+      descEn: dtDescEnInput.value.trim(),
+      descBn: dtDescBnInput.value.trim(),
+      icon: 'book-open'
+    };
+
+    if (idx >= 0 && idx < dtState.length) {
+      dtState[idx] = dataObj;
+    } else {
+      dtState.unshift(dataObj);
+    }
+
+    closeDtModal();
+    renderAdminDentalTips();
+    saveDtToStorage();
+    showAdminToast('পরামর্শ পোস্ট সফলভাবে সংরক্ষিত হয়েছে!');
+  });
+
+  function saveDtToStorage() {
+    localStorage.setItem('kinetic_dental_tips', JSON.stringify(dtState));
+    if (window.db) {
+      window.db.collection('settings').doc('dental_tips').set({ list: dtState }, { merge: true })
+        .catch(err => console.warn('Firestore dental_tips save error:', err));
+    }
+  }
+
+  saveDentalTipsBtn?.addEventListener('click', () => {
+    saveDtToStorage();
+    showAdminToast('সকল পরামর্শ পোস্ট সফলভাবে সেভ ও পাবলিশ হয়েছে!');
+  });
+
+  // Load initial dental tips
+  try {
+    const cachedDt = localStorage.getItem('kinetic_dental_tips');
+    if (cachedDt) {
+      const parsed = JSON.parse(cachedDt);
+      dtState = Array.isArray(parsed) ? parsed : [...DEFAULT_DENTAL_TIPS];
+    }
+  } catch(e) {}
+  renderAdminDentalTips();
+
+  if (window.db) {
+    window.db.collection('settings').doc('dental_tips').get().then(doc => {
+      if (doc.exists && Array.isArray(doc.data().list)) {
+        dtState = doc.data().list;
+        localStorage.setItem('kinetic_dental_tips', JSON.stringify(dtState));
+        renderAdminDentalTips();
+      }
+    }).catch(e => console.log('Dt initial load error:', e.message));
+  }
+
+  /* --------------------------------------------------------------------------
+     19. Administrator Suite & Security Settings (Pane: paneAdminSetup)
+     -------------------------------------------------------------------------- */
+  const adminActiveEmailDisplay = document.getElementById('adminActiveEmailDisplay');
+  const adminActiveRoleDisplay = document.getElementById('adminActiveRoleDisplay');
+  const adminAuthMethodDisplay = document.getElementById('adminAuthMethodDisplay');
+  const adminDbStatusDisplay = document.getElementById('adminDbStatusDisplay');
+  const adminEmailsListContainer = document.getElementById('adminEmailsListContainer');
+  const addAdminEmailForm = document.getElementById('addAdminEmailForm');
+  const newAdminEmailInput = document.getElementById('newAdminEmailInput');
+  const btnSendPasswordReset = document.getElementById('btnSendPasswordReset');
+  const btnTestDbConnection = document.getElementById('btnTestDbConnection');
+  const btnExportFullBackup = document.getElementById('btnExportFullBackup');
+  const importBackupFileInput = document.getElementById('importBackupFileInput');
+
+  function updateAdminProfileUI() {
+    if (adminActiveEmailDisplay) {
+      adminActiveEmailDisplay.textContent = activeAdminEmail || (window.auth?.currentUser?.email || 'Clinic Admin');
+    }
+    if (adminAuthMethodDisplay) {
+      adminAuthMethodDisplay.textContent = 'Firebase Auth (Email)';
+    }
+    if (adminActiveRoleDisplay) {
+      adminActiveRoleDisplay.textContent = 'Chief Clinic Administrator';
+    }
+    if (adminDbStatusDisplay) {
+      adminDbStatusDisplay.textContent = window.db ? 'Connecting…' : 'Local Storage Cache';
+      adminDbStatusDisplay.style.color = window.db ? '#10b981' : '#f59e0b';
+    }
+    renderAuthorizedEmailsList();
+  }
+
+  function renderAuthorizedEmailsList() {
+    if (!adminEmailsListContainer) return;
+
+    let html = '';
+
+    // Render default clinic core emails
+    DEFAULT_ADMIN_EMAILS.forEach(email => {
+      html += `
+        <div class="admin-email-pill is-primary" title="Clinic Core Admin">
+          <i data-lucide="shield-check" style="width:13px; height:13px;"></i>
+          <span>${escapeHTML(email)}</span>
+          <span style="font-size:0.7rem; opacity:0.8; font-weight:700;">(Core)</span>
+        </div>
+      `;
+    });
+
+    // Render custom authorized emails
+    customAdminEmails.forEach((email, idx) => {
+      html += `
+        <div class="admin-email-pill">
+          <i data-lucide="user" style="width:13px; height:13px;"></i>
+          <span>${escapeHTML(email)}</span>
+          <button type="button" class="admin-email-del-btn" data-email="${escapeHTML(email)}" title="Remove authorization">
+            <i data-lucide="x-circle" style="width:14px; height:14px;"></i>
+          </button>
+        </div>
+      `;
+    });
+
+    adminEmailsListContainer.innerHTML = html;
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // Attach delete listeners
+    adminEmailsListContainer.querySelectorAll('.admin-email-del-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const emailToRemove = btn.getAttribute('data-email');
+        if (confirm(`Remove admin access for "${emailToRemove}"?`)) {
+          customAdminEmails = customAdminEmails.filter(e => e.toLowerCase() !== emailToRemove.toLowerCase());
+          authorizedAdminEmails.delete(emailToRemove.toLowerCase());
+          localStorage.setItem('kinetic_authorized_admins', JSON.stringify(customAdminEmails));
+
+          if (window.db) {
+            window.db.collection('settings').doc('admin_users').set({
+              emails: customAdminEmails,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true }).catch(err => console.warn('Save admin users error:', err));
+          }
+
+          renderAuthorizedEmailsList();
+          showAdminToast(`Removed "${emailToRemove}" from authorized admin list.`);
+        }
+      });
+    });
+  }
+
+  // Add new authorized admin email handler
+  if (addAdminEmailForm) {
+    addAdminEmailForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newEmail = (newAdminEmailInput?.value || '').trim().toLowerCase();
+      if (!newEmail || !newEmail.includes('@')) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+
+      if (authorizedAdminEmails.has(newEmail)) {
+        showAdminToast('This email is already in the authorized admin list.', 'error');
+        return;
+      }
+
+      customAdminEmails.push(newEmail);
+      authorizedAdminEmails.add(newEmail);
+      localStorage.setItem('kinetic_authorized_admins', JSON.stringify(customAdminEmails));
+
+      if (window.db) {
+        window.db.collection('settings').doc('admin_users').set({
+          emails: customAdminEmails,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true })
+          .then(() => showAdminToast(`Authorized "${newEmail}" as admin!`))
+          .catch(err => {
+            console.warn('Save admin users error:', err);
+            showAdminToast(`Authorized "${newEmail}" locally!`);
+          });
+      } else {
+        showAdminToast(`Authorized "${newEmail}" as admin!`);
+      }
+
+      if (newAdminEmailInput) newAdminEmailInput.value = '';
+      renderAuthorizedEmailsList();
+    });
+  }
+
+  // Send password reset link to active admin
+  btnSendPasswordReset?.addEventListener('click', () => {
+    const targetEmail = window.auth?.currentUser?.email;
+    if (targetEmail) {
+      btnSendPasswordReset.disabled = true;
+      window.auth.sendPasswordResetEmail(targetEmail)
+        .then(() => {
+          showAdminToast(`Password reset link dispatched to ${targetEmail}!`);
+        })
+        .catch((err) => {
+          alert('Failed to send reset email: ' + err.message);
+        })
+        .finally(() => {
+          btnSendPasswordReset.disabled = false;
+        });
+    } else {
+      showAdminToast('Sign in with an authorized admin account before requesting a password reset.', 'error');
+    }
+  });
+
+  // Test Firestore Connection Ping
+  btnTestDbConnection?.addEventListener('click', () => {
+    if (!window.db) {
+      alert('Firestore database client is not initialized.');
+      return;
+    }
+
+    const startTime = performance.now();
+    btnTestDbConnection.disabled = true;
+    const testDocRef = window.db.collection('settings').doc('_ping_test');
+
+    testDocRef.set({
+      pingTime: Date.now(),
+      clientTime: new Date().toISOString()
+    })
+    .then(() => testDocRef.get())
+    .then(() => testDocRef.delete())
+    .then(() => {
+      const duration = Math.round(performance.now() - startTime);
+      showAdminToast(`Firestore Connected! Latency: ${duration}ms (Healthy)`);
+      if (adminDbStatusDisplay) {
+        adminDbStatusDisplay.textContent = `Online (${duration}ms ping)`;
+        adminDbStatusDisplay.style.color = '#10b981';
+      }
+    })
+    .catch((err) => {
+      console.error('Connection test error:', err);
+      alert('Firestore Ping Failed: ' + err.message);
+      if (adminDbStatusDisplay) {
+        adminDbStatusDisplay.textContent = 'Connection Error';
+        adminDbStatusDisplay.style.color = '#ef4444';
+      }
+    })
+    .finally(() => {
+      btnTestDbConnection.disabled = false;
+    });
+  });
+
+  // Export Full Website Data Backup (JSON)
+  btnExportFullBackup?.addEventListener('click', () => {
+    const fullBackup = {
+      version: '1.0',
+      exportedAt: new Date().toISOString(),
+      clinicProfile: clinicSettingsState,
+      doctorsDirectory: doctorsDirectoryState,
+      treatmentsDirectory: treatmentsState,
+      activeOffer: activeOfferState,
+      facilities: facilitiesState,
+      faqs: faqsState,
+      campaigns: campaignsState,
+      gallery: galleryState,
+      successfulTreatments: stState,
+      dentalTips: dtState,
+      heroContent: (() => {
+        try {
+          return JSON.parse(localStorage.getItem('kinetic_hero_content')) || null;
+        } catch(e) { return null; }
+      })(),
+      siteImages: (() => {
+        try {
+          return JSON.parse(localStorage.getItem('kinetic_site_images')) || null;
+        } catch(e) { return null; }
+      })(),
+      appointments: appointmentsList,
+      authorizedAdminEmails: Array.from(authorizedAdminEmails)
+    };
+
+    const jsonStr = JSON.stringify(fullBackup, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const dateStr = new Date().toISOString().split('T')[0];
+    link.href = url;
+    link.download = `kinetic_dental_full_backup_${dateStr}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showAdminToast('সম্পূর্ণ ওয়েবসাইট ব্যাকআপ সফলভাবে ডাউনলোড হয়েছে!');
+  });
+
+  // Restore Website Data from JSON
+  importBackupFileInput?.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!confirm('Are you sure you want to restore website data from this backup? Current settings will be updated.')) {
+      e.target.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const data = JSON.parse(evt.target.result);
+        if (!data || typeof data !== 'object') {
+          throw new Error('Invalid JSON backup file.');
+        }
+
+        if (data.clinicProfile) {
+          clinicSettingsState = { ...DEFAULT_CLINIC_SETTINGS, ...data.clinicProfile };
+          saveClinicSettingsToStorage();
+          populateClinicSettingsForm(clinicSettingsState);
+        }
+        if (data.doctorsDirectory) {
+          doctorsDirectoryState = data.doctorsDirectory;
+          saveDoctorsDirectoryToStorage();
+          renderAdminDoctorsTable();
+        }
+        if (data.treatmentsDirectory && Array.isArray(data.treatmentsDirectory)) {
+          treatmentsState = data.treatmentsDirectory;
+          saveTreatmentsDirectoryToStorage();
+          renderAdminTreatmentsTable();
+        }
+        if (data.activeOffer) {
+          populateOfferForm(data.activeOffer);
+          localStorage.setItem('kinetic_active_offer', JSON.stringify(data.activeOffer));
+          if (window.db) window.db.collection('settings').doc('active_offer').set(data.activeOffer, { merge: true });
+        }
+        if (data.facilities && Array.isArray(data.facilities)) {
+          facilitiesState = data.facilities;
+          saveFacilitiesToStorage();
+          renderAdminFacilities();
+        }
+        if (data.campaigns && Array.isArray(data.campaigns)) {
+          campaignsState = data.campaigns;
+          saveCampaignsToStorage();
+          renderAdminCampaigns();
+        }
+        if (data.gallery && Array.isArray(data.gallery)) {
+          galleryState = data.gallery;
+          saveGalleryToStorage();
+          renderAdminGallery();
+        }
+        if (data.successfulTreatments && Array.isArray(data.successfulTreatments)) {
+          stState = data.successfulTreatments;
+          saveStToStorage();
+          renderAdminSt();
+        }
+        if (data.dentalTips && Array.isArray(data.dentalTips)) {
+          dtState = data.dentalTips;
+          saveDtToStorage();
+          renderAdminDentalTips();
+        }
+        if (data.heroContent && typeof data.heroContent === 'object') {
+          localStorage.setItem('kinetic_hero_content', JSON.stringify(data.heroContent));
+          populateHeroForm(data.heroContent);
+          if (window.db) window.db.collection('settings').doc('hero_content').set(data.heroContent, { merge: true });
+        }
+
+        if (data.siteImages && typeof data.siteImages === 'object') {
+          localStorage.setItem('kinetic_site_images', JSON.stringify(data.siteImages));
+          populateSiteImagesForm(data.siteImages);
+          if (window.db) window.db.collection('settings').doc('site_images').set(data.siteImages);
+        }
+
+        showAdminToast('Website data successfully restored from backup!');
+      } catch (err) {
+        console.error('Backup restore error:', err);
+        alert('Failed to parse backup file: ' + err.message);
+      } finally {
+        e.target.value = '';
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  /* --------------------------------------------------------------------------
+     Site Images Manager (all public-site photos via Google Drive links)
+     -------------------------------------------------------------------------- */
+  const siteImagesForm = document.getElementById('siteImagesForm');
+  const siteResultsList = document.getElementById('siteResultsList');
+  const addSiteResultBtn = document.getElementById('addSiteResultBtn');
+  const SITE_IMAGE_FIELDS = ['heroImage', 'aboutImage', 'founderPhoto'];
+  let siteImagesState = { heroImage: '', aboutImage: '', founderPhoto: '', results: [] };
+
+  function previewSiteImage(input) {
+    const preview = document.querySelector(`[data-preview-for="${input.id}"]`);
+    if (!preview) return;
+    const src = formatDriveImageUrl(input.value);
+    preview.classList.toggle('is-empty', !src);
+    const img = preview.querySelector('img');
+    if (img) {
+      img.style.visibility = '';
+      img.src = src || '';
+    }
+  }
+
+  function renderSiteResults() {
+    if (!siteResultsList) return;
+    const results = siteImagesState.results || [];
+    if (!results.length) {
+      siteResultsList.innerHTML = '<p class="si-empty">No before/after results yet. The homepage results section stays hidden until you add one.</p>';
+      return;
+    }
+    siteResultsList.innerHTML = results.map((r, idx) => `
+      <div class="si-result" data-idx="${idx}">
+        <div class="si-result-head">
+          <strong>Result ${idx + 1}</strong>
+          <button type="button" class="btn-action-icon" data-remove-result="${idx}" title="Remove result"><i data-lucide="trash-2" class="icon-sm"></i></button>
+        </div>
+        <div class="admin-form-grid-2">
+          ${['before', 'after'].map(side => `
+            <div class="form-group">
+              <label for="siResult${side}${idx}">${side === 'before' ? 'Before' : 'After'} photo (Drive link)</label>
+              <div class="si-field">
+                <div class="si-preview ${r[side] ? '' : 'is-empty'}" data-preview-for="siResult${side}${idx}"><img src="${escapeHTML(formatDriveImageUrl(r[side] || ''))}" alt="" onerror="this.style.visibility='hidden'"></div>
+                <input type="url" id="siResult${side}${idx}" data-result-field="${side}" value="${escapeHTML(r[side] || '')}" placeholder="https://drive.google.com/file/d/.../view">
+              </div>
+            </div>`).join('')}
+        </div>
+        <div class="admin-form-grid-2">
+          <div class="form-group">
+            <label>Treatment tag</label>
+            <input type="text" data-result-field="tag" value="${escapeHTML(r.tag || '')}" placeholder="e.g. Whitening">
+          </div>
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" data-result-field="title" value="${escapeHTML(r.title || '')}" placeholder="e.g. Professional Teeth Whitening">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Short description</label>
+          <input type="text" data-result-field="desc" value="${escapeHTML(r.desc || '')}" placeholder="One line about the result">
+        </div>
+      </div>
+    `).join('');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  function collectSiteResults() {
+    if (!siteResultsList) return [];
+    return [...siteResultsList.querySelectorAll('.si-result')].map(card => {
+      const item = {};
+      card.querySelectorAll('[data-result-field]').forEach(el => { item[el.dataset.resultField] = el.value.trim(); });
+      return item;
+    });
+  }
+
+  function populateSiteImagesForm(data) {
+    const legacyHero = (() => {
+      try { return JSON.parse(localStorage.getItem('kinetic_hero_content') || '{}').medicalCentreImage || ''; } catch (e) { return ''; }
+    })();
+    siteImagesState = {
+      heroImage: '', aboutImage: '', founderPhoto: '', results: [],
+      ...(data || {})
+    };
+    if (!siteImagesState.heroImage && legacyHero && !legacyHero.startsWith('data:')) siteImagesState.heroImage = legacyHero;
+    SITE_IMAGE_FIELDS.forEach(key => {
+      const input = document.getElementById(`si_${key}`);
+      if (!input) return;
+      input.value = siteImagesState[key] || '';
+      previewSiteImage(input);
+    });
+    const overviewImg = document.getElementById('clinicOverviewMedicalImg');
+    if (overviewImg && siteImagesState.heroImage) overviewImg.src = formatDriveImageUrl(siteImagesState.heroImage);
+    renderSiteResults();
+  }
+
+  siteImagesForm?.addEventListener('input', (e) => {
+    if (e.target.matches('input[type="url"]')) previewSiteImage(e.target);
+  });
+
+  siteResultsList?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-remove-result]');
+    if (!btn) return;
+    siteImagesState.results = collectSiteResults();
+    siteImagesState.results.splice(parseInt(btn.dataset.removeResult, 10), 1);
+    renderSiteResults();
+  });
+
+  addSiteResultBtn?.addEventListener('click', () => {
+    siteImagesState.results = collectSiteResults();
+    siteImagesState.results.push({ before: '', after: '', tag: '', title: '', desc: '' });
+    renderSiteResults();
+  });
+
+  document.querySelectorAll('[data-goto-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelector(`.admin-main-tab-btn[data-tab="${btn.dataset.gotoTab}"]`)?.click();
+    });
+  });
+
+  try {
+    const cachedSiteImages = localStorage.getItem('kinetic_site_images');
+    populateSiteImagesForm(cachedSiteImages ? JSON.parse(cachedSiteImages) : null);
+  } catch (e) {
+    populateSiteImagesForm(null);
+  }
+
+  if (window.db) {
+    window.db.collection('settings').doc('site_images').get().then(doc => {
+      if (doc.exists) {
+        localStorage.setItem('kinetic_site_images', JSON.stringify(doc.data()));
+        populateSiteImagesForm(doc.data());
+      }
+    }).catch(e => console.log('Site images initial load:', e.message));
+  }
+
+  siteImagesForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = { results: collectSiteResults().filter(r => r.before || r.after), updatedAt: new Date().toISOString() };
+    SITE_IMAGE_FIELDS.forEach(key => {
+      data[key] = document.getElementById(`si_${key}`)?.value.trim() || '';
+    });
+    siteImagesState = data;
+    localStorage.setItem('kinetic_site_images', JSON.stringify(data));
+    renderSiteResults();
+    if (window.db) {
+      window.db.collection('settings').doc('site_images').set(data)
+        .then(() => showAdminToast('Site images saved and published!'))
+        .catch(err => {
+          console.warn('Site images save error:', err);
+          showAdminToast('Saved locally only (Firebase: ' + err.message + ')', 'error');
+        });
+    } else {
+      showAdminToast('Site images saved locally.');
+    }
+  });
+
+  // Initial call to update profile in case already logged in
+  updateAdminProfileUI();
+
 });
+
+
 

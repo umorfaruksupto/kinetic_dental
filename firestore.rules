@@ -1,0 +1,51 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isClinicAdmin() {
+      return request.auth != null && (
+        request.auth.token.email in [
+          'kineticdental29@gmail.com',
+          'drnadiakineticdental@gmail.com',
+          'drnafisanadiaanzum@gmail.com',
+          'kineticdentalwebsite@gmail.com',
+          'admin@kineticdentalcare.com',
+          'kineticdentalcare@gmail.com'
+        ] ||
+        (exists(/databases/$(database)/documents/settings/admin_users) &&
+          request.auth.token.email in get(/databases/$(database)/documents/settings/admin_users).data.emails)
+      );
+    }
+
+    function isPublicBooking() {
+      return request.resource.data.keys().hasOnly([
+        'name', 'phone', 'treatment', 'date', 'time', 'notes',
+        'createdAt', 'status', 'replyStatus', 'replies'
+      ]) &&
+      request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 100 &&
+      request.resource.data.phone is string && request.resource.data.phone.size() >= 8 && request.resource.data.phone.size() <= 20 &&
+      request.resource.data.treatment is string && request.resource.data.treatment.size() > 0 && request.resource.data.treatment.size() <= 120 &&
+      request.resource.data.date is string && request.resource.data.date.size() <= 32 &&
+      request.resource.data.time is string && request.resource.data.time.size() <= 80 &&
+      request.resource.data.notes is string && request.resource.data.notes.size() <= 2000 &&
+      request.resource.data.status == 'Pending' &&
+      request.resource.data.replyStatus == 'pending' &&
+      request.resource.data.replies is list && request.resource.data.replies.size() == 0 &&
+      request.resource.data.createdAt == request.time;
+    }
+
+    // Patients may submit a booking and look up their own appointment status via reference ID.
+    // Querying the full appointment list, updating, or deleting requires clinic admin privileges.
+    match /appointments/{appointmentId} {
+      allow create: if isClinicAdmin() || isPublicBooking();
+      allow get: if true;
+      allow list, update, delete: if isClinicAdmin();
+    }
+
+    // Website content is public to read but may only be updated by clinic admins.
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isClinicAdmin();
+    }
+  }
+}

@@ -8,55 +8,60 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://kineticdentalcare.com/doctors.html">
 
-  <link rel="icon" type="image/x-icon" href="first.jpg">
+  <link rel="icon" type="image/svg+xml" href="tooth-mark.svg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Top Announcement Bar (Tech Dental Style) -->
+  <!-- Top bar -->
   <div class="top-bar">
     <div class="container top-bar-content">
       <div class="top-info">
-        <span class="top-link"><span class="top-badge-hotline">24/7 Emergency</span> Hotline:</span>
-        <a href="tel:+8801313175779" class="top-link"><i data-lucide="phone" class="icon-sm"></i> 01313-175779</a>
-        <a href="tel:+8801308388577" class="top-link"><i data-lucide="phone" class="icon-sm"></i> 01308-388577</a>
-        <span class="top-link hide-mobile"><i data-lucide="map-pin" class="icon-sm"></i> Mirpur 12, Dhaka (Near Bus Stand)</span>
-        <span class="top-link hide-mobile"><i data-lucide="clock" class="icon-sm"></i> 10AM-2PM &amp; 5PM-9PM (Friday Open)</span>
+        <span class="top-link"><span class="top-badge-hotline">24/7 Emergency</span></span>
+        <a href="tel:+8801313175779" class="top-link"><i data-lucide="phone" class="icon-sm"></i> <span class="hotline1-text">01313-175779</span></a>
+        <a href="tel:+8801308388577" class="top-link"><i data-lucide="phone" class="icon-sm"></i> <span class="hotline2-text">01308-388577</span></a>
+        <span class="top-link hide-mobile"><i data-lucide="clock" class="icon-sm"></i> 10AM–2PM &amp; 5PM–9PM, open daily</span>
+      </div>
+      <div class="top-bar-ticker-wrap hidden" id="topBarTickerWrap">
+        <span class="top-bar-ticker-badge">NOTICE</span>
+        <span class="top-bar-ticker-text" id="topBarTickerText"></span>
       </div>
       <div class="top-socials">
-        <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" aria-label="Facebook Page"><i data-lucide="facebook"></i></a>
-        <a href="https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr" target="_blank" aria-label="Facebook Group"><i data-lucide="users"></i></a>
+        <span class="top-link hide-mobile" id="topAddress"><i data-lucide="map-pin" class="icon-sm"></i> <span class="address-text">Mirpur 12, Dhaka</span></span>
+        <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Page" id="topFbPage"><i data-lucide="facebook"></i></a>
+        <a href="https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Group" id="topFbGroup"><i data-lucide="users"></i></a>
       </div>
     </div>
   </div>
 
-  <!-- Header Section -->
+  <!-- Header -->
   <header class="main-header">
     <div class="container nav-container">
-      <a href="index.html" class="logo">
-        <img src="first.jpg" alt="Kinetic Dental Logo" class="logo-img">
-        <div class="logo-text">
+      <a href="index.html" class="logo" aria-label="Kinetic Dental home">
+        <img src="tooth-mark.svg" alt="" class="logo-img" width="36" height="36">
+        <span class="logo-text">
           <span class="logo-title">Kinetic Dental</span>
           <span class="logo-sub">Healthcare Center</span>
-        </div>
+        </span>
       </a>
 
-      <nav class="desktop-nav">
-        <a href="index.html" class="nav-item">Home</a>
+      <nav class="desktop-nav" aria-label="Primary">
         <a href="index.html#all-treatments" class="nav-item">Treatments</a>
-        <a href="doctors.html" class="nav-item active">Doctors</a>
+        <a href="doctors.html" class="nav-item active" aria-current="page">Doctors</a>
+        <a href="treatments.html" class="nav-item">Results</a>
         <a href="dental-problems.html" class="nav-item">Dental Tips</a>
+        <a href="campaigns.html" class="nav-item">Campaigns</a>
         <a href="index.html#contact" class="nav-item">Contact</a>
         <a href="index.html#appointment" class="btn btn-primary btn-nav">Book Appointment</a>
       </nav>
 
       <div class="nav-controls-mobile">
-        <button class="mobile-menu-btn" id="menuToggleBtn" aria-label="Open Menu">
+        <button class="mobile-menu-btn" id="menuToggleBtn" aria-label="Open menu">
           <i data-lucide="menu" class="menu-icon"></i>
           <i data-lucide="x" class="close-icon hidden"></i>
         </button>
@@ -64,52 +69,35 @@
     </div>
   </header>
 
-  <!-- Mobile Side Menu -->
   <div class="mobile-drawer" id="mobileDrawer">
-    <nav class="mobile-nav">
-      <a href="index.html" class="mobile-nav-item">Home</a>
-      <a href="index.html#all-treatments" class="mobile-nav-item">Treatments (চিকিৎসা সমূহ)</a>
-      <a href="doctors.html" class="mobile-nav-item">Doctors (৮ জন ডাক্তার)</a>
-      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips (ডাক্তারের পরামর্শ)</a>
-      <a href="campaigns.html" class="mobile-nav-item">Free Campaigns (ফ্রি ক্যাম্পেইন)</a>
-      <a href="index.html#contact" class="mobile-nav-item">Contact Us (যোগাযোগ)</a>
+    <nav class="mobile-nav" aria-label="Mobile">
+      <a href="index.html#all-treatments" class="mobile-nav-item">Treatments · চিকিৎসা</a>
+      <a href="doctors.html" class="mobile-nav-item">Doctors · ডাক্তার</a>
+      <a href="treatments.html" class="mobile-nav-item">Results · সফল চিকিৎসা</a>
+      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips · পরামর্শ</a>
+      <a href="campaigns.html" class="mobile-nav-item">Free Campaigns · ক্যাম্পেইন</a>
+      <a href="index.html#contact" class="mobile-nav-item">Contact · যোগাযোগ</a>
       <a href="index.html#appointment" class="btn btn-primary mobile-booking-btn">Book Appointment</a>
     </nav>
   </div>
   <div class="drawer-overlay" id="drawerOverlay"></div>
 
-  <!-- Inner Hero -->
   <section class="inner-hero">
     <div class="container">
-      <h1>Our Doctors Portfolio</h1>
-      <p>Meet the skilled, caring professionals who make your smile their mission. Each doctor brings years of specialised experience.</p>
-      <div class="breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Doctors</div>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a><span>/</span><span>Doctors</span></nav>
+      <h1>Our doctors</h1>
+      <p>Eight BMDC-registered dental surgeons, led by founder Dr. Nafisa Anzum Nadia — with a dedicated female dentist team.</p>
     </div>
   </section>
 
   <!-- Main Content -->
   <main class="section-padding">
     <div class="container">
-      <div class="section-header scroll-reveal">
-        <span class="section-tag">Doctors Portfolio · আমাদের ডাক্তারবৃন্দ</span>
-        <h2 class="section-title">Experienced Dental Specialists</h2>
-        <p class="section-subtitle">আমাদের চেম্বারে প্রতিটি চিকিৎসা আন্তর্জাতিক মানসম্পন্ন প্রটোকল মেনে অভিজ্ঞ ও বিএমডিসি নিবন্ধিত ডেন্টাল সার্জনদের দ্বারা সম্পন্ন হয়।</p>
-      </div>
-
-      <!-- Female Dentist Dedicated Team Notice -->
-      <div class="female-dentist-alert scroll-reveal">
-        <div class="fda-icon"><i data-lucide="user-check"></i></div>
-        <div class="fda-content">
-          <h4>মহিলা রোগীদের জন্য অভিজ্ঞ নারী ডেন্টিস্টের আলাদা টিম</h4>
-          <p><strong>Female Dentist for Female Patients:</strong> Kinetic Dental-এ নারী রোগীদের সর্বোচ্চ শালীনতা, স্বাচ্ছন্দ্য ও আন্তরিক যত্নের সাথে সেবা দিতে আমাদের চেম্বারে অভিজ্ঞ নারী ডেন্টাল সার্জনদের ডেডিকেটেড টিম রয়েছে।</p>
-        </div>
-      </div>
-
       <!-- 1. FOUNDER & CHIEF DENTAL SURGEON SPOTLIGHT (ONLY DOCTOR WITH PHOTO) -->
       <div class="founder-spotlight-section scroll-reveal" id="founderSpotlightArea">
         <div class="founder-card">
-          <div class="founder-photo-wrap">
-            <img src="doctors.jpeg" alt="Dr. Nafisa Anzum Nadia - Founder &amp; Chief Dental Surgeon" id="founderPhoto">
+          <div class="founder-photo-wrap is-empty" data-image-wrap>
+            <img alt="Dr. Nafisa Anzum Nadia - Founder &amp; Chief Dental Surgeon" id="founderPhoto">
             <span class="founder-tag-pill"><i data-lucide="award" style="width:14px;height:14px;"></i> Founder &amp; Chief Surgeon</span>
           </div>
           <div class="founder-details">
@@ -132,11 +120,20 @@
         </div>
       </div>
 
+      <!-- Female Dentist Dedicated Team Notice -->
+      <div class="female-dentist-alert scroll-reveal">
+        <div class="fda-icon"><i data-lucide="user-check"></i></div>
+        <div class="fda-content">
+          <h4>Female dentists for female patients</h4>
+          <p>মহিলা রোগীদের সর্বোচ্চ শালীনতা ও স্বাচ্ছন্দ্যের জন্য আমাদের অভিজ্ঞ নারী ডেন্টাল সার্জনদের আলাদা টিম রয়েছে।</p>
+        </div>
+      </div>
+
       <!-- 2. SPECIALIST SURGEONS DIRECTORY (PURE MEDICAL CREDENTIALS - NO PHOTOS) -->
       <div class="specialists-directory-header scroll-reveal">
         <div>
-          <h3>Our Specialist Dental Surgeons · বিশেষজ্ঞ সার্জনবৃন্দ</h3>
-          <p style="font-size:0.88rem; color:var(--text-body); margin-top:4px;">BMDC নিবন্ধিত বিশেষজ্ঞ সার্জনদের দ্বারা সম্পূর্ণ ব্যথাহীন ও জীবাণুমুক্ত চিকিৎসা সেবা।</p>
+          <h3>Specialist dental surgeons</h3>
+          <p>BMDC-registered specialists · বিশেষজ্ঞ সার্জনবৃন্দ</p>
         </div>
         <span class="specialists-count-badge" id="specialistsCountBadge">7 Specialist Surgeons</span>
       </div>
@@ -327,7 +324,7 @@
 
       </div>
 
-      <div style="text-align:center; margin-top: 50px;" class="scroll-reveal">
+      <div class="section-cta scroll-reveal">
         <a href="index.html#appointment" class="btn btn-primary btn-lg">Book a Consultation With Our Doctors <i data-lucide="arrow-right" class="icon-right"></i></a>
       </div>
     </div>
@@ -337,51 +334,57 @@
   <footer class="footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <a href="index.html" class="logo footer-logo">
-          <img src="first.jpg" alt="Kinetic Dental Logo" class="logo-img">
-          <div class="logo-text">
-            <span class="logo-title text-white">Kinetic Dental</span>
-            <span class="logo-sub text-white-op">Healthcare Center</span>
-          </div>
+        <a href="index.html" class="logo">
+          <img src="tooth-mark.svg" alt="" class="logo-img" width="36" height="36">
+          <span class="logo-text">
+            <span class="logo-title">Kinetic Dental</span>
+            <span class="logo-sub">Healthcare Center</span>
+          </span>
         </a>
-        <p class="footer-brand-desc">Premium dental care in Mirpur 12, Dhaka. Hygiene, comfort and modern technology by Dr. Nadia &amp; team.</p>
+        <p class="footer-brand-desc">Gentle, modern dentistry for families in Mirpur 12, Dhaka — led by Dr. Nadia.</p>
+        <div class="footer-socials">
+          <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Page"><i data-lucide="facebook"></i></a>
+          <a href="https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Group"><i data-lucide="users"></i></a>
+        </div>
       </div>
       <div class="footer-links">
-        <h4>Quick Links</h4>
+        <h4>Clinic</h4>
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="index.html#all-treatments">All Treatments</a></li>
-          <li><a href="treatments.html">Treatments</a></li>
+          <li><a href="index.html#all-treatments">Treatments</a></li>
+          <li><a href="doctors.html">Our Doctors</a></li>
+          <li><a href="treatments.html">Results</a></li>
           <li><a href="dental-problems.html">Dental Tips</a></li>
           <li><a href="campaigns.html">Campaigns</a></li>
-          <li><a href="doctors.html">Our Doctors</a></li>
-          <li><a href="index.html#appointment">Book Appointment</a></li>
         </ul>
       </div>
       <div class="footer-hours">
-        <h4>Chamber Hours</h4>
+        <h4>Hours</h4>
         <ul>
-          <li><span>Open Days:</span> Friday to Thursday</li>
+          <li><span>Open:</span> Friday to Thursday</li>
           <li><span>Morning:</span> 10:00 AM - 2:00 PM</li>
           <li><span>Evening:</span> 5:00 PM - 9:00 PM</li>
+          <li><span>Emergency:</span> 24/7 Hotline</li>
         </ul>
-        <h4 style="margin-top: 20px;">Contact Numbers</h4>
+      </div>
+      <div class="footer-links">
+        <h4>Contact</h4>
         <ul>
           <li><a href="tel:+8801313175779">01313-175779</a></li>
           <li><a href="tel:+8801308388577">01308-388577</a></li>
+          <li><a href="index.html#appointment">Book Appointment</a></li>
+          <li><a href="index.html#check-status">Check Booking Status</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <div class="container footer-bottom-content">
-        <p>&copy; 2026 Kinetic Dental &amp; Healthcare Center. All rights reserved.</p>
-        <p>Website: <a href="https://kineticdentalcare.com/" target="_blank" rel="noopener">kineticdentalcare.com</a></p>
+        <p>&copy; 2026 Kinetic Dental &amp; Healthcare Center</p>
+        <p>kineticdentalcare.com</p>
       </div>
     </div>
   </footer>
 
-  <!-- Scroll to Top Button -->
-  <button class="scroll-to-top" id="scrollTopBtn" aria-label="Scroll to Top">
+  <button class="scroll-to-top" id="scrollTopBtn" aria-label="Scroll to top">
     <i data-lucide="chevron-up"></i>
   </button>
 
@@ -390,28 +393,10 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
+  <script src="firebase-init.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       if (typeof lucide !== 'undefined') lucide.createIcons();
-
-      const menuBtn = document.getElementById('menuToggleBtn');
-      const drawer = document.getElementById('mobileDrawer');
-      const overlay = document.getElementById('drawerOverlay');
-      const toggleMenu = (open) => {
-        drawer.classList.toggle('open', open);
-        overlay.classList.toggle('active', open);
-        menuBtn.querySelector('.menu-icon').classList.toggle('hidden', open);
-        menuBtn.querySelector('.close-icon').classList.toggle('hidden', !open);
-      };
-      menuBtn?.addEventListener('click', () => toggleMenu(!drawer.classList.contains('open')));
-      overlay?.addEventListener('click', () => toggleMenu(false));
-
-      const scrollBtn = document.getElementById('scrollTopBtn');
-      window.addEventListener('scroll', () => {
-        scrollBtn.classList.toggle('show', window.scrollY > 400);
-      });
-      scrollBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
       initScrollReveal();
 
       // Dynamic Doctors Directory Sync (Allows Dr. Nadia to edit names from Admin Panel)
@@ -429,7 +414,7 @@
           if (fr && data.founder.role) fr.textContent = data.founder.role;
           if (fd && data.founder.degrees) fd.innerHTML = data.founder.degrees;
           if (fb && data.founder.bio) fb.textContent = data.founder.bio;
-          if (fp && data.founder.photo) fp.src = data.founder.photo;
+          if (fp && data.founder.photo && !siteFounderPhoto) setManagedImage(fp, data.founder.photo);
         }
 
         // Render Specialists (NO PHOTOS, pure medical credentials)
@@ -469,6 +454,13 @@
         if (typeof lucide !== 'undefined') lucide.createIcons();
       }
 
+      // Founder photo from admin "Site images" (takes priority over the doctors directory photo)
+      let siteFounderPhoto = '';
+      watchSiteImages((images) => {
+        siteFounderPhoto = (images && images.founderPhoto) || '';
+        if (siteFounderPhoto) setManagedImage(document.getElementById('founderPhoto'), siteFounderPhoto);
+      });
+
       // 1. Try local cache first for instant render
       const localData = localStorage.getItem('kinetic_doctors_directory');
       if (localData) {
@@ -504,7 +496,7 @@
   <!-- Floating WhatsApp Quick Dial -->
   <a href="https://wa.me/8801313175779?text=Hello%20Kinetic%20Dental%2C%20I%20would%20like%20to%20consult%20or%20book%20an%20appointment." target="_blank" rel="noopener noreferrer" class="floating-whatsapp-btn" id="floatingWhatsappBtn" aria-label="Chat on WhatsApp">
     <i data-lucide="message-circle" class="whatsapp-icon"></i>
-    <span class="whatsapp-label">WhatsApp Helpline</span>
+    <span class="whatsapp-label">WhatsApp</span>
   </a>
 </body>
 </html>

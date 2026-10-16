@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <!-- SEO Meta Tags -->
   <title>Kinetic Dental Care | Dentist in Mirpur 12, Dhaka | Kinetic Dental & Healthcare Center</title>
   <meta name="description" content="Kinetic Dental Care (kineticdentalcare.com) — Kinetic Dental & Healthcare Center in Mirpur 12, Dhaka. Scaling, tooth whitening, root canal, braces & emergency dentistry by Dr. Nadia. Book today!">
   <meta name="keywords" content="kineticdentalcare, kinetic dental care, Kinetic Dental, Kinetic Dental Dhaka, Kinetic Dental Mirpur, Kinetic Dental & Healthcare Center, dentist Mirpur 12, dentist near me Dhaka, dental clinic Mirpur, Dr. Nadia dentist, tooth whitening Dhaka, scaling polishing, root canal Mirpur">
   <meta name="author" content="Kinetic Dental & Healthcare Center">
   <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0b2f2b">
   <link rel="canonical" href="https://kineticdentalcare.com/">
 
   <!-- Open Graph / Facebook -->
@@ -28,18 +29,17 @@
   <meta name="twitter:description" content="Kinetic Dental & Healthcare Center — gentle, expert dentistry in Mirpur 12, Dhaka. Book online or call 01313-175779 / 01308-388577.">
   <meta name="twitter:image" content="https://kineticdentalcare.com/first.jpg">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="first.jpg">
+  <link rel="icon" type="image/svg+xml" href="tooth-mark.svg">
 
-  <!-- Google Fonts -->
+  <!-- Performance -->
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Stylesheet -->
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="style.css">
 
   <!-- Local Business Schema.org Markup -->
@@ -101,60 +101,50 @@
 </head>
 <body>
 
-  <!-- Top Announcement Bar (Tech Dental Style) -->
+  <!-- Top bar -->
   <div class="top-bar">
     <div class="container top-bar-content">
       <div class="top-info">
-        <span class="top-link"><span class="top-badge-hotline">24/7 Emergency</span> Hotline:</span>
+        <span class="top-link"><span class="top-badge-hotline">24/7 Emergency</span></span>
         <a href="tel:+8801313175779" class="top-link" id="topHotline1"><i data-lucide="phone" class="icon-sm"></i> <span class="hotline1-text">01313-175779</span></a>
         <a href="tel:+8801308388577" class="top-link" id="topHotline2"><i data-lucide="phone" class="icon-sm"></i> <span class="hotline2-text">01308-388577</span></a>
-        <span class="top-link hide-mobile" id="topAddress"><i data-lucide="map-pin" class="icon-sm"></i> <span class="address-text">Mirpur 12, Dhaka (Near Bus Stand)</span></span>
-        <span class="top-link hide-mobile" id="topHours"><i data-lucide="clock" class="icon-sm"></i> <span class="hours-text">10AM-2PM &amp; 5PM-9PM (Friday Open)</span></span>
+        <span class="top-link hide-mobile" id="topHours"><i data-lucide="clock" class="icon-sm"></i> <span class="hours-text">10AM–2PM &amp; 5PM–9PM, open daily</span></span>
       </div>
       <div class="top-bar-ticker-wrap hidden" id="topBarTickerWrap">
         <span class="top-bar-ticker-badge" id="topBarTickerBadge">NOTICE</span>
         <span class="top-bar-ticker-text" id="topBarTickerText"></span>
       </div>
       <div class="top-socials">
-        <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" aria-label="Facebook Page" id="topFbPage"><i data-lucide="facebook"></i></a>
-        <a href="https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr" target="_blank" aria-label="Facebook Group" id="topFbGroup"><i data-lucide="users"></i></a>
+        <span class="top-link hide-mobile" id="topAddress"><i data-lucide="map-pin" class="icon-sm"></i> <span class="address-text">Mirpur 12, Dhaka</span></span>
+        <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Page" id="topFbPage"><i data-lucide="facebook"></i></a>
+        <a href="https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Group" id="topFbGroup"><i data-lucide="users"></i></a>
       </div>
     </div>
   </div>
 
-  <!-- Header Section -->
+  <!-- Header -->
   <header class="main-header">
     <div class="container nav-container">
-      <a href="#" class="logo">
-        <img src="first.jpg" alt="Kinetic Dental Logo" class="logo-img">
-        <div class="logo-text">
+      <a href="index.html" class="logo" aria-label="Kinetic Dental home">
+        <img src="tooth-mark.svg" alt="" class="logo-img" width="36" height="36">
+        <span class="logo-text">
           <span class="logo-title">Kinetic Dental</span>
           <span class="logo-sub">Healthcare Center</span>
-        </div>
+        </span>
       </a>
 
-      <!-- Desktop Nav -->
-      <nav class="desktop-nav">
-        <a href="#home" class="nav-item active">Home</a>
+      <nav class="desktop-nav" aria-label="Primary">
         <a href="#all-treatments" class="nav-item">Treatments</a>
         <a href="doctors.html" class="nav-item">Doctors</a>
-        <a href="#reviews" class="nav-item">Reviews</a>
+        <a href="treatments.html" class="nav-item">Results</a>
         <a href="dental-problems.html" class="nav-item">Dental Tips</a>
+        <a href="campaigns.html" class="nav-item">Campaigns</a>
         <a href="#contact" class="nav-item">Contact</a>
-        <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Dark Mode">
-          <i data-lucide="moon" class="theme-icon-dark"></i>
-          <i data-lucide="sun" class="theme-icon-light hidden"></i>
-        </button>
         <a href="#appointment" class="btn btn-primary btn-nav">Book Appointment</a>
       </nav>
 
-      <!-- Mobile Nav Toggle -->
       <div class="nav-controls-mobile">
-        <button class="theme-toggle" id="themeToggleBtnMobile" aria-label="Toggle Dark Mode">
-          <i data-lucide="moon" class="theme-icon-dark"></i>
-          <i data-lucide="sun" class="theme-icon-light hidden"></i>
-        </button>
-        <button class="mobile-menu-btn" id="menuToggleBtn" aria-label="Open Menu">
+        <button class="mobile-menu-btn" id="menuToggleBtn" aria-label="Open menu">
           <i data-lucide="menu" class="menu-icon"></i>
           <i data-lucide="x" class="close-icon hidden"></i>
         </button>
@@ -162,237 +152,151 @@
     </div>
   </header>
 
-  <!-- Mobile Side Menu -->
   <div class="mobile-drawer" id="mobileDrawer">
-    <nav class="mobile-nav">
-      <a href="#home" class="mobile-nav-item">Home</a>
-      <a href="#all-treatments" class="mobile-nav-item">Treatments (চিকিৎসা সমূহ)</a>
-      <a href="doctors.html" class="mobile-nav-item">Doctors (৮ জন ডাক্তার)</a>
-      <a href="#reviews" class="mobile-nav-item">Reviews (রোগীদের রিভিউ)</a>
-      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips (ডাক্তারের পরামর্শ)</a>
-      <a href="campaigns.html" class="mobile-nav-item">Free Campaigns (ফ্রি ক্যাম্পেইন)</a>
-      <a href="#contact" class="mobile-nav-item">Contact Us (যোগাযোগ)</a>
+    <nav class="mobile-nav" aria-label="Mobile">
+      <a href="#all-treatments" class="mobile-nav-item">Treatments · চিকিৎসা</a>
+      <a href="doctors.html" class="mobile-nav-item">Doctors · ডাক্তার</a>
+      <a href="treatments.html" class="mobile-nav-item">Results · সফল চিকিৎসা</a>
+      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips · পরামর্শ</a>
+      <a href="campaigns.html" class="mobile-nav-item">Free Campaigns · ক্যাম্পেইন</a>
+      <a href="#contact" class="mobile-nav-item">Contact · যোগাযোগ</a>
       <a href="#appointment" class="btn btn-primary mobile-booking-btn">Book Appointment</a>
     </nav>
   </div>
   <div class="drawer-overlay" id="drawerOverlay"></div>
 
-  <!-- Main Content -->
   <main>
 
-    <!-- Dynamic Active Offer Announcement Banner -->
-    <div id="activeOfferBanner" class="active-offer-banner hidden">
-      <div class="container offer-banner-content">
-        <div class="offer-banner-info">
-          <span class="offer-banner-badge" id="offerBannerBadge">Special Offer</span>
-          <span class="offer-banner-text" id="offerBannerText"></span>
-        </div>
-        <div class="offer-banner-actions">
-          <a href="#appointment" class="btn-offer-banner" id="offerBannerCta">Claim Offer</a>
-          <button type="button" class="btn-offer-close" id="closeOfferBannerBtn" aria-label="Dismiss offer">&times;</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Hero Section (Tech Dental Inspired) -->
+    <!-- Hero -->
     <section id="home" class="hero-section">
-      <div class="hero-bg-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-      </div>
       <div class="container hero-container">
-        <div class="hero-content scroll-reveal">
-          <div class="tdc-tagline-badge" id="heroTaglineWrap">
+        <div class="hero-content">
+          <div class="hero-badge" id="heroTaglineWrap">
             <span class="pulse-dot"></span>
             <span id="heroTagline">Open Today in Mirpur 12 · 8 Specialist Doctors</span>
           </div>
           <h1 class="hero-title" id="heroTitleWrapper">
-            <span id="heroTitleMain">Painless &amp; High-Tech Dental Care — </span><br>
+            <span id="heroTitleMain">Painless &amp; High-Tech Dental Care — </span>
             <span class="hero-brand-gradient" id="heroBrandHighlight">Kinetic Dental Center</span>
           </h1>
           <p class="hero-description" id="heroDescription">Experience Dhaka’s trusted gentle dental care led by Dr. Nadia &amp; senior BMDC specialist surgeons. 100% sterile Class-B autoclave environment, digital RVG diagnosis, and specialized female dental suites.</p>
           <div class="hero-ctas">
-            <a href="#appointment" class="btn btn-primary btn-lg">
-              <i data-lucide="calendar" class="icon-left"></i> Book Appointment <i data-lucide="arrow-right" class="icon-right"></i>
-            </a>
+            <a href="#appointment" class="btn btn-primary btn-lg">Book Appointment <i data-lucide="arrow-right" class="icon-right"></i></a>
             <a href="tel:+8801313175779" class="btn btn-secondary btn-lg" id="heroCallBtn">
-              <i data-lucide="phone-call" class="icon-left"></i> <span id="heroCallText">Call: 01313-175779</span>
+              <i data-lucide="phone" class="icon-left"></i> <span id="heroCallText">Call: 01313-175779</span>
             </a>
           </div>
 
-          <!-- Tech Dental 4-Metric Trust Strip -->
           <div class="hero-trust-strip">
             <div class="trust-stat-item">
-              <div class="trust-stat-icon"><i data-lucide="smile"></i></div>
-              <div>
-                <div class="stat-number" id="heroStatNum1">1,000+</div>
-                <div class="stat-label" id="heroStatLbl1">Happy Smiles</div>
-              </div>
+              <div class="stat-number" id="heroStatNum1">1,000+</div>
+              <div class="stat-label" id="heroStatLbl1">Happy Smiles</div>
             </div>
             <div class="trust-stat-item">
-              <div class="trust-stat-icon"><i data-lucide="stethoscope"></i></div>
-              <div>
-                <div class="stat-number" id="heroStatNum2">8 Doctors</div>
-                <div class="stat-label" id="heroStatLbl2">BMDC Specialists</div>
-              </div>
+              <div class="stat-number" id="heroStatNum2">8 Doctors</div>
+              <div class="stat-label" id="heroStatLbl2">BMDC Specialists</div>
             </div>
             <div class="trust-stat-item">
-              <div class="trust-stat-icon"><i data-lucide="shield-check"></i></div>
-              <div>
-                <div class="stat-number" id="heroStatNum3">100%</div>
-                <div class="stat-label" id="heroStatLbl3">Sterile Safety</div>
-              </div>
+              <div class="stat-number" id="heroStatNum3">100%</div>
+              <div class="stat-label" id="heroStatLbl3">Sterile Safety</div>
             </div>
             <div class="trust-stat-item">
-              <div class="trust-stat-icon"><i data-lucide="clock"></i></div>
-              <div>
-                <div class="stat-number" id="heroStatNum4">24/7</div>
-                <div class="stat-label" id="heroStatLbl4">Emergency Care</div>
-              </div>
+              <div class="stat-number" id="heroStatNum4">24/7</div>
+              <div class="stat-label" id="heroStatLbl4">Emergency Care</div>
             </div>
           </div>
         </div>
-        <div class="hero-media scroll-reveal">
-          <div class="hero-image-wrapper">
-            <img src="doctors.jpeg" alt="Dr. Nafisa Anzum Nadia - Founder &amp; Chief Dental Surgeon" class="hero-image" id="heroMainImage">
-            <div class="hero-floating-card top-left">
+
+        <div class="hero-media">
+          <div class="hero-image-wrapper is-empty" data-image-wrap>
+            <img alt="Kinetic Dental &amp; Healthcare Center" class="hero-image" id="heroMainImage" width="800" height="1000" fetchpriority="high">
+            <div class="hero-floating-card">
               <div class="card-icon"><i data-lucide="award"></i></div>
               <div>
                 <h4 id="founderCardName">Dr. Nafisa Nadia</h4>
                 <p id="founderCardRole">Founder &amp; Chief Surgeon</p>
               </div>
             </div>
-            <div class="hero-floating-card bottom-right">
-              <div class="card-icon secondary"><i data-lucide="user-check"></i></div>
-              <div>
-                <h4 id="femaleCardTitle">Female Dentist Team</h4>
-                <p id="femaleCardSubtitle">100% Privacy &amp; Care</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Special Facilities Section (Client Priority) -->
-    <section id="facilities" class="special-facilities-section">
+    <!-- Why choose us -->
+    <section id="facilities" class="section-padding">
       <div class="container">
-        <div class="facilities-header scroll-reveal">
-          <span class="badge-pill"><i data-lucide="award" class="icon-sm"></i> Why Choose Kinetic Dental</span>
-          <h2>Our Special Facilities · আমাদের বিশেষ সুবিধাসমূহ</h2>
-          <p>We combine modern medical technology with compassionate, patient-first care in Mirpur 12, Dhaka.</p>
+        <div class="section-header scroll-reveal">
+          <span class="section-tag">Why Kinetic Dental</span>
+          <h2 class="section-title">Care that puts you at ease</h2>
+          <p class="section-subtitle">Modern technology and patient-first care in Mirpur 12, Dhaka.</p>
         </div>
 
         <div class="facilities-grid scroll-reveal" id="facilitiesGrid">
-          <!-- Facility 1 -->
           <div class="facility-card">
-            <div class="facility-icon-wrap">
-              <i data-lucide="scan-line"></i>
-            </div>
-            <h3>Digital X-Ray Facilities</h3>
+            <div class="facility-icon-wrap"><i data-lucide="scan-line"></i></div>
+            <h3>Digital X-Ray</h3>
             <span class="facility-bn">ডিজিটাল এক্স-রে সুবিধা</span>
-            <p>High-resolution instant imaging for quick, accurate diagnosis with minimal radiation exposure.</p>
+            <p>Instant, high-resolution imaging with minimal radiation.</p>
           </div>
-
-          <!-- Facility 2 (Female Dentist) -->
-          <div class="facility-card highlight-female">
-            <div class="facility-icon-wrap">
-              <i data-lucide="user-check"></i>
-            </div>
-            <h3>Female Dentist for Female Patient</h3>
-            <span class="facility-bn">মহিলা রোগীদের জন্য অভিজ্ঞ মহিলা ডেন্টিস্ট</span>
-            <p>Experienced female dental surgeons available to ensure complete comfort, dignity, and gentle care.</p>
-          </div>
-
-          <!-- Facility 3 (24h Emergency) -->
           <div class="facility-card">
-            <div class="facility-icon-wrap">
-              <i data-lucide="phone-incoming"></i>
-            </div>
-            <h3>24h &amp; On-Call Emergency</h3>
-            <span class="facility-bn">২৪ ঘণ্টা ও অন-কল জরুরি সেবা</span>
-            <p>Immediate care for severe toothaches, broken teeth, bleeding, and accidental oral trauma.</p>
+            <div class="facility-icon-wrap"><i data-lucide="user-check"></i></div>
+            <h3>Female Dentists</h3>
+            <span class="facility-bn">মহিলা রোগীদের জন্য মহিলা ডেন্টিস্ট</span>
+            <p>Experienced female surgeons for complete comfort and privacy.</p>
           </div>
-
-          <!-- Facility 4 (100% Sterile) -->
           <div class="facility-card">
-            <div class="facility-icon-wrap">
-              <i data-lucide="shield-check"></i>
-            </div>
-            <h3>100% Sterile Environment</h3>
-            <span class="facility-bn">১০০% জীবাণুমুক্ত ডেন্টাল পরিবেশ</span>
-            <p>Multi-stage autoclave sterilization protocols and disposables ensuring 100% patient safety.</p>
+            <div class="facility-icon-wrap"><i data-lucide="phone-incoming"></i></div>
+            <h3>24h Emergency</h3>
+            <span class="facility-bn">২৪ ঘণ্টা জরুরি সেবা</span>
+            <p>Fast relief for severe pain, broken teeth and oral trauma.</p>
           </div>
-
-          <!-- Facility 5 (Free Underprivileged Care) -->
-          <div class="facility-card highlight-free">
-            <div class="facility-icon-wrap">
-              <i data-lucide="heart-handshake"></i>
-            </div>
-            <h3>Free Underprivileged Care</h3>
-            <span class="facility-bn">অসহায় মানুষের জন্য বিনামূল্যে চিকিৎসা</span>
-            <p>Regular free dental checkups, treatment camps &amp; humanitarian care for underprivileged families.</p>
+          <div class="facility-card">
+            <div class="facility-icon-wrap"><i data-lucide="shield-check"></i></div>
+            <h3>100% Sterile</h3>
+            <span class="facility-bn">১০০% জীবাণুমুক্ত পরিবেশ</span>
+            <p>Class-B autoclave and single-use disposables, every visit.</p>
+          </div>
+          <div class="facility-card">
+            <div class="facility-icon-wrap"><i data-lucide="heart-handshake"></i></div>
+            <h3>Free Community Care</h3>
+            <span class="facility-bn">অসহায়দের জন্য বিনামূল্যে চিকিৎসা</span>
+            <p>Regular free check-up camps for underprivileged families.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Instant Treatment Explorer Section (Sob Samne Ase) -->
-    <section id="all-treatments" class="treatment-explorer-section">
+    <!-- Treatments -->
+    <section id="all-treatments" class="section-padding section-muted">
       <div class="container">
         <div class="section-header scroll-reveal">
-          <span class="section-tag">All Treatments At A Glance</span>
+          <span class="section-tag">Treatments &amp; Pricing</span>
           <h2 class="section-title">সকল ডেন্টাল চিকিৎসা এক নজরে</h2>
-          <p class="section-subtitle">আমাদের চেম্বারে কোন কোন চিকিৎসা রয়েছে তা খুব সহজেই নিচে খুঁজে নিন এবং সাথে সাথেই অ্যাপয়েন্টমেন্ট বুক করুন।</p>
+          <p class="section-subtitle">Find your treatment, see the starting price and book in one tap.</p>
         </div>
 
-        <!-- Live Search Bar -->
-        <div class="explorer-search-bar scroll-reveal">
-          <i data-lucide="search" class="explorer-search-icon"></i>
-          <input 
-            type="text" 
-            id="treatmentSearchInput" 
-            class="explorer-search-input" 
-            placeholder="🔎 আপনার সমস্যা বা চিকিৎসা খুঁজুন (যেমন: Scaling, রুট ক্যানেল, ব্রেসেস, নাইট গার্ড, দাঁত ব্যথা)..."
-            aria-label="Search dental treatments"
-            autocomplete="off"
-          >
-          <button type="button" id="explorerClearBtn" class="explorer-clear-btn hidden" aria-label="Clear search">
-            <i data-lucide="x" class="icon-sm"></i>
-          </button>
+        <div class="explorer-toolbar scroll-reveal">
+          <div class="explorer-search-bar">
+            <i data-lucide="search" class="explorer-search-icon"></i>
+            <input type="text" id="treatmentSearchInput" class="explorer-search-input" placeholder="Search a problem or treatment — e.g. দাঁত ব্যথা, scaling" aria-label="Search dental treatments" autocomplete="off">
+            <button type="button" id="explorerClearBtn" class="explorer-clear-btn hidden" aria-label="Clear search">
+              <i data-lucide="x" class="icon-sm"></i>
+            </button>
+          </div>
+
+          <div class="filter-chips-container" id="treatmentFilterChips">
+            <button type="button" class="filter-chip active" data-filter="all">All</button>
+            <button type="button" class="filter-chip" data-filter="general">General</button>
+            <button type="button" class="filter-chip" data-filter="rct">Root Canal</button>
+            <button type="button" class="filter-chip" data-filter="cosmetic">Cosmetic</button>
+            <button type="button" class="filter-chip" data-filter="ortho">Braces &amp; Aligners</button>
+            <button type="button" class="filter-chip" data-filter="bruxism">Night Guard</button>
+            <button type="button" class="filter-chip" data-filter="emergency">Emergency &amp; Surgery</button>
+            <button type="button" class="filter-chip" data-filter="kids">Kids</button>
+          </div>
         </div>
 
-        <!-- Quick Filter Chips -->
-        <div class="filter-chips-container scroll-reveal" id="treatmentFilterChips">
-          <button type="button" class="filter-chip active" data-filter="all">
-            <i data-lucide="sparkles" style="width:14px;height:14px;"></i> All Treatments (সকল)
-          </button>
-          <button type="button" class="filter-chip" data-filter="general">
-            <i data-lucide="check-circle" style="width:14px;height:14px;"></i> Scaling &amp; General
-          </button>
-          <button type="button" class="filter-chip" data-filter="rct">
-            <i data-lucide="activity" style="width:14px;height:14px;"></i> Root Canal (RCT)
-          </button>
-          <button type="button" class="filter-chip" data-filter="cosmetic">
-            <i data-lucide="wand-2" style="width:14px;height:14px;"></i> Cosmetic &amp; Whitening
-          </button>
-          <button type="button" class="filter-chip" data-filter="ortho">
-            <i data-lucide="smile" style="width:14px;height:14px;"></i> Braces &amp; Aligners
-          </button>
-          <button type="button" class="filter-chip" data-filter="bruxism">
-            <i data-lucide="shield" style="width:14px;height:14px;"></i> Night Guard (দাঁত ঘষা)
-          </button>
-          <button type="button" class="filter-chip" data-filter="emergency">
-            <i data-lucide="alert-circle" style="width:14px;height:14px;"></i> Emergency &amp; Surgery
-          </button>
-          <button type="button" class="filter-chip" data-filter="kids">
-            <i data-lucide="baby" style="width:14px;height:14px;"></i> Kids Dentistry
-          </button>
-        </div>
-
-        <!-- Treatments Instant Grid -->
-        <div class="treatments-instant-grid scroll-reveal" id="treatmentsGrid">
-
+        <div class="treatments-instant-grid" id="treatmentsGrid">
           <!-- Treatment 1: Scaling -->
           <div class="treatment-quick-card" data-category="general" data-keywords="scaling polishing clean cleaning tartar plaque পাথর স্কেলিং দাঁত পরিষ্কার হলদে দাগ মাড়ি রক্ত">
             <div class="treatment-quick-top">
@@ -720,595 +624,161 @@
               </a>
             </div>
           </div>
-
         </div>
 
-        <!-- No Results Fallback -->
         <div id="noTreatmentMatch" class="no-treatment-match hidden">
-          <i data-lucide="search-x" style="width:48px;height:48px;"></i>
-          <h4>কোনো চিকিৎসা খুঁজে পাওয়া যায়নি!</h4>
-          <p>আপনার কাঙ্ক্ষিত চিকিৎসার নাম বা সমস্যার বিবরণ সরাসরি আমাদের হটলাইনে ফোন দিয়ে জানান: <a href="tel:+8801313175779" style="color:var(--primary); font-weight:700;">01313-175779</a></p>
+          <i data-lucide="search-x" style="width:40px;height:40px;"></i>
+          <h4>কোনো চিকিৎসা খুঁজে পাওয়া যায়নি</h4>
+          <p>Call our hotline and we’ll help: <a href="tel:+8801313175779">01313-175779</a></p>
         </div>
       </div>
     </section>
 
-    <!-- Explore More Section -->
-    <section class="section-padding">
+    <!-- Results -->
+    <section id="chamber-treatments" class="section-padding hidden">
       <div class="container">
-        <div class="section-header scroll-reveal">
-          <span class="section-tag">Explore Kinetic Dental</span>
-          <h2 class="section-title">Discover More About Us</h2>
-          <p class="section-subtitle">Browse our treatment results, doctor profiles, community work and latest money-saving offers.</p>
-        </div>
-
-        <div class="home-link-grid scroll-reveal">
-          <a href="treatments.html" class="home-link-card">
-            <div class="hlc-thumb"><img src="treatment-2.jpeg" alt="Successful dental treatment results"></div>
-            <div class="hlc-body">
-              <span class="hlc-icon"><i data-lucide="images"></i></span>
-              <h3>Successful Treatments</h3>
-              <p>Real before &amp; after smile transformations from our patients.</p>
-              <span class="hlc-arrow">View Gallery <i data-lucide="arrow-right" class="icon-sm"></i></span>
-            </div>
-          </a>
-          <a href="dental-problems.html" class="home-link-card">
-            <div class="hlc-thumb"><img src="our-program-1.jpeg" alt="Dental health tips and articles"></div>
-            <div class="hlc-body">
-              <span class="hlc-icon"><i data-lucide="book-open"></i></span>
-              <h3>Dental Problems &amp; Solutions</h3>
-              <p>Expert health articles written by our doctors.</p>
-              <span class="hlc-arrow">Read Tips <i data-lucide="arrow-right" class="icon-sm"></i></span>
-            </div>
-          </a>
-          <a href="campaigns.html" class="home-link-card">
-            <div class="hlc-thumb"><img src="our-program-2.jpeg" alt="Free dental community campaigns"></div>
-            <div class="hlc-body">
-              <span class="hlc-icon"><i data-lucide="heart-handshake"></i></span>
-              <h3>Free Dental Campaigns</h3>
-              <p>Our community camps bringing free care across Dhaka.</p>
-              <span class="hlc-arrow">See Camps <i data-lucide="arrow-right" class="icon-sm"></i></span>
-            </div>
-          </a>
-          <a href="doctors.html" class="home-link-card">
-            <div class="hlc-thumb"><img src="doctors.jpeg" alt="Kinetic Dental specialist doctors team"></div>
-            <div class="hlc-body">
-              <span class="hlc-icon"><i data-lucide="stethoscope"></i></span>
-              <h3>Doctors Portfolio (৮ জন বিশেষজ্ঞ)</h3>
-              <p>Meet our specialist team led by Dr. Nadia — female dentists available.</p>
-              <span class="hlc-arrow">Meet Doctors <i data-lucide="arrow-right" class="icon-sm"></i></span>
-            </div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Advanced 4-Step Sterilization Safety Protocol (Tech Dental Style) -->
-    <section id="sterilization" class="sterilization-section section-padding">
-      <div class="container">
-        <div class="section-header scroll-reveal">
-          <span class="section-tag">100% Clinical Safety &amp; Hygiene</span>
-          <h2 class="section-title">Advanced 4-Step Sterilization Protocol</h2>
-          <p class="section-subtitle">আন্তর্জাতিক স্বাস্থ্যবিধি অনুযায়ী আন্তর্জাতিক মানের অটোক্লেভ ও ৪ স্তরের সুরক্ষায় ১০০% জীবাণুমুক্ত পরিবেশ নিশ্চিত করি আমরা।</p>
-        </div>
-
-        <div class="sterilization-steps-grid scroll-reveal">
-          <!-- Step 1 -->
-          <div class="sterilization-card">
-            <span class="step-badge">Step 1</span>
-            <div class="step-icon"><i data-lucide="spray-can"></i></div>
-            <h3>Disinfection</h3>
-            <span class="step-bn">রাসায়নিক জীবাণুনাশক ওয়াশ</span>
-            <p>ব্যবহৃত প্রতিটি চিকিৎসা ইনস্ট্রুমেন্ট তাৎক্ষণিক উচ্চমানের মেডিকেল ডিসইনফেক্ট্যান্ট দ্রবণ দিয়ে প্রাথমিক জীবাণুমুক্ত করা হয়।</p>
+        <div class="split-header scroll-reveal">
+          <div>
+            <span class="section-tag">Real Results</span>
+            <h2 class="section-title">Real smiles from our chamber</h2>
           </div>
+          <p>Before &amp; after transformations performed by Dr. Nadia and team.</p>
+        </div>
 
-          <!-- Step 2 -->
-          <div class="sterilization-card">
-            <span class="step-badge">Step 2</span>
-            <div class="step-icon"><i data-lucide="waves"></i></div>
+        <div class="featured-treat-strip" id="resultsGrid"></div>
+
+        <div class="section-cta">
+          <a href="treatments.html" class="btn btn-secondary">View all results <i data-lucide="arrow-right" class="icon-right"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sterilization protocol -->
+    <section id="sterilization" class="section-padding section-muted">
+      <div class="container">
+        <div class="split-header scroll-reveal">
+          <div>
+            <span class="section-tag">Clinical Safety</span>
+            <h2 class="section-title">4-step sterilization, every instrument</h2>
+          </div>
+          <p>আন্তর্জাতিক মানের অটোক্লেভ ও ৪ স্তরের সুরক্ষায় ১০০% জীবাণুমুক্ত পরিবেশ।</p>
+        </div>
+
+        <div class="steps-grid scroll-reveal">
+          <div class="step-card">
+            <h3>Disinfection</h3>
+            <span class="step-bn">রাসায়নিক জীবাণুনাশক ওয়াশ</span>
+            <p>Instruments are immediately soaked in medical-grade disinfectant.</p>
+          </div>
+          <div class="step-card">
             <h3>Ultrasonic Cleaning</h3>
             <span class="step-bn">আল্ট্রাসনিক গভীর পরিষ্কার</span>
-            <p>উচ্চ কম্পন প্রযুক্তির সাহায্যে যন্ত্রপাতির সূক্ষ্ম খাঁজ ও জয়েন্ট থেকে সকল ক্ষতিকর ব্যাকটেরিয়া ও মাইক্রো-কণা সম্পূর্ণ পরিষ্কার করা হয়।</p>
+            <p>High-frequency cleaning removes debris from every groove.</p>
           </div>
-
-          <!-- Step 3 -->
-          <div class="sterilization-card">
-            <span class="step-badge">Step 3</span>
-            <div class="step-icon"><i data-lucide="package-check"></i></div>
-            <h3>Packaging Seal</h3>
+          <div class="step-card">
+            <h3>Pouch Sealing</h3>
             <span class="step-bn">মেডিকেল পাউচ সিলিং</span>
-            <p>পরিষ্কারের পর প্রতিটি ইনস্ট্রুমেন্ট জীবাণুরোধী বিশেষ মেডিকেল গ্রেড পাউচে সিল করা হয় যাতে ধুলোবালি বা বাতাস স্পর্শ না করতে পারে।</p>
+            <p>Each instrument is sealed in a sterile medical pouch.</p>
           </div>
-
-          <!-- Step 4 -->
-          <div class="sterilization-card">
-            <span class="step-badge">Step 4</span>
-            <div class="step-icon"><i data-lucide="shield-check"></i></div>
+          <div class="step-card">
             <h3>Class-B Autoclave</h3>
-            <span class="step-bn">১০০% অটোক্লেভড স্টেরিলাইজেশন</span>
-            <p>১৩৪° সেলসিয়াস তাপ ও ভ্যাকুয়াম চাপে সব ধরণের ভাইরাস, ব্যাকটেরিয়া ও স্পোর সম্পূর্ণ ধ্বংস করে শতভাগ জীবাণুমুক্তকরণ।</p>
+            <span class="step-bn">১০০% অটোক্লেভড</span>
+            <p>134°C vacuum steam destroys viruses, bacteria and spores.</p>
           </div>
-        </div>
-
-        <div class="sterilization-guarantee scroll-reveal">
-          <div class="sg-badge"><i data-lucide="shield-check"></i> 100% Sterile Dental Environment Guarantee · Kinetic Dental Mirpur 12</div>
         </div>
       </div>
     </section>
 
-    <!-- Featured Chamber Treatment Highlights -->
-    <section id="chamber-treatments" class="featured-treatments-section section-padding">
+    <!-- About -->
+    <section id="about" class="section-padding">
+      <div class="container about-container no-media" id="aboutContainer">
+        <div class="about-media" data-image-wrap>
+          <img id="aboutImage" alt="Kinetic Dental treatment chamber" loading="lazy">
+          <div class="about-badge">
+            <strong>8</strong>
+            <span>BMDC specialists</span>
+          </div>
+        </div>
+
+        <div class="about-content">
+          <span class="section-tag">About the Clinic</span>
+          <h2 class="section-title">Dr. Nadia &amp; Kinetic Dental</h2>
+          <p class="about-lead">Expert, patient-first dentistry with strict clinical safety standards.</p>
+          <p class="about-text">Founded and led by Dr. Nafisa Anzum Nadia, Kinetic Dental &amp; Healthcare Center was built to make dental visits calm and comfortable. From routine scaling to root canals and smile makeovers, every plan is tailored to you.</p>
+          <ul class="check-list">
+            <li><i data-lucide="check-circle-2"></i> Strict autoclave sterilization for every instrument</li>
+            <li><i data-lucide="check-circle-2"></i> Gentle, painless techniques and clear explanations</li>
+            <li><i data-lucide="check-circle-2"></i> Female dentist team available for female patients</li>
+          </ul>
+          <a href="doctors.html" class="btn btn-secondary">Meet our doctors <i data-lucide="arrow-right" class="icon-right"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chamber tour -->
+    <section id="gallery" class="section-padding section-muted hidden">
       <div class="container">
         <div class="section-header scroll-reveal">
-          <span class="section-tag">Successful Treatment Corner</span>
-          <h2 class="section-title">Real Smiles, Real Results</h2>
-          <p class="section-subtitle">A glimpse of actual before &amp; after transformations performed in our chamber by Dr. Nadia &amp; team.</p>
+          <span class="section-tag">Chamber Tour</span>
+          <h2 class="section-title">Step inside Kinetic Dental</h2>
         </div>
 
-        <div class="featured-treat-strip scroll-reveal">
-          <!-- Card 1: Verified Kinetic Dental Case (Diastema Gap Closure) -->
-          <div class="ft-card">
-            <span class="ft-badge-before-after" style="background:rgba(6, 106, 171, 0.95);"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> Kinetic Dental Case</span>
-            <div class="ft-ba-pair">
-              <div class="ft-ba-side"><img src="kinetic-diastema-before.jpg" alt="Before diastema closure at Kinetic Dental"><span class="ft-ba-label before">Before</span></div>
-              <div class="ft-ba-side"><img src="kinetic-diastema-after.jpg" alt="After diastema closure at Kinetic Dental"><span class="ft-ba-label after">After</span></div>
-              <span class="ft-ba-center-tag">Result</span>
-              <div class="ft-ba-divider"></div>
-            </div>
-            <div class="ft-card-overlay">
-              <span class="ft-tag">Cosmetic Bonding &amp; Veneer</span>
-              <h3>Diastema Gap Closure</h3>
-              <p>Front-teeth gap closed seamlessly in a single visit — authentic Kinetic Dental patient.</p>
-            </div>
-          </div>
-
-          <!-- Card 2: Professional Teeth Whitening -->
-          <div class="ft-card">
-            <span class="ft-badge-before-after"><i data-lucide="sparkles" style="width:13px;height:13px;"></i> Before / After</span>
-            <div class="ft-ba-pair">
-              <div class="ft-ba-side"><img src="whitening-before.jpg" alt="Before teeth whitening"><span class="ft-ba-label before">Before</span></div>
-              <div class="ft-ba-side"><img src="whitening-after.jpg" alt="After teeth whitening"><span class="ft-ba-label after">After</span></div>
-              <span class="ft-ba-center-tag">Result</span>
-              <div class="ft-ba-divider"></div>
-            </div>
-            <div class="ft-card-overlay">
-              <span class="ft-tag">Teeth Whitening</span>
-              <h3>Professional Teeth Whitening</h3>
-              <p>Yellow, stained enamel brightened safely with certified medical bleaching gel.</p>
-            </div>
-          </div>
-
-          <!-- Card 3: Smile Makeover & Veneers -->
-          <div class="ft-card">
-            <span class="ft-badge-before-after"><i data-lucide="smile" style="width:13px;height:13px;"></i> Before / After</span>
-            <div class="ft-ba-pair">
-              <div class="ft-ba-side"><img src="smile-makeover-before.jpg" alt="Before smile makeover"><span class="ft-ba-label before">Before</span></div>
-              <div class="ft-ba-side"><img src="smile-makeover-after.jpg" alt="After smile makeover"><span class="ft-ba-label after">After</span></div>
-              <span class="ft-ba-center-tag">Result</span>
-              <div class="ft-ba-divider"></div>
-            </div>
-            <div class="ft-card-overlay">
-              <span class="ft-tag">Smile Makeover</span>
-              <h3>Diastema Closure &amp; Veneers</h3>
-              <p>Irregular spacing corrected with natural-looking cosmetic veneers in Mirpur 12.</p>
-            </div>
-          </div>
-
-          <!-- Card 4: Braces vs Clear Aligners -->
-          <div class="ft-card">
-            <span class="ft-badge-before-after"><i data-lucide="git-compare-arrows" style="width:13px;height:13px;"></i> Comparison</span>
-            <div class="ft-ba-pair">
-              <div class="ft-ba-side"><img src="braces-compare-left.jpg" alt="Traditional metal braces"><span class="ft-ba-label before" style="background:#0f172a;">Braces</span></div>
-              <div class="ft-ba-side"><img src="aligner-compare-right.jpg" alt="Invisible clear aligner"><span class="ft-ba-label after">Aligner</span></div>
-              <span class="ft-ba-center-tag">Compare</span>
-              <div class="ft-ba-divider"></div>
-            </div>
-            <div class="ft-card-overlay">
-              <span class="ft-tag">Orthodontics</span>
-              <h3>Braces vs Invisible Aligners</h3>
-              <p>Compare traditional wire braces with modern discreet, removable clear aligners.</p>
-            </div>
-          </div>
-
-          <!-- Card 5: Clear Aligner & Night Guard -->
-          <div class="ft-card">
-            <span class="ft-badge-before-after"><i data-lucide="check-circle" style="width:13px;height:13px;"></i> Gentle Fit</span>
-            <div class="ft-single-img">
-              <img src="before-after-aligner-nightguard.jpg" alt="Custom Clear Aligner and Night Guard Fitting">
-            </div>
-            <div class="ft-card-overlay">
-              <span class="ft-tag">Aligners &amp; Night Guard</span>
-              <h3>Custom Aligner &amp; Bruxism Guard</h3>
-              <p>Custom-fitted transparent trays for gentle tooth movement and night grinding protection.</p>
-            </div>
-          </div>
-
-          <!-- Card 6: Scaling & Stain Removal -->
-          <div class="ft-card">
-            <span class="ft-badge-before-after"><i data-lucide="git-compare-arrows" style="width:13px;height:13px;"></i> Before / After</span>
-            <div class="ft-ba-pair">
-              <div class="ft-ba-side"><img src="treatment-1.jpeg" alt="Before scaling treatment"><span class="ft-ba-label before">Before</span></div>
-              <div class="ft-ba-side"><img src="treatment-2.jpeg" alt="After scaling treatment"><span class="ft-ba-label after">After</span></div>
-              <span class="ft-ba-center-tag">Result</span>
-              <div class="ft-ba-divider"></div>
-            </div>
-            <div class="ft-card-overlay">
-              <span class="ft-tag">Scaling &amp; Polishing</span>
-              <h3>Deep Clean &amp; Stain Removal</h3>
-              <p>Heavy calculus and tobacco stains gone in one session — healthy pink gums restored.</p>
-            </div>
-          </div>
-
-          <!-- Card 7: Root Canal Therapy (RCT) -->
-          <div class="ft-card">
-            <span class="ft-badge-before-after"><i data-lucide="git-compare-arrows" style="width:13px;height:13px;"></i> Before / After</span>
-            <div class="ft-ba-pair">
-              <div class="ft-ba-side"><img src="treatment-5.jpeg" alt="Before root canal treatment"><span class="ft-ba-label before">Before</span></div>
-              <div class="ft-ba-side"><img src="treatment-6.jpeg" alt="After root canal treatment"><span class="ft-ba-label after">After</span></div>
-              <span class="ft-ba-center-tag">Result</span>
-              <div class="ft-ba-divider"></div>
-            </div>
-            <div class="ft-card-overlay">
-              <span class="ft-tag">Root Canal (RCT)</span>
-              <h3>Tooth Saved from Extraction</h3>
-              <p>Infected tooth treated painlessly and sealed with a crown for lifetime function.</p>
-            </div>
-          </div>
-
-          <!-- Card 8: Crowns, Bridges & Implants -->
-          <div class="ft-card">
-            <span class="ft-badge-before-after"><i data-lucide="git-compare-arrows" style="width:13px;height:13px;"></i> Before / After</span>
-            <div class="ft-ba-pair">
-              <div class="ft-ba-side"><img src="treatment-9.jpeg" alt="Before crown fitting"><span class="ft-ba-label before">Before</span></div>
-              <div class="ft-ba-side"><img src="treatment-10.jpeg" alt="After crown fitting"><span class="ft-ba-label after">After</span></div>
-              <span class="ft-ba-center-tag">Result</span>
-              <div class="ft-ba-divider"></div>
-            </div>
-            <div class="ft-card-overlay">
-              <span class="ft-tag">Crowns &amp; Bridges</span>
-              <h3>Broken Tooth Restored</h3>
-              <p>Fractured front tooth rebuilt with a natural-looking ceramic crown.</p>
-            </div>
-          </div>
-        </div>
-
-        <div style="text-align:center; margin-top: 40px;" class="scroll-reveal">
-          <a href="treatments.html" class="btn btn-primary btn-lg">View Full Treatment Gallery <i data-lucide="arrow-right" class="icon-right"></i></a>
-        </div>
+        <div class="gallery-grid" id="chamberGalleryGrid"></div>
       </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="about-section section-padding">
-      <div class="container about-container">
-        <div class="about-media scroll-reveal">
-          <div class="about-image-stack">
-            <div class="image-stack-back">
-              <img src="office.jpg" alt="Kinetic Dental Office Reception" class="about-img-back">
-            </div>
-            <div class="image-stack-front">
-              <img src="chamber.jpg" alt="Kinetic Dental Patient Chamber" class="about-img-front">
-            </div>
-            <div class="stack-badge">
-              <span class="badge-num">100%</span>
-              <span class="badge-text">Modern Equipment</span>
-            </div>
-          </div>
+    <!-- FAQ -->
+    <section id="faq" class="section-padding">
+      <div class="container faq-layout">
+        <div class="faq-intro scroll-reveal">
+          <span class="section-tag">FAQ</span>
+          <h2 class="section-title">Common questions</h2>
+          <p>Still unsure? Our team is happy to explain any procedure before your visit.</p>
+          <a href="dental-problems.html" class="btn btn-secondary">Read dental tips <i data-lucide="arrow-right" class="icon-right"></i></a>
         </div>
 
-        <div class="about-content scroll-reveal">
-          <span class="section-tag">Meet the Founder & Dentist</span>
-          <h2 class="section-title">Dr. Nadia & Kinetic Dental</h2>
-          <p class="about-bio-highlight">Delivering expert, patient-oriented healthcare with absolute precision and safety standards.</p>
-          <p class="about-text">
-            Welcome to <strong>Kinetic Dental & Healthcare Center</strong>. Founded and led by <strong>Dr. Nadia</strong>, our clinic is committed to redefining oral health standards in Dhaka. We understand that dental visits can cause anxiety, which is why we have engineered our chamber to offer a tranquil, welcoming, and sterile atmosphere.
-          </p>
-          <p class="about-text">
-            Whether you need a routine tooth scaling, teeth whitening to restore your confidence, or complex surgical root canals, our clinic employs state-of-the-art tools and strict clinical protocols. We care deeply about educating our patients, tailoring every treatment plan to fit your physical needs and comfort.
-          </p>
-
-          <div class="about-values">
-            <div class="value-item">
-              <div class="value-icon-wrapper"><i data-lucide="shield-check"></i></div>
-              <div>
-                <h5>Sterility Certified</h5>
-                <p>Strict autoclave sterilization protocols for every instrument.</p>
-              </div>
-            </div>
-            <div class="value-item">
-              <div class="value-icon-wrapper"><i data-lucide="heart"></i></div>
-              <div>
-                <h5>Compassionate Environment</h5>
-                <p>Painless, gentle dental methods geared to make you feel safe.</p>
-              </div>
-            </div>
+        <div class="faq-accordion-container scroll-reveal" id="faqAccordionContainer">
+          <div class="faq-card">
+            <button class="faq-trigger"><span>How often should I get scaling and polishing?</span><i data-lucide="chevron-down" class="faq-arrow"></i></button>
+            <div class="faq-content"><p>Every 6 months. Scaling removes tartar and plaque that brushing can’t, preventing gum swelling, bleeding and bad breath.</p></div>
+          </div>
+          <div class="faq-card">
+            <button class="faq-trigger"><span>Is professional teeth whitening safe for my enamel?</span><i data-lucide="chevron-down" class="faq-arrow"></i></button>
+            <div class="faq-content"><p>Yes. Under Dr. Nadia’s supervision we use certified bleaching materials that lift stains without weakening enamel.</p></div>
+          </div>
+          <div class="faq-card">
+            <button class="faq-trigger"><span>What is a Night Guard and do I need one for teeth grinding?</span><i data-lucide="chevron-down" class="faq-arrow"></i></button>
+            <div class="faq-content"><p>ঘুমের মাঝে দাঁতে দাঁত ঘষা (Bruxism) এনামেল ক্ষয় ও চোয়াল ব্যথার কারণ। কাস্টমাইজড <strong>Night Guard</strong> দাঁতকে ক্ষয় থেকে রক্ষা করে।</p></div>
+          </div>
+          <div class="faq-card">
+            <button class="faq-trigger"><span>Why does a tooth turn black after an injury?</span><i data-lucide="chevron-down" class="faq-arrow"></i></button>
+            <div class="faq-content"><p>আঘাতে দাঁতের নার্ভ ক্ষতিগ্রস্ত হলে দাঁত ধীরে ধীরে কালো হয়ে যায়। দ্রুত রুট ক্যানাল (RCT) ও ক্যাপ না করলে সিস্ট হতে পারে।</p></div>
+          </div>
+          <div class="faq-card">
+            <button class="faq-trigger"><span>What should I do during a sudden, severe toothache?</span><i data-lucide="chevron-down" class="faq-arrow"></i></button>
+            <div class="faq-content"><p>Avoid chewing on that side, rinse with warm salt water and call 01313-175779 or 01308-388577. Emergency cases are prioritised.</p></div>
+          </div>
+          <div class="faq-card">
+            <button class="faq-trigger"><span>Does root canal treatment hurt? How long does it take?</span><i data-lucide="chevron-down" class="faq-arrow"></i></button>
+            <div class="faq-content"><p>Modern RCT is practically painless under local anaesthesia and usually takes 1–2 sessions to save your natural tooth.</p></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Chamber Gallery Section -->
-    <section id="gallery" class="gallery-section section-padding">
-      <div class="container">
-        <div class="section-header scroll-reveal">
-          <span class="section-tag">Virtual Chamber Tour</span>
-          <h2 class="section-title">Step Inside Kinetic Dental</h2>
-          <p class="section-subtitle">Take a virtual tour of our modern, hygienic, and highly-equipped medical center located in Mirpur 12.</p>
-        </div>
-
-        <div class="gallery-grid scroll-reveal" id="chamberGalleryGrid">
-          <!-- Gallery Item 1 -->
-          <div class="gallery-item" data-index="0" data-src="chamber.jpg">
-            <img src="chamber.jpg" alt="Kinetic Dental Main Operating Chamber" class="gallery-img">
-            <div class="gallery-overlay">
-              <div class="gallery-icon-box"><i data-lucide="maximize-2"></i></div>
-              <h4>Operating Chamber</h4>
-              <p>State-of-the-art dental chair & lighting</p>
-            </div>
-          </div>
-
-          <!-- Gallery Item 2 -->
-          <div class="gallery-item" data-index="1" data-src="office.jpg">
-            <img src="office.jpg" alt="Kinetic Dental Office and Reception Area" class="gallery-img">
-            <div class="gallery-overlay">
-              <div class="gallery-icon-box"><i data-lucide="maximize-2"></i></div>
-              <h4>Reception Desk</h4>
-              <p>Welcoming waiting lounge for patients</p>
-            </div>
-          </div>
-
-          <!-- Gallery Item 3 -->
-          <div class="gallery-item" data-index="2" data-src="chmaber.jpg">
-            <img src="chmaber.jpg" alt="Kinetic Dental Clinical Instruments Chamber" class="gallery-img">
-            <div class="gallery-overlay">
-              <div class="gallery-icon-box"><i data-lucide="maximize-2"></i></div>
-              <h4>Diagnostic Setup</h4>
-              <p>Premium tools ready for clean and safe care</p>
-            </div>
-          </div>
-
-          <!-- Gallery Item 4 -->
-          <div class="gallery-item" data-index="3" data-src="office-1.jpeg">
-            <img src="office-1.jpeg" alt="Kinetic Dental treatment room" class="gallery-img">
-            <div class="gallery-overlay">
-              <div class="gallery-icon-box"><i data-lucide="maximize-2"></i></div>
-              <h4>Treatment Room</h4>
-              <p>Comfortable, hygienic patient care space</p>
-            </div>
-          </div>
-
-          <!-- Gallery Item 5 -->
-          <div class="gallery-item" data-index="4" data-src="chamber-3.jpeg">
-            <img src="chamber-3.jpeg" alt="Kinetic Dental modern chamber" class="gallery-img">
-            <div class="gallery-overlay">
-              <div class="gallery-icon-box"><i data-lucide="maximize-2"></i></div>
-              <h4>Modern Chamber</h4>
-              <p>LED lighting and ergonomic dental chair</p>
-            </div>
-          </div>
-
-          <!-- Gallery Item 6 -->
-          <div class="gallery-item" data-index="5" data-src="doctors.jpeg">
-            <img src="doctors.jpeg" alt="Kinetic Dental specialist team" class="gallery-img">
-            <div class="gallery-overlay">
-              <div class="gallery-icon-box"><i data-lucide="maximize-2"></i></div>
-              <h4>Our Expert Team</h4>
-              <p>Qualified dentists led by Dr. Nadia</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-
-    <!-- Doctor's Advice & Patient Health Tips Section (Dr. Nadia's Guidance) -->
-    <section id="doctor-advice" class="doctor-advice-section section-padding">
-      <div class="container">
-        <div class="section-header scroll-reveal">
-          <span class="section-tag">Patient Education · ডাক্তারের পরামর্শ</span>
-          <h2 class="section-title">Essential Dental Advice &amp; Tips</h2>
-          <p class="section-subtitle">আমাদের প্রধান ডেন্টাল সার্জন ডাঃ নাফিসা আনজুম নাদিয়ার বিশেষ পরামর্শ — জেনে নিন দাঁতের সুরক্ষায় আপনার করণীয়।</p>
-        </div>
-
-        <div class="advice-grid scroll-reveal" id="doctorAdviceGrid">
-          <!-- Advice 1: Daily Rules -->
-          <div class="advice-card">
-            <div class="advice-card-header">
-              <div class="advice-icon-wrap"><i data-lucide="check-square"></i></div>
-              <div>
-                <h3>দৈনন্দিন ডেন্টাল রুলস</h3>
-                <span class="advice-subtitle-bn">Daily Oral Health Rules</span>
-              </div>
-            </div>
-            <ul>
-              <li>সকাল ও রাতে নিয়ম করে প্রতিদিন ২ বার দাঁত ব্রাশ করতে হবে।</li>
-              <li>ফ্লোরাইড সমৃদ্ধ ভালো মানের টুথপেস্ট ব্যবহার করুন।</li>
-              <li>সবসময় নরম (Soft-bristle) ব্রাশ ব্যবহার করতে হবে।</li>
-              <li>এনামেল বেশি ক্ষয় হয়ে গেলে ফিলিং অথবা রুট ক্যানেল লাগতে পারে।</li>
-              <li>দাঁতে আঘাত পেলে কালক্ষেপণ না করে দ্রুত ডেন্টিস্ট দেখান।</li>
-            </ul>
-            <a href="dental-problems.html#daily-rules" class="advice-link">বিস্তারিত গাইড পড়ুন <i data-lucide="arrow-right" class="icon-sm"></i></a>
-          </div>
-
-          <!-- Advice 2: Night Guard / Bruxism -->
-          <div class="advice-card">
-            <div class="advice-card-header">
-              <div class="advice-icon-wrap purple"><i data-lucide="moon"></i></div>
-              <div>
-                <h3>Tooth Grinding (Bruxism)</h3>
-                <span class="advice-subtitle-bn">ঘুমের মাঝে দাঁতে দাঁত ঘর্ষনের সমাধান</span>
-              </div>
-            </div>
-            <ul>
-              <li>ঘুমের মাঝে দাঁতে দাঁত ঘষা একটি ক্ষতিকর অভ্যাসজনিত রোগ।</li>
-              <li>একমাত্র কার্যকর সমাধান হলো ডেন্টাল <strong>"Night / Mouth Guard"</strong>।</li>
-              <li>ঘুমের ঘর্ষণে সৃষ্ট কিড়মিড় আওয়াজ সম্পূর্ণ প্রতিহত করে।</li>
-              <li>দাঁতের মারাত্মক ক্ষয় ও শির শির অনুভূতি স্থায়ীভাবে প্রতিরোধ করে।</li>
-              <li>চেম্বারে দাঁতের মাপ দিয়ে খুব সহজেই কাস্টমাইজড নাইট গার্ড তৈরি সম্ভব।</li>
-            </ul>
-            <a href="dental-problems.html#bruxism" class="advice-link">নাইট গার্ড বিস্তারিত <i data-lucide="arrow-right" class="icon-sm"></i></a>
-          </div>
-
-          <!-- Advice 3: Traumatic Injury -->
-          <div class="advice-card danger">
-            <div class="advice-card-header">
-              <div class="advice-icon-wrap danger"><i data-lucide="alert-triangle"></i></div>
-              <div>
-                <h3>আঘাতপ্রাপ্ত দাঁত কালো হওয়া</h3>
-                <span class="advice-subtitle-bn">Tooth Injury &amp; Discoloration</span>
-              </div>
-            </div>
-            <ul>
-              <li>হাড়/কাটা বা পাথরে কামড়, ধাক্কা বা বলের আঘাতে ব্যথা হলে দ্রুত BDS ডাক্তারের শরণাপন্ন হন।</li>
-              <li>ফেলে রাখলে দাঁত কালো বা বিবর্ণ হয়ে যায় — যার অর্থ দাঁতে আর প্রাণ নেই!</li>
-              <li>দাঁতের ভেতরে ইনফেকশন হয়ে হাড়ের নিচে সিস্ট বা টিউমার হতে পারে।</li>
-              <li>রুট ক্যানাল ট্রিটমেন্ট (RCT) করে ক্রাউন বা ক্যাপ লাগিয়ে দাঁত রক্ষা করা যায়।</li>
-              <li>তাৎক্ষণিক চিকিৎসা নিলে দাঁতের ক্ষতি ও খরচ অনেক লাঘব সম্ভব।</li>
-            </ul>
-            <a href="dental-problems.html#traumatic-injury" class="advice-link">জরুরি পরামর্শ জানুন <i data-lucide="arrow-right" class="icon-sm"></i></a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ Section (Basic Dental Q&A) -->
-    <section id="faq" class="faq-section section-padding">
-      <div class="container">
-        <div class="section-header scroll-reveal">
-          <span class="section-tag">Common Dental Q&A</span>
-          <h2 class="section-title">Frequently Asked Questions</h2>
-          <p class="section-subtitle">Learn basic dental care tips and find quick answers about our specialized clinical procedures.</p>
-        </div>
-
-        <div class="faq-layout scroll-reveal">
-          <div class="faq-visual">
-            <img src="chamber.jpg" alt="Patient receiving dental care at Kinetic Dental">
-            <div class="faq-visual-caption">
-              <h4>Ask Dr. Nadia's Team</h4>
-              <p>We're happy to explain any procedure before your visit.</p>
-            </div>
-          </div>
-
-          <div class="faq-accordion-container" id="faqAccordionContainer">
-          <!-- FAQ 1 -->
-          <div class="faq-card">
-            <button class="faq-trigger">
-              <span>How often should I visit the dentist for scaling and polishing?</span>
-              <i data-lucide="chevron-down" class="faq-arrow"></i>
-            </button>
-            <div class="faq-content">
-              <p>It is generally recommended to undergo dental scaling and polishing every 6 months. Regular scaling removes built-up calculus (tartar) and plaque that normal brushing cannot clear, effectively preventing gum swelling, bleeding (gingivitis), and bad breath.</p>
-            </div>
-          </div>
-
-          <!-- FAQ 2 -->
-          <div class="faq-card">
-            <button class="faq-trigger">
-              <span>Is professional teeth whitening (bleaching) safe for my enamel?</span>
-              <i data-lucide="chevron-down" class="faq-arrow"></i>
-            </button>
-            <div class="faq-content">
-              <p>Yes, professional teeth whitening at Kinetic Dental is entirely safe. Under the supervision of Dr. Nadia, we apply certified bleaching materials that break down organic stains without altering or weakening the structural enamel of your teeth.</p>
-            </div>
-          </div>
-
-          <!-- FAQ 3: Night Guard Bruxism (NEW) -->
-          <div class="faq-card">
-            <button class="faq-trigger">
-              <span>What is a Night Guard and why is it needed for tooth grinding (Bruxism)?</span>
-              <i data-lucide="chevron-down" class="faq-arrow"></i>
-            </button>
-            <div class="faq-content">
-              <p>ঘুমের মাঝে দাঁতে দাঁত ঘষা (Bruxism) একটি অভ্যাসজনিত সমস্যা। এর ফলে দাঁতের এনামেল মারাত্মকভাবে ক্ষয় হয়ে শিরশির অনুভূত হয় এবং চোয়ালে ব্যথা সৃষ্টি হয়। কাস্টমাইজড <strong>Night Guard</strong> ব্যবহার করলে ঘুমের মাঝে ঘর্ষণের শব্দ প্রতিহত হয় এবং দাঁত চিরতরে ক্ষয় থেকে রক্ষা পায়।</p>
-            </div>
-          </div>
-
-          <!-- FAQ 4: Traumatic Injury (NEW) -->
-          <div class="faq-card">
-            <button class="faq-trigger">
-              <span>Why does a tooth turn black after a sports injury or hard bite?</span>
-              <i data-lucide="chevron-down" class="faq-arrow"></i>
-            </button>
-            <div class="faq-content">
-              <p>খাওয়ার সময় শক্ত হাড়/পাথরে কামড় লাগলে বা বলের ধাক্কায় দাঁতে আঘাত পেলে ভেতরের নার্ভ ও রক্তনালী ক্ষতিগ্রস্ত হয়ে দাঁতের প্রাণ নষ্ট হয়ে যেতে পারে। রক্ত সরবরাহ বন্ধ হয়ে গেলে দাঁতটি ধীরে ধীরে কালো বা বিবর্ণ হয়ে যায়। দ্রুত রুট ক্যানাল (RCT) ও ক্যাপ না লাগালে হাড়ের নিচে সিস্ট বা টিউমার হতে পারে।</p>
-            </div>
-          </div>
-
-          <!-- FAQ 5 -->
-          <div class="faq-card">
-            <button class="faq-trigger">
-              <span>What should I do immediately if I experience a sudden, severe toothache?</span>
-              <i data-lucide="chevron-down" class="faq-arrow"></i>
-            </button>
-            <div class="faq-content">
-              <p>Avoid chewing on the affected tooth, rinse gently with warm salt water, and do not apply heating pads. Contact our clinic hotline at +880 1313-175779 or +880 1308-388577 immediately. We prioritize emergency toothache cases to relieve pulp pain and infection rapidly.</p>
-            </div>
-          </div>
-
-          <!-- FAQ 6 -->
-          <div class="faq-card">
-            <button class="faq-trigger">
-              <span>How long does Root Canal Therapy (RCT) take, and does it hurt?</span>
-              <i data-lucide="chevron-down" class="faq-arrow"></i>
-            </button>
-            <div class="faq-content">
-              <p>Modern Root Canal Therapy is practically painless and is performed under precise local anesthesia. Depending on the tooth anatomy and infection levels, it typically takes 1 to 2 sessions. The procedure removes the infected pulp, sanitizes the canal, and seals it to save the natural tooth.</p>
-            </div>
-          </div>
-
-          <!-- FAQ 7 -->
-          <div class="faq-card">
-            <button class="faq-trigger">
-              <span>Why do my gums bleed during brushing or flossing?</span>
-              <i data-lucide="chevron-down" class="faq-arrow"></i>
-            </button>
-            <div class="faq-content">
-              <p>Bleeding gums are usually a warning sign of gingivitis, which occurs when bacterial plaque accumulates along the gum line. Routine clinical scaling, combined with brushing twice a day and daily flossing, will restore healthy, firm gums and stop the bleeding.</p>
-            </div>
-          </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Lightbox Modal -->
-    <div class="lightbox" id="lightbox">
-      <span class="lightbox-close" id="lightboxClose">&times;</span>
-      <button class="lightbox-nav prev" id="lightboxPrev" aria-label="Previous image">&#10094;</button>
-      <img class="lightbox-content" id="lightboxImg" src="" alt="Zoomed view">
-      <button class="lightbox-nav next" id="lightboxNext" aria-label="Next image">&#10095;</button>
-      <div class="lightbox-caption" id="lightboxCaption"></div>
-    </div>
-
-    <!-- Patient Reviews & Testimonials Section (Sob Samne Ase) -->
-    <section id="reviews" class="testimonials-section section-padding">
-      <div class="container">
-        <div class="section-header scroll-reveal">
-          <span class="section-tag">Patient Stories · রোগীদের মতামত</span>
-          <h2 class="section-title">What Our Patients Say About Us</h2>
-          <p class="section-subtitle">Real reviews from patients treated by Dr. Nadia and our dental surgeon team in Mirpur 12.</p>
-        </div>
-
-        <div class="testimonials-grid scroll-reveal" id="publicTestimonialsContainer">
-          <!-- Populated dynamically by app.js with verified reviews -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Appointment Section -->
+    <!-- Appointment -->
     <section id="appointment" class="appointment-section section-padding">
-      <div class="appointment-overlay-decor"></div>
       <div class="container appointment-container">
         <div class="appointment-info scroll-reveal">
-          <span class="section-tag text-white-tag">Hassle-Free Booking</span>
-          <h2 class="section-title text-white">Book Your Dental Consultation Today</h2>
-          <p class="section-subtitle text-white-op">Ready to revitalize your smile? Fill out our quick form. Our receptionist will contact you immediately within working hours to lock in your preferred schedule.</p>
-          
+          <span class="section-tag">Book a Visit</span>
+          <h2 class="section-title">Book your consultation</h2>
+          <p class="section-subtitle">Send a request and our receptionist will call you to confirm your slot.</p>
+
           <div class="appointment-details">
             <div class="detail-card">
               <i data-lucide="clock" class="detail-icon"></i>
               <div>
-                <h5>Working Hours</h5>
+                <h5>Chamber Hours</h5>
                 <p id="apptHoursOpen">Friday to Thursday</p>
                 <p id="apptHoursMorning">Morning: 10:00 AM - 2:00 PM</p>
                 <p id="apptHoursEvening">Evening: 5:00 PM - 9:00 PM</p>
@@ -1317,55 +787,55 @@
             <div class="detail-card">
               <i data-lucide="phone-call" class="detail-icon"></i>
               <div>
-                <h5>Direct Call for Urgent Care</h5>
-                <p class="call-text"><a href="tel:+8801313175779" id="apptHotline1">+880 1313-175779</a></p>
-                <p class="call-text"><a href="tel:+8801308388577" id="apptHotline2">+880 1308-388577</a></p>
+                <h5>Urgent? Call directly</h5>
+                <p><a href="tel:+8801313175779" id="apptHotline1">+880 1313-175779</a></p>
+                <p><a href="tel:+8801308388577" id="apptHotline2">+880 1308-388577</a></p>
               </div>
             </div>
           </div>
         </div>
 
         <div class="appointment-form-box scroll-reveal">
-          <h3>Request an Appointment</h3>
-          <p>Please provide your details below.</p>
-          
+          <h3>Request an appointment</h3>
+          <p>Takes less than a minute.</p>
+
           <form id="bookingForm" class="booking-form" novalidate>
             <div class="form-group">
-              <label for="fullName">Full Name <span class="required">*</span></label>
+              <label for="fullName">Full name <span class="required">*</span></label>
               <div class="input-wrapper">
                 <i data-lucide="user" class="input-icon"></i>
-                <input type="text" id="fullName" name="fullName" placeholder="e.g. John Doe" required>
+                <input type="text" id="fullName" name="fullName" placeholder="Your name" autocomplete="name" required>
               </div>
               <span class="error-msg" id="nameError">Please enter your name.</span>
             </div>
 
             <div class="form-row">
               <div class="form-group">
-                <label for="phoneNum">Phone Number <span class="required">*</span></label>
+                <label for="phoneNum">Phone number <span class="required">*</span></label>
                 <div class="input-wrapper">
                   <i data-lucide="phone" class="input-icon"></i>
-                  <input type="tel" id="phoneNum" name="phoneNum" placeholder="e.g. 017XXXXXXXX" required>
+                  <input type="tel" id="phoneNum" name="phoneNum" placeholder="017XXXXXXXX" autocomplete="tel" inputmode="tel" required>
                 </div>
                 <span class="error-msg" id="phoneError">Enter a valid 11-digit mobile number.</span>
               </div>
               <div class="form-group">
-                <label for="treatmentType">Select Service <span class="required">*</span></label>
+                <label for="treatmentType">Service <span class="required">*</span></label>
                 <div class="input-wrapper">
                   <i data-lucide="activity" class="input-icon"></i>
                   <select id="treatmentType" name="treatmentType" required>
-                    <option value="" disabled selected>Choose a treatment...</option>
+                    <option value="" disabled selected>Choose a treatment</option>
                     <option value="Tooth Scaling & Polishing">Tooth Scaling &amp; Polishing (দাঁত পরিষ্কার)</option>
-                    <option value="Teeth Whitening (Bleaching)">Teeth Whitening / Bleaching (দাঁত সাদা করা)</option>
-                    <option value="Root Canal Therapy (RCT)">Root Canal Therapy - RCT (রুট ক্যানেল)</option>
-                    <option value="Toothache & Emergency Care">Toothache &amp; Emergency Care (তীব্র দাঁত ব্যথা)</option>
+                    <option value="Teeth Whitening (Bleaching)">Teeth Whitening (দাঁত সাদা করা)</option>
+                    <option value="Root Canal Therapy (RCT)">Root Canal Therapy (রুট ক্যানেল)</option>
+                    <option value="Toothache & Emergency Care">Toothache &amp; Emergency (তীব্র দাঁত ব্যথা)</option>
                     <option value="Braces & Clear Aligners">Braces &amp; Clear Aligners (বাঁকা দাঁত সোজা)</option>
-                    <option value="Night Guard / Bruxism Solution">Night Guard / Bruxism Solution (দাঁত ঘষা সমাধান)</option>
-                    <option value="Traumatic Tooth Injury & Discoloration">Traumatic Injury &amp; Black Tooth (আঘাতপ্রাপ্ত দাঁত)</option>
+                    <option value="Night Guard / Bruxism Solution">Night Guard / Bruxism (দাঁত ঘষা)</option>
+                    <option value="Traumatic Tooth Injury & Discoloration">Injury &amp; Black Tooth (আঘাতপ্রাপ্ত দাঁত)</option>
                     <option value="Crowns, Bridges & Implants">Crowns, Bridges &amp; Implants (ক্যাপ ও ইমপ্লান্ট)</option>
-                    <option value="Pediatric / Kids Dentistry">Pediatric / Kids Treatment (বাচ্চাদের দাঁত)</option>
-                    <option value="Wisdom Tooth & Surgical Extraction">Wisdom Tooth &amp; Oral Surgery (আক্কেল দাঁত)</option>
+                    <option value="Pediatric / Kids Dentistry">Kids Dentistry (বাচ্চাদের দাঁত)</option>
+                    <option value="Wisdom Tooth & Surgical Extraction">Wisdom Tooth &amp; Surgery (আক্কেল দাঁত)</option>
                     <option value="Cosmetic Filling & Veneers">Cosmetic Filling &amp; Veneers (ফাঁকা বন্ধ)</option>
-                    <option value="Digital X-Ray & Consultation">Digital X-Ray &amp; Consultation (এক্স-রে ও পরামর্শ)</option>
+                    <option value="Digital X-Ray & Consultation">Digital X-Ray &amp; Consultation (এক্স-রে)</option>
                     <option value="Other">General Consultation &amp; Other</option>
                   </select>
                 </div>
@@ -1375,7 +845,7 @@
 
             <div class="form-row">
               <div class="form-group">
-                <label for="bookingDate">Preferred Date <span class="required">*</span></label>
+                <label for="bookingDate">Preferred date <span class="required">*</span></label>
                 <div class="input-wrapper">
                   <i data-lucide="calendar" class="input-icon"></i>
                   <input type="date" id="bookingDate" name="bookingDate" required>
@@ -1383,13 +853,13 @@
                 <span class="error-msg" id="dateError">Please pick a future date.</span>
               </div>
               <div class="form-group">
-                <label for="bookingTime">Preferred Time <span class="required">*</span></label>
+                <label for="bookingTime">Preferred time <span class="required">*</span></label>
                 <div class="input-wrapper">
                   <i data-lucide="clock" class="input-icon"></i>
                   <select id="bookingTime" name="bookingTime" required>
-                    <option value="" disabled selected>Select slot...</option>
-                    <option value="Morning (10:00 AM - 2:00 PM)">Morning (10:00 AM - 2:00 PM)</option>
-                    <option value="Evening (5:00 PM - 9:00 PM)">Evening (5:00 PM - 9:00 PM)</option>
+                    <option value="" disabled selected>Select a slot</option>
+                    <option value="Morning (10:00 AM - 2:00 PM)">Morning (10 AM – 2 PM)</option>
+                    <option value="Evening (5:00 PM - 9:00 PM)">Evening (5 PM – 9 PM)</option>
                   </select>
                 </div>
                 <span class="error-msg" id="timeError">Please choose a time window.</span>
@@ -1397,13 +867,13 @@
             </div>
 
             <div class="form-group">
-              <label for="notes">Special Notes / Symptoms (Optional)</label>
+              <label for="notes">Notes or symptoms (optional)</label>
               <div class="input-wrapper">
-                <textarea id="notes" name="notes" placeholder="Mention any pain, history, or request..." rows="3"></textarea>
+                <textarea id="notes" name="notes" placeholder="Pain, history or any request…" rows="3"></textarea>
               </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
+            <button type="submit" class="btn btn-primary btn-lg btn-block" id="submitBtn">
               <span id="submitBtnText">Send Appointment Request</span>
               <i data-lucide="send" class="icon-right" id="submitBtnIcon"></i>
             </button>
@@ -1412,160 +882,113 @@
       </div>
     </section>
 
-    <!-- Success Modal -->
-    <div class="modal" id="successModal">
-      <div class="modal-card">
-        <div class="modal-success-icon"><i data-lucide="check"></i></div>
-        <h3>Request Submitted Successfully!</h3>
-        <p>Thank you for choosing Kinetic Dental. Here are your booking details:</p>
-        <div class="modal-summary" id="modalSummary">
-          <!-- Populated by JS -->
-        </div>
-        <p class="modal-notice">Dr. Nadia's team will contact you at this number within 1-2 hours to confirm your spot. Save your <strong>Booking Reference</strong> below to check for clinic replies later.</p>
-        <button class="btn btn-primary btn-block" id="modalCloseBtn">Awesome, Thank You!</button>
-      </div>
-    </div>
-
-    <!-- Check Appointment Status Section -->
-    <section id="check-status" class="check-status-section section-padding">
+    <!-- Booking status -->
+    <section id="check-status" class="section-padding" style="padding-bottom:0">
       <div class="container">
-        <div class="section-header scroll-reveal">
-          <span class="section-tag">Track Your Request</span>
-          <h2 class="section-title">Check Appointment Status</h2>
-          <p class="section-subtitle">Enter the booking reference shown after you submitted your request to view clinic replies and status updates.</p>
-        </div>
-
-        <div class="check-status-wrap scroll-reveal">
-          <div class="check-status-visual">
-            <img src="office-2.jpeg" alt="Kinetic Dental reception and patient care">
+        <div class="status-card scroll-reveal">
+          <div>
+            <span class="section-tag">Already booked?</span>
+            <h2>Check your appointment status</h2>
+            <p>Enter the booking reference from your confirmation to see clinic replies.</p>
           </div>
-          <div class="check-status-box">
-          <form id="statusCheckForm" class="booking-form check-status-form" novalidate>
+          <form id="statusCheckForm" class="check-status-form" novalidate>
             <div class="form-group">
-              <label for="bookingRef">Booking Reference <span class="required">*</span></label>
+              <label for="bookingRef">Booking reference</label>
               <div class="input-wrapper">
                 <i data-lucide="hash" class="input-icon"></i>
-                <input type="text" id="bookingRef" name="bookingRef" placeholder="e.g. Ab3xYz9KpQ2m..." required>
+                <input type="text" id="bookingRef" name="bookingRef" placeholder="Booking reference" required>
               </div>
               <span class="error-msg" id="bookingRefError">Please enter your booking reference.</span>
             </div>
-            <button type="submit" class="btn btn-primary btn-block" id="statusCheckBtn">
+            <button type="submit" class="btn btn-primary" id="statusCheckBtn">
               <span id="statusCheckBtnText">Check Status</span>
-              <i data-lucide="search" class="icon-right" id="statusCheckBtnIcon"></i>
             </button>
           </form>
 
           <div class="status-result hidden" id="statusResult">
             <div class="status-result-header">
-              <h4>Your Appointment Request</h4>
+              <h4>Your appointment request</h4>
               <span class="status-badge" id="statusResultBadge">Pending</span>
             </div>
             <div class="modal-summary" id="statusResultSummary"></div>
             <div class="admin-replies-panel hidden" id="adminRepliesPanel">
-              <h5><i data-lucide="message-circle" class="icon-sm"></i> Clinic Response</h5>
+              <h5><i data-lucide="message-circle" class="icon-sm"></i> Clinic response</h5>
               <div id="adminRepliesList"></div>
             </div>
-            <p class="status-result-empty hidden" id="statusResultNoReply">No clinic reply yet. Our team will contact you by phone or add a response here soon.</p>
-          </div>
+            <p class="status-result-empty hidden" id="statusResultNoReply">No clinic reply yet. Our team will contact you by phone or reply here soon.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Contact & Location Section -->
-    <section id="contact" class="contact-section section-padding">
+    <!-- Contact -->
+    <section id="contact" class="section-padding">
       <div class="container contact-container">
         <div class="contact-info-panel scroll-reveal">
-          <span class="section-tag">Find Us</span>
-          <h2 class="section-title">Get in Touch With Us</h2>
-          <p class="contact-intro">Have queries or need immediate dental advice? Dr. Nadia and her clinic staff are standing by to assist you.</p>
+          <span class="section-tag">Visit Us</span>
+          <h2 class="section-title">Find the clinic</h2>
+          <p class="section-subtitle">Walking distance from Mirpur 12 bus stand and metro station.</p>
 
           <div class="contact-list">
             <div class="contact-item-box">
               <div class="c-icon"><i data-lucide="map-pin"></i></div>
               <div>
-                <h4>Clinic Location</h4>
-                <p>House no: 16, Road: 3, Sujatnagar, Mirpur 12, Dhaka, Bangladesh</p>
-                <a href="https://maps.app.goo.gl/1kL5wwBY6asheCxeA?g_st=ipc" target="_blank" class="map-link-btn">
-                  View on Google Maps <i data-lucide="external-link" class="icon-sm"></i>
-                </a>
+                <h4>Address</h4>
+                <p>House 16, Road 3, Sujatnagar, Mirpur 12, Dhaka</p>
+                <a href="https://maps.app.goo.gl/1kL5wwBY6asheCxeA?g_st=ipc" target="_blank" rel="noopener" class="link-arrow">Get directions <i data-lucide="arrow-up-right" class="icon-sm"></i></a>
               </div>
             </div>
-
             <div class="contact-item-box">
               <div class="c-icon"><i data-lucide="phone"></i></div>
               <div>
-                <h4>Call Center</h4>
+                <h4>Phone</h4>
                 <p><a href="tel:+8801313175779" id="contactHotline1">+880 1313-175779</a></p>
-                <p><a href="tel:+8801308388577" id="contactHotline2">+880 1308-388577</a> (Available during working hours)</p>
+                <p><a href="tel:+8801308388577" id="contactHotline2">+880 1308-388577</a></p>
               </div>
             </div>
-
             <div class="contact-item-box">
               <div class="c-icon"><i data-lucide="mail"></i></div>
               <div>
-                <h4>Official Email Address</h4>
-                <p>drnadiakineticdental@gmail.com</p>
+                <h4>Email</h4>
+                <p><a href="mailto:drnadiakineticdental@gmail.com">drnadiakineticdental@gmail.com</a></p>
               </div>
-            </div>
-
-            <div class="contact-item-box">
-              <div class="c-icon"><i data-lucide="globe"></i></div>
-              <div>
-                <h4>Official Website</h4>
-                <p><a href="https://kineticdentalcare.com/" target="_blank" rel="noopener" class="text-underline">kineticdentalcare.com</a></p>
-              </div>
-            </div>
-          </div>
-
-          <div class="contact-social-connect">
-            <h4>Join Our Dental Community:</h4>
-            <div class="social-buttons">
-              <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" class="social-btn fb-page">
-                <i data-lucide="facebook"></i> Facebook Page
-              </a>
-              <a href="https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr" target="_blank" class="social-btn fb-group">
-                <i data-lucide="users"></i> Facebook Group
-              </a>
             </div>
           </div>
         </div>
 
-        <div class="contact-map-panel scroll-reveal">
-          <!-- Interactive Map Container -->
-          <div class="map-card-wrapper">
-            <div class="map-header-bar">
-              <div class="map-title-info">
-                <i data-lucide="navigation-2" class="map-title-icon"></i>
-                <div>
-                  <h4>Live Location Navigation</h4>
-                  <p>Sujatnagar, Mirpur 12 (Near Bus Stand)</p>
-                </div>
-              </div>
-              <a href="https://maps.app.goo.gl/1kL5wwBY6asheCxeA?g_st=ipc" target="_blank" class="btn btn-primary btn-sm btn-map-action">
-                Open Directions <i data-lucide="arrow-up-right" class="icon-right"></i>
-              </a>
-            </div>
-            
-            <div class="map-frame-box">
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3650.063851042784!2d90.3708!3d23.8252!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c14949533f81%3A0x6758514936d93e17!2sMirpur%2012%20Bus%20Stand!5e0!3m2!1sen!2sbd!4v1620000000000!5m2!1sen!2sbd" 
-                style="border:0;" 
-                allowfullscreen="" 
-                loading="lazy" 
-                referrerpolicy="no-referrer-when-downgrade"
-                title="Google Map showing Kinetic Dental Location near Mirpur 12">
-              </iframe>
-            </div>
-            
-            <div class="map-footer-details">
-              <i data-lucide="info" class="text-primary flex-shrink-0"></i>
-              <p>Clinic is situated in <strong>House 16, Road 3</strong>, which is within walking distance from the Mirpur 12 metro/bus station.</p>
-            </div>
-          </div>
+        <div class="map-frame-box scroll-reveal">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3650.063851042784!2d90.3708!3d23.8252!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c14949533f81%3A0x6758514936d93e17!2sMirpur%2012%20Bus%20Stand!5e0!3m2!1sen!2sbd!4v1620000000000!5m2!1sen!2sbd"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Map showing Kinetic Dental near Mirpur 12">
+          </iframe>
         </div>
       </div>
     </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+      <span class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</span>
+      <button class="lightbox-nav prev" id="lightboxPrev" aria-label="Previous image">&#10094;</button>
+      <img class="lightbox-content" id="lightboxImg" src="" alt="Zoomed view">
+      <button class="lightbox-nav next" id="lightboxNext" aria-label="Next image">&#10095;</button>
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+
+    <!-- Success modal -->
+    <div class="modal" id="successModal">
+      <div class="modal-card">
+        <div class="modal-success-icon"><i data-lucide="check"></i></div>
+        <h3>Request submitted</h3>
+        <p>Thank you for choosing Kinetic Dental. Your booking details:</p>
+        <div class="modal-summary" id="modalSummary"></div>
+        <p class="modal-notice">We’ll call you within 1–2 hours to confirm. Save your <strong>Booking Reference</strong> to check replies later.</p>
+        <button class="btn btn-primary btn-block" id="modalCloseBtn">Done</button>
+      </div>
+    </div>
 
   </main>
 
@@ -1573,103 +996,110 @@
   <footer class="footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <a href="#" class="logo footer-logo">
-          <img src="first.jpg" alt="Kinetic Dental Logo" class="logo-img">
-          <div class="logo-text">
-            <span class="logo-title text-white">Kinetic Dental</span>
-            <span class="logo-sub text-white-op">Healthcare Center</span>
-          </div>
+        <a href="index.html" class="logo">
+          <img src="tooth-mark.svg" alt="" class="logo-img" width="36" height="36">
+          <span class="logo-text">
+            <span class="logo-title">Kinetic Dental</span>
+            <span class="logo-sub">Healthcare Center</span>
+          </span>
         </a>
-        <p class="footer-brand-desc">Providing high-quality diagnostic and treatment dentistry to families in Dhaka. Driven by values of hygiene, professional integrity, and patient comfort.</p>
-        <p class="hashtag-cloud">#dentist #dentistnearme #dentalcare #toothwhitening #scaling #ToothacheSolutions</p>
+        <p class="footer-brand-desc">Gentle, modern dentistry for families in Mirpur 12, Dhaka — led by Dr. Nadia.</p>
+        <div class="footer-socials">
+          <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Page"><i data-lucide="facebook"></i></a>
+          <a href="https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Group"><i data-lucide="users"></i></a>
+        </div>
       </div>
 
       <div class="footer-links">
-        <h4>Quick Links</h4>
+        <h4>Clinic</h4>
         <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#all-treatments">All Treatments</a></li>
-          <li><a href="treatments.html">Treatments</a></li>
+          <li><a href="#all-treatments">Treatments</a></li>
+          <li><a href="doctors.html">Our Doctors</a></li>
+          <li><a href="treatments.html">Results</a></li>
           <li><a href="dental-problems.html">Dental Tips</a></li>
           <li><a href="campaigns.html">Campaigns</a></li>
-          <li><a href="doctors.html">Our Doctors</a></li>
-          <li><a href="#appointment">Book Appointment</a></li>
-          <li><a href="#check-status">Check Status</a></li>
-          <li><a href="admin.html" style="color: var(--accent); font-weight: 700;">Admin Panel</a></li>
         </ul>
       </div>
 
       <div class="footer-hours">
-        <h4>Chamber Hours</h4>
+        <h4>Hours</h4>
         <ul>
-          <li><span>Open Days:</span> <span id="footerHoursOpen">Friday to Thursday</span></li>
+          <li><span>Open:</span> <span id="footerHoursOpen">Friday to Thursday</span></li>
           <li><span>Morning:</span> <span id="footerHoursMorning">10:00 AM - 2:00 PM</span></li>
           <li><span>Evening:</span> <span id="footerHoursEvening">5:00 PM - 9:00 PM</span></li>
-          <li><span>Emergency Call:</span> <span id="footerHoursEmergency">24/7 Hotline</span></li>
+          <li><span>Emergency:</span> <span id="footerHoursEmergency">24/7 Hotline</span></li>
         </ul>
-        <h4 style="margin-top: 20px;">Contact Numbers</h4>
+      </div>
+
+      <div class="footer-links">
+        <h4>Contact</h4>
         <ul>
           <li><a href="tel:+8801313175779" id="footerHotline1">01313-175779</a></li>
           <li><a href="tel:+8801308388577" id="footerHotline2">01308-388577</a></li>
+          <li><a href="#appointment">Book Appointment</a></li>
+          <li><a href="#check-status">Check Booking Status</a></li>
         </ul>
       </div>
     </div>
-    
+
     <div class="footer-bottom">
       <div class="container footer-bottom-content">
-        <p>&copy; 2026 Kinetic Dental & Healthcare Center. All rights reserved.</p>
-        <p>Website: <a href="https://kineticdentalcare.com/" target="_blank" rel="noopener">kineticdentalcare.com</a></p>
+        <p>&copy; 2026 Kinetic Dental &amp; Healthcare Center</p>
+        <p>kineticdentalcare.com</p>
       </div>
     </div>
   </footer>
 
-  <!-- Scroll to Top Button -->
-  <button class="scroll-to-top" id="scrollTopBtn" aria-label="Scroll to Top">
+  <button class="scroll-to-top" id="scrollTopBtn" aria-label="Scroll to top">
     <i data-lucide="chevron-up"></i>
   </button>
 
-  <!-- Welcome Special Offer / Poster Popup Modal -->
+  <!-- Special offer popup (admin-controlled) -->
   <div class="offer-modal" id="offerPopupModal" role="dialog" aria-modal="true" aria-labelledby="offerModalTitle">
     <div class="offer-modal-card">
       <button type="button" class="offer-modal-close" id="closeOfferModalBtn" aria-label="Close offer">&times;</button>
-      <div class="offer-modal-poster-wrap" id="offerModalPosterWrap">
-        <img src="achivment.jpeg" alt="Kinetic Dental Special Offer Poster" id="offerModalPosterImg">
+      <div class="offer-modal-poster-wrap" id="offerModalPosterWrap" style="display:none">
+        <img alt="Kinetic Dental special offer" id="offerModalPosterImg">
         <span class="offer-modal-badge" id="offerModalBadge">Special Offer</span>
       </div>
       <div class="offer-modal-body">
+        <div class="offer-target-badge hidden" id="offerTreatmentBadge">
+          <i data-lucide="stethoscope" style="width:13px;height:13px;"></i> <span id="offerTreatmentName"></span>
+        </div>
         <h3 class="offer-modal-title" id="offerModalTitle">Special Offer</h3>
         <p class="offer-modal-details" id="offerModalDetails"></p>
+        <div class="offer-price-row hidden" id="offerPriceRow">
+          <div class="offer-price-values">
+            <span class="offer-old-price" id="offerOldPrice"></span>
+            <span class="offer-new-price" id="offerNewPrice"></span>
+          </div>
+          <span class="offer-discount-pill" id="offerDiscountPill"></span>
+        </div>
         <div class="offer-modal-actions">
-          <a href="#appointment" class="btn btn-primary btn-lg" id="offerModalCta">
-            <i data-lucide="sparkles" class="icon-left"></i> <span id="offerModalCtaText">Book with Offer</span>
-          </a>
+          <a href="#appointment" class="btn btn-primary" id="offerModalCta"><span id="offerModalCtaText">Book with Offer</span></a>
           <button type="button" class="btn btn-secondary" id="dismissOfferModalBtn">Later</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Floating WhatsApp Quick Dial -->
   <a href="https://wa.me/8801313175779?text=Hello%20Kinetic%20Dental%2C%20I%20would%20like%20to%20consult%20or%20book%20an%20appointment." target="_blank" rel="noopener noreferrer" class="floating-whatsapp-btn" id="floatingWhatsappBtn" aria-label="Chat on WhatsApp">
     <i data-lucide="message-circle" class="whatsapp-icon"></i>
-    <span class="whatsapp-label">WhatsApp Helpline</span>
+    <span class="whatsapp-label">WhatsApp</span>
   </a>
 
-  <!-- Floating Special Offer Button -->
-  <button type="button" class="floating-offer-btn hidden" id="floatingOfferBtn" aria-label="View Special Offer">
-    <span style="font-size:18px;">🎉</span>
+  <button type="button" class="floating-offer-btn hidden" id="floatingOfferBtn" aria-label="View special offer">
+    <i data-lucide="gift"></i>
     <span id="floatingOfferBtnText">Special Offer</span>
   </button>
 
-  <!-- Firebase Compat SDKs -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
-  <!-- Firebase Configuration (Dynamic from Environment Variables) -->
   <script src="firebase-config.js"></script>
+  <script src="firebase-init.js"></script>
 
-  <!-- Link to logic script -->
   <script src="page-utils.js"></script>
   <script src="app.js"></script>
 </body>

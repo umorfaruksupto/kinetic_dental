@@ -8,55 +8,60 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://kineticdentalcare.com/campaigns.html">
 
-  <link rel="icon" type="image/x-icon" href="first.jpg">
+  <link rel="icon" type="image/svg+xml" href="tooth-mark.svg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Top Announcement Bar (Tech Dental Style) -->
+  <!-- Top bar -->
   <div class="top-bar">
     <div class="container top-bar-content">
       <div class="top-info">
-        <span class="top-link"><span class="top-badge-hotline">24/7 Emergency</span> Hotline:</span>
-        <a href="tel:+8801313175779" class="top-link"><i data-lucide="phone" class="icon-sm"></i> 01313-175779</a>
-        <a href="tel:+8801308388577" class="top-link"><i data-lucide="phone" class="icon-sm"></i> 01308-388577</a>
-        <span class="top-link hide-mobile"><i data-lucide="map-pin" class="icon-sm"></i> Mirpur 12, Dhaka (Near Bus Stand)</span>
-        <span class="top-link hide-mobile"><i data-lucide="clock" class="icon-sm"></i> 10AM-2PM &amp; 5PM-9PM (Friday Open)</span>
+        <span class="top-link"><span class="top-badge-hotline">24/7 Emergency</span></span>
+        <a href="tel:+8801313175779" class="top-link"><i data-lucide="phone" class="icon-sm"></i> <span class="hotline1-text">01313-175779</span></a>
+        <a href="tel:+8801308388577" class="top-link"><i data-lucide="phone" class="icon-sm"></i> <span class="hotline2-text">01308-388577</span></a>
+        <span class="top-link hide-mobile"><i data-lucide="clock" class="icon-sm"></i> 10AM–2PM &amp; 5PM–9PM, open daily</span>
+      </div>
+      <div class="top-bar-ticker-wrap hidden" id="topBarTickerWrap">
+        <span class="top-bar-ticker-badge">NOTICE</span>
+        <span class="top-bar-ticker-text" id="topBarTickerText"></span>
       </div>
       <div class="top-socials">
-        <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" aria-label="Facebook Page"><i data-lucide="facebook"></i></a>
-        <a href="https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr" target="_blank" aria-label="Facebook Group"><i data-lucide="users"></i></a>
+        <span class="top-link hide-mobile" id="topAddress"><i data-lucide="map-pin" class="icon-sm"></i> <span class="address-text">Mirpur 12, Dhaka</span></span>
+        <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Page" id="topFbPage"><i data-lucide="facebook"></i></a>
+        <a href="https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Group" id="topFbGroup"><i data-lucide="users"></i></a>
       </div>
     </div>
   </div>
 
-  <!-- Header Section -->
+  <!-- Header -->
   <header class="main-header">
     <div class="container nav-container">
-      <a href="index.html" class="logo">
-        <img src="first.jpg" alt="Kinetic Dental Logo" class="logo-img">
-        <div class="logo-text">
+      <a href="index.html" class="logo" aria-label="Kinetic Dental home">
+        <img src="tooth-mark.svg" alt="" class="logo-img" width="36" height="36">
+        <span class="logo-text">
           <span class="logo-title">Kinetic Dental</span>
           <span class="logo-sub">Healthcare Center</span>
-        </div>
+        </span>
       </a>
 
-      <nav class="desktop-nav">
-        <a href="index.html" class="nav-item">Home</a>
+      <nav class="desktop-nav" aria-label="Primary">
         <a href="index.html#all-treatments" class="nav-item">Treatments</a>
         <a href="doctors.html" class="nav-item">Doctors</a>
+        <a href="treatments.html" class="nav-item">Results</a>
         <a href="dental-problems.html" class="nav-item">Dental Tips</a>
+        <a href="campaigns.html" class="nav-item active" aria-current="page">Campaigns</a>
         <a href="index.html#contact" class="nav-item">Contact</a>
         <a href="index.html#appointment" class="btn btn-primary btn-nav">Book Appointment</a>
       </nav>
 
       <div class="nav-controls-mobile">
-        <button class="mobile-menu-btn" id="menuToggleBtn" aria-label="Open Menu">
+        <button class="mobile-menu-btn" id="menuToggleBtn" aria-label="Open menu">
           <i data-lucide="menu" class="menu-icon"></i>
           <i data-lucide="x" class="close-icon hidden"></i>
         </button>
@@ -64,130 +69,35 @@
     </div>
   </header>
 
-  <!-- Mobile Side Menu -->
   <div class="mobile-drawer" id="mobileDrawer">
-    <nav class="mobile-nav">
-      <a href="index.html" class="mobile-nav-item">Home</a>
-      <a href="index.html#all-treatments" class="mobile-nav-item">Treatments (চিকিৎসা সমূহ)</a>
-      <a href="doctors.html" class="mobile-nav-item">Doctors (৮ জন ডাক্তার)</a>
-      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips (ডাক্তারের পরামর্শ)</a>
-      <a href="campaigns.html" class="mobile-nav-item active">Free Campaigns (ফ্রি ক্যাম্পেইন)</a>
-      <a href="index.html#contact" class="mobile-nav-item">Contact Us (যোগাযোগ)</a>
+    <nav class="mobile-nav" aria-label="Mobile">
+      <a href="index.html#all-treatments" class="mobile-nav-item">Treatments · চিকিৎসা</a>
+      <a href="doctors.html" class="mobile-nav-item">Doctors · ডাক্তার</a>
+      <a href="treatments.html" class="mobile-nav-item">Results · সফল চিকিৎসা</a>
+      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips · পরামর্শ</a>
+      <a href="campaigns.html" class="mobile-nav-item">Free Campaigns · ক্যাম্পেইন</a>
+      <a href="index.html#contact" class="mobile-nav-item">Contact · যোগাযোগ</a>
       <a href="index.html#appointment" class="btn btn-primary mobile-booking-btn">Book Appointment</a>
     </nav>
   </div>
   <div class="drawer-overlay" id="drawerOverlay"></div>
 
-  <!-- Inner Hero -->
   <section class="inner-hero">
     <div class="container">
-      <h1>Kinetic Free Dental Campaigns</h1>
-      <p>Giving back to our community — free check-ups, fluoride application and oral health awareness at schools, mosques and local events.</p>
-      <p class="inner-hero-bn">সমাজের জন্য আমাদের বিনামূল্যে ডেন্টাল ক্যাম্প — স্কুল, মসজিদ ও স্থানীয় অনুষ্ঠানে ফ্রি চেকআপ, ফ্লোরাইড ও সচেতনতা।</p>
-      <div class="breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Campaigns</div>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a><span>/</span><span>Campaigns</span></nav>
+      <h1>Free dental camps</h1>
+      <p>Updates and stories from our community dental camps across Dhaka.</p>
     </div>
   </section>
 
   <!-- Main Content -->
   <main class="section-padding">
     <div class="container">
-      <div class="section-header scroll-reveal">
-        <span class="section-tag">Community Impact</span>
-        <h2 class="section-title">Our Free Dental Camps</h2>
-        <p class="section-subtitle">Each camp provides free consultation, basic treatment and oral hygiene education — English &amp; বাংলা।</p>
+      <div class="posts-grid scroll-reveal" id="campaignsGridContainer">
+        <!-- Dynamic campaigns loaded from Firebase via Google Drive links -->
+        <p class="empty-blog-state">Dental camp stories will appear here soon.</p>
       </div>
 
-      <div class="campaign-grid scroll-reveal" id="campaignsGridContainer">
-
-        <!-- Campaign 1 -->
-        <div class="campaign-card">
-          <div class="campaign-thumb">
-            <img src="our-program-2.jpeg" alt="Free dental camp at local school">
-            <span class="campaign-badge">School Camp</span>
-          </div>
-          <div class="campaign-info">
-            <h3>Mirpur Kids Smile Camp</h3>
-            <span class="campaign-location"><i data-lucide="map-pin" class="icon-sm"></i> Mirpur 12 Primary School</span>
-            <p>Free dental check-ups and fluoride application for over 200 children, with oral hygiene education sessions for parents and teachers.</p>
-            <p class="campaign-text-bn">২০০+ শিশুর বিনামূল্যে দাঁত পরীক্ষা ও ফ্লোরাইড প্রয়োগ, পাশাপাশি অভিভাবক ও শিক্ষকদের জন্য মুখের স্বাস্থ্য শিক্ষা সেশন।</p>
-          </div>
-        </div>
-
-        <!-- Campaign 2 -->
-        <div class="campaign-card">
-          <div class="campaign-thumb">
-            <img src="our-program-1.jpeg" alt="Free dental camp at mosque">
-            <span class="campaign-badge">Community</span>
-          </div>
-          <div class="campaign-info">
-            <h3>Ramadan Free Scaling Camp</h3>
-            <span class="campaign-location"><i data-lucide="map-pin" class="icon-sm"></i> Sujatnagar Jame Masjid</span>
-            <p>During Ramadan, our team offered complimentary scaling and polishing for low-income families, reaching more than 120 patients in two days.</p>
-            <p class="campaign-text-bn">রমজানে আমাদের টিম নিম্ন আয়ের পরিবারের জন্য বিনামূল্যে স্কেলিং ও পলিশিং করেছে — দুই দিনে ১২০+ রোগীর সেবা।</p>
-          </div>
-        </div>
-
-        <!-- Campaign 3 -->
-        <div class="campaign-card">
-          <div class="campaign-thumb">
-            <img src="our-program-3.jpeg" alt="Free dental camp at old age home">
-            <span class="campaign-badge">Elder Care</span>
-          </div>
-          <div class="campaign-info">
-            <h3>Smiles for Seniors</h3>
-            <span class="campaign-location"><i data-lucide="map-pin" class="icon-sm"></i> Old Age Home, Dhaka</span>
-            <p>Complete denture consultation, free cleaning and medicine distribution for elderly residents who cannot easily visit a clinic.</p>
-            <p class="campaign-text-bn">ক্লিনিকে আসতে পারেন না এমন বয়স্কদের জন্য সম্পূর্ণ ডেনচার পরামর্শ, বিনামূল্যে পরিষ্কার ও ওষুধ বিতরণ।</p>
-          </div>
-        </div>
-
-        <!-- Campaign 4 -->
-        <div class="campaign-card">
-          <div class="campaign-thumb">
-            <img src="our-program-4.jpeg" alt="Free dental awareness seminar">
-            <span class="campaign-badge">Awareness</span>
-          </div>
-          <div class="campaign-info">
-            <h3>Oral Health Awareness Seminar</h3>
-            <span class="campaign-location"><i data-lucide="map-pin" class="icon-sm"></i> Mirpur Community Hall</span>
-            <p>An interactive seminar teaching correct brushing technique, diet tips and early warning signs of oral cancer — open to all, free of cost.</p>
-            <p class="campaign-text-bn">সঠিক ব্রাশিং কৌশল, খাদ্যাভ্যাস ও মুখের ক্যান্সারের প্রাথমিক লক্ষণ শেখানো ইন্টারঅ্যাক্টিভ সেমিনার — সবার জন্য বিনামূল্যে।</p>
-          </div>
-        </div>
-
-        <!-- Campaign 5 -->
-        <div class="campaign-card">
-          <div class="campaign-thumb">
-            <img src="our-program-2.jpeg" alt="Free dental camp at garment factory">
-            <span class="campaign-badge">Workers Care</span>
-          </div>
-          <div class="campaign-info">
-            <h3>Garment Workers Free Check-up</h3>
-            <span class="campaign-location"><i data-lucide="map-pin" class="icon-sm"></i> Mirpur Industrial Area</span>
-            <p>On-site dental screening and free medicines for 300+ garment workers, many of whom had never seen a dentist before.</p>
-            <p class="campaign-text-bn">৩০০+ গার্মেন্টস শ্রমিকের অন-সাইট দাঁত পরীক্ষা ও বিনামূল্যে ওষুধ — অনেকেরই আগে কখনো ডেন্টিস্ট দেখানো হয়নি।</p>
-          </div>
-        </div>
-
-        <!-- Campaign 6 -->
-        <div class="campaign-card">
-          <div class="campaign-thumb">
-            <img src="our-program-4.jpeg" alt="Upcoming free dental camp">
-            <span class="campaign-badge">Upcoming</span>
-          </div>
-          <div class="campaign-info">
-            <h3>Winter Smiles Free Camp 2026</h3>
-            <span class="campaign-location"><i data-lucide="calendar" class="icon-sm"></i> December 2026</span>
-            <p>Our next big free dental camp with scaling, fillings and extractions for the underprivileged. Follow our Facebook page for the exact date and location.</p>
-            <p class="campaign-text-bn">আমাদের পরবর্তী বড় বিনামূল্যে ডেন্টাল ক্যাম্প — স্কেলিং, ফিলিং ও এক্সট্রাকশন। সঠিক তারিখ ও স্থান জানতে Facebook পেজ ফলো করুন।</p>
-          </div>
-        </div>
-
-      </div>
-
-      <div style="text-align:center; margin-top: 50px;" class="scroll-reveal">
-        <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" class="btn btn-secondary btn-lg"><i data-lucide="facebook" class="icon-left"></i> Follow Future Camps</a>
-      </div>
     </div>
   </main>
 
@@ -195,51 +105,57 @@
   <footer class="footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <a href="index.html" class="logo footer-logo">
-          <img src="first.jpg" alt="Kinetic Dental Logo" class="logo-img">
-          <div class="logo-text">
-            <span class="logo-title text-white">Kinetic Dental</span>
-            <span class="logo-sub text-white-op">Healthcare Center</span>
-          </div>
+        <a href="index.html" class="logo">
+          <img src="tooth-mark.svg" alt="" class="logo-img" width="36" height="36">
+          <span class="logo-text">
+            <span class="logo-title">Kinetic Dental</span>
+            <span class="logo-sub">Healthcare Center</span>
+          </span>
         </a>
-        <p class="footer-brand-desc">Premium dental care in Mirpur 12, Dhaka. Hygiene, comfort and modern technology by Dr. Nadia &amp; team.</p>
+        <p class="footer-brand-desc">Gentle, modern dentistry for families in Mirpur 12, Dhaka — led by Dr. Nadia.</p>
+        <div class="footer-socials">
+          <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Page"><i data-lucide="facebook"></i></a>
+          <a href="https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Group"><i data-lucide="users"></i></a>
+        </div>
       </div>
       <div class="footer-links">
-        <h4>Quick Links</h4>
+        <h4>Clinic</h4>
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="index.html#all-treatments">All Treatments</a></li>
-          <li><a href="treatments.html">Treatments</a></li>
+          <li><a href="index.html#all-treatments">Treatments</a></li>
+          <li><a href="doctors.html">Our Doctors</a></li>
+          <li><a href="treatments.html">Results</a></li>
           <li><a href="dental-problems.html">Dental Tips</a></li>
           <li><a href="campaigns.html">Campaigns</a></li>
-          <li><a href="doctors.html">Our Doctors</a></li>
-          <li><a href="index.html#appointment">Book Appointment</a></li>
         </ul>
       </div>
       <div class="footer-hours">
-        <h4>Chamber Hours</h4>
+        <h4>Hours</h4>
         <ul>
-          <li><span>Open Days:</span> Friday to Thursday</li>
+          <li><span>Open:</span> Friday to Thursday</li>
           <li><span>Morning:</span> 10:00 AM - 2:00 PM</li>
           <li><span>Evening:</span> 5:00 PM - 9:00 PM</li>
+          <li><span>Emergency:</span> 24/7 Hotline</li>
         </ul>
-        <h4 style="margin-top: 20px;">Contact Numbers</h4>
+      </div>
+      <div class="footer-links">
+        <h4>Contact</h4>
         <ul>
           <li><a href="tel:+8801313175779">01313-175779</a></li>
           <li><a href="tel:+8801308388577">01308-388577</a></li>
+          <li><a href="index.html#appointment">Book Appointment</a></li>
+          <li><a href="index.html#check-status">Check Booking Status</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <div class="container footer-bottom-content">
-        <p>&copy; 2026 Kinetic Dental &amp; Healthcare Center. All rights reserved.</p>
-        <p>Website: <a href="https://kineticdentalcare.com/" target="_blank" rel="noopener">kineticdentalcare.com</a></p>
+        <p>&copy; 2026 Kinetic Dental &amp; Healthcare Center</p>
+        <p>kineticdentalcare.com</p>
       </div>
     </div>
   </footer>
 
-  <!-- Scroll to Top Button -->
-  <button class="scroll-to-top" id="scrollTopBtn" aria-label="Scroll to Top">
+  <button class="scroll-to-top" id="scrollTopBtn" aria-label="Scroll to top">
     <i data-lucide="chevron-up"></i>
   </button>
 
@@ -248,6 +164,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
+  <script src="firebase-init.js"></script>
 
   <script src="page-utils.js"></script>
   <script>
@@ -263,61 +180,40 @@
 
     function renderPublicCampaigns(list) {
       const container = document.getElementById('campaignsGridContainer');
-      if (!container || !Array.isArray(list) || !list.length) return;
+      if (!container || !Array.isArray(list)) return;
+      if (!list.length) { container.innerHTML = '<p class="empty-blog-state">Dental camp stories will appear here soon.</p>'; return; }
 
-      container.innerHTML = list.map(camp => `
-        <div class="campaign-card">
-          <div class="campaign-thumb">
-            <img src="${escapeHTML(camp.image || 'our-program-2.jpeg')}" alt="${escapeHTML(camp.title || 'Free Dental Camp')}">
-            ${camp.badge ? `<span class="campaign-badge">${escapeHTML(camp.badge)}</span>` : ''}
-          </div>
-          <div class="campaign-info">
+      container.innerHTML = list.map(camp => {
+        const rawImg = camp.image || camp.imageUrl || '';
+        const imgSrc = typeof formatDriveImageUrl === 'function' ? formatDriveImageUrl(rawImg) : rawImg;
+        const hasImg = imgSrc && imgSrc.trim() !== '' && /drive\.google\.com|googleusercontent\.com/i.test(rawImg);
+
+        return `
+        <article class="post-card">
+          ${hasImg ? `<div class="post-thumb"><img src="${escapeHTML(imgSrc)}" alt="${escapeHTML(camp.title || 'Dental camp')}" loading="lazy" onerror="this.parentElement.remove()"></div>` : ''}
+          <div class="post-body">
+            ${camp.badge ? `<span class="post-tag">${escapeHTML(camp.badge)}</span>` : ''}
             <h3>${escapeHTML(camp.title || '')}</h3>
-            ${camp.location ? `<span class="campaign-location"><i data-lucide="map-pin" class="icon-sm"></i> ${escapeHTML(camp.location)}</span>` : ''}
-            ${camp.descEn ? `<p>${escapeHTML(camp.descEn)}</p>` : ''}
-            ${camp.descBn ? `<p class="campaign-text-bn">${escapeHTML(camp.descBn)}</p>` : ''}
+            ${camp.location ? `<p class="post-meta"><i data-lucide="map-pin" class="icon-sm"></i> ${escapeHTML(camp.location)}</p>` : ''}
+            ${camp.descEn ? `<p>${escapeHTML(String(camp.descEn).slice(0, 180))}${String(camp.descEn).length > 180 ? '…' : ''}</p>` : ''}
           </div>
-        </div>
-      `).join('');
+        </article>
+      `;
+      }).join('');
 
       if (typeof lucide !== 'undefined') lucide.createIcons();
-      if (typeof hideCardsWithoutImages === 'function') {
-        hideCardsWithoutImages('.campaign-card');
-      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       if (typeof lucide !== 'undefined') lucide.createIcons();
-
-      const menuBtn = document.getElementById('menuToggleBtn');
-      const drawer = document.getElementById('mobileDrawer');
-      const overlay = document.getElementById('drawerOverlay');
-      const toggleMenu = (open) => {
-        drawer.classList.toggle('open', open);
-        overlay.classList.toggle('active', open);
-        menuBtn.querySelector('.menu-icon').classList.toggle('hidden', open);
-        menuBtn.querySelector('.close-icon').classList.toggle('hidden', !open);
-      };
-      menuBtn?.addEventListener('click', () => toggleMenu(!drawer.classList.contains('open')));
-      overlay?.addEventListener('click', () => toggleMenu(false));
-
-      const scrollBtn = document.getElementById('scrollTopBtn');
-      window.addEventListener('scroll', () => {
-        scrollBtn.classList.toggle('show', window.scrollY > 400);
-      });
-      scrollBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
       initScrollReveal();
-      hideCardsWithoutImages('.campaign-card');
 
       // 1. Initial cached render from localStorage
       const cachedCmp = localStorage.getItem('kinetic_campaigns');
       if (cachedCmp) {
         try {
           const parsed = JSON.parse(cachedCmp);
-          if (Array.isArray(parsed) && parsed.length) {
-            renderPublicCampaigns(parsed);
-          }
+          if (Array.isArray(parsed)) renderPublicCampaigns(parsed);
         } catch (e) {}
       }
 
@@ -346,7 +242,7 @@
   <!-- Floating WhatsApp Quick Dial -->
   <a href="https://wa.me/8801313175779?text=Hello%20Kinetic%20Dental%2C%20I%20would%20like%20to%20consult%20or%20book%20an%20appointment." target="_blank" rel="noopener noreferrer" class="floating-whatsapp-btn" id="floatingWhatsappBtn" aria-label="Chat on WhatsApp">
     <i data-lucide="message-circle" class="whatsapp-icon"></i>
-    <span class="whatsapp-label">WhatsApp Helpline</span>
+    <span class="whatsapp-label">WhatsApp</span>
   </a>
 </body>
 </html>

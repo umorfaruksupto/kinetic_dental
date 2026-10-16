@@ -24,80 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* --------------------------------------------------------------------------
-     1. Theme Management (Light / Dark Mode)
+     1. Active nav link on scroll
+     (mobile drawer, header shadow and scroll-to-top live in page-utils.js)
      -------------------------------------------------------------------------- */
-  const themeToggleBtns = [
-    document.getElementById('themeToggleBtn'),
-    document.getElementById('themeToggleBtnMobile')
-  ];
-
-  const setTheme = (theme) => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('kinetic-dental-theme', theme);
-    
-    // Update icons
-    themeToggleBtns.forEach(btn => {
-      if (!btn) return;
-      const moonIcon = btn.querySelector('.theme-icon-dark');
-      const sunIcon = btn.querySelector('.theme-icon-light');
-      
-      if (theme === 'dark') {
-        moonIcon?.classList.add('hidden');
-        sunIcon?.classList.remove('hidden');
-      } else {
-        moonIcon?.classList.remove('hidden');
-        sunIcon?.classList.add('hidden');
-      }
-    });
-  };
-
-  // Default new visitors to the clean light theme (clinical/trustworthy branding);
-  // the OS dark-mode preference is not auto-applied, but the manual toggle still works and is remembered.
-  const savedTheme = localStorage.getItem('kinetic-dental-theme');
-  const initialTheme = savedTheme || 'light';
-  setTheme(initialTheme);
-
-  themeToggleBtns.forEach(btn => {
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      setTheme(newTheme);
-    });
-  });
-
-  /* --------------------------------------------------------------------------
-     2. Navigation and Header Shrink
-     -------------------------------------------------------------------------- */
-  const header = document.querySelector('.main-header');
-  const scrollTopBtn = document.getElementById('scrollTopBtn');
-  
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      header.classList.add('shrink');
-    } else {
-      header.classList.remove('shrink');
-    }
-
-    if (scrollTopBtn) {
-      if (window.scrollY > 400) {
-        scrollTopBtn.classList.add('active');
-      } else {
-        scrollTopBtn.classList.remove('active');
-      }
-    }
-
-    highlightActiveNavLink();
-  });
-
-  if (scrollTopBtn) {
-    scrollTopBtn.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
+  window.addEventListener('scroll', () => highlightActiveNavLink(), { passive: true });
 
   const sections = document.querySelectorAll('section[id]');
   const navItems = document.querySelectorAll('.desktop-nav .nav-item');
@@ -122,105 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* --------------------------------------------------------------------------
-     3. Mobile Navigation Drawer
-     -------------------------------------------------------------------------- */
-  const menuToggleBtn = document.getElementById('menuToggleBtn');
-  const mobileDrawer = document.getElementById('mobileDrawer');
-  const drawerOverlay = document.getElementById('drawerOverlay');
-  const mobileNavLinks = document.querySelectorAll('.mobile-nav-item');
-
-  const toggleDrawer = () => {
-    const isOpen = mobileDrawer.classList.toggle('open');
-    drawerOverlay.classList.toggle('active');
-    
-    const menuIcon = menuToggleBtn.querySelector('.menu-icon');
-    const closeIcon = menuToggleBtn.querySelector('.close-icon');
-    
-    if (isOpen) {
-      menuIcon?.classList.add('hidden');
-      closeIcon?.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    } else {
-      menuIcon?.classList.remove('hidden');
-      closeIcon?.classList.add('hidden');
-      document.body.style.overflow = '';
-    }
-  };
-
-  if (menuToggleBtn) menuToggleBtn.addEventListener('click', toggleDrawer);
-  if (drawerOverlay) drawerOverlay.addEventListener('click', toggleDrawer);
-
-  mobileNavLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      if (mobileDrawer.classList.contains('open')) {
-        toggleDrawer();
-      }
-    });
-  });
-
-  /* --------------------------------------------------------------------------
-     3b. Desktop Nav "More" Dropdown
-     -------------------------------------------------------------------------- */
-  const navMoreDropdown = document.getElementById('navMoreDropdown');
-  const navMoreBtn = document.getElementById('navMoreBtn');
-
-  if (navMoreBtn && navMoreDropdown) {
-    navMoreBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isOpen = navMoreDropdown.classList.toggle('open');
-      navMoreBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!navMoreDropdown.contains(e.target)) {
-        navMoreDropdown.classList.remove('open');
-        navMoreBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
-
-    navMoreDropdown.querySelectorAll('.nav-dropdown-menu a').forEach((link) => {
-      link.addEventListener('click', () => {
-        navMoreDropdown.classList.remove('open');
-        navMoreBtn.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
-
-  /* --------------------------------------------------------------------------
-     3c. Hide cards with missing/broken images
+     2. Hide cards with missing/broken images + scroll reveal
      -------------------------------------------------------------------------- */
   if (typeof hideCardsWithoutImages === 'function') {
-    hideCardsWithoutImages('.home-link-card');
-    hideCardsWithoutImages('.program-card');
     hideCardsWithoutImages('.ft-card');
     hideCardsWithoutImages('.gallery-item');
   }
 
-  /* --------------------------------------------------------------------------
-     4. Scroll Reveal Animations (Intersection Observer)
-     -------------------------------------------------------------------------- */
-  const revealElements = document.querySelectorAll('.scroll-reveal');
-  
-  const revealCallback = (entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('reveal-active');
-        observer.unobserve(entry.target);
-      }
-    });
-  };
-
-  const revealObserver = new IntersectionObserver(revealCallback, {
-    root: null,
-    // threshold: 0 so tall containers (e.g. the treatments grid) still reveal —
-    // a percentage-based threshold can never be satisfied once content is taller than the viewport.
-    threshold: 0,
-    rootMargin: '0px 0px -50px 0px'
-  });
-
-  revealElements.forEach(element => {
-    revealObserver.observe(element);
-  });
+  initScrollReveal();
 
   /* --------------------------------------------------------------------------
      5. Date Restrictions for Appointment Form
@@ -317,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
           replies: []
         };
 
-        // 1. Post to Formspree API
+        // 1. Post to Formspree API (with graceful fallback if unverified/blocked)
         const formspreePromise = fetch('https://formspree.io/f/xjgdaagw', {
           method: 'POST',
           headers: {
@@ -332,6 +171,9 @@ document.addEventListener('DOMContentLoaded', () => {
             time: bookingData.time,
             message: bookingData.notes
           })
+        }).catch(err => {
+          console.warn('Formspree dispatch notice (handled gracefully):', err);
+          return { ok: false, unverifiedOrBlocked: true };
         });
 
         // 2. Post to Firebase Firestore
@@ -591,25 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* --------------------------------------------------------------------------
      8. FAQ Accordion Functionality
      -------------------------------------------------------------------------- */
-  const faqTriggers = document.querySelectorAll('.faq-trigger');
-
-  faqTriggers.forEach(trigger => {
-    trigger.addEventListener('click', () => {
-      const faqCard = trigger.closest('.faq-card');
-      const faqContent = faqCard.querySelector('.faq-content');
-      const isActive = faqCard.classList.contains('active');
-
-      document.querySelectorAll('.faq-card.active').forEach(openCard => {
-        openCard.classList.remove('active');
-        openCard.querySelector('.faq-content').style.maxHeight = '0px';
-      });
-
-      if (!isActive) {
-        faqCard.classList.add('active');
-        faqContent.style.maxHeight = faqContent.scrollHeight + 'px';
-      }
-    });
-  });
+  initFaqAccordion();
 
   /* --------------------------------------------------------------------------
      9. Instant Treatment Explorer (Search & Filter) + Auto-Select Booking
@@ -640,9 +464,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="treatment-icon-circle"><i data-lucide="${escapeHTML(t.icon || 'sparkles')}"></i></div>
             <span class="treatment-status-badge"><i data-lucide="check" style="width:12px;height:12px;"></i> ${escapeHTML(t.badgeText || 'Available')}</span>
           </div>
+          ${t.image ? `<div class="managed-media treatment-media" data-image-wrap><img alt="${escapeHTML(t.title || '')}" loading="lazy" src="${escapeHTML(formatDriveImageUrl(t.image))}" onload="this.parentNode.classList.remove('is-empty')" onerror="this.parentNode.classList.add('is-empty')"></div>` : ''}
           <h3>${escapeHTML(t.title || '')}</h3>
           <div class="treatment-title-bn">${escapeHTML(t.titleBn || '')}</div>
           <p class="treatment-desc">${escapeHTML(t.desc || '')}</p>
+          ${t.details ? `<p class="treatment-details">${escapeHTML(t.details)}</p>` : ''}
           <div class="treatment-symptoms-list">
             <span class="treatment-symptoms-label">লক্ষণ / সমাধান:</span>
             <span class="treatment-symptoms-text">${escapeHTML(t.symptomsText || '')}</span>
@@ -790,14 +616,8 @@ document.addEventListener('DOMContentLoaded', () => {
   window.KineticTreatments = { render: renderTreatmentCards, refresh: filterTreatments };
 
   /* --------------------------------------------------------------------------
-     Dynamic Special Offer & Announcement System (Client Promotion Control)
+     Dynamic Special Offer System (Client Promotion Control)
      -------------------------------------------------------------------------- */
-  const activeOfferBanner = document.getElementById('activeOfferBanner');
-  const offerBannerBadge = document.getElementById('offerBannerBadge');
-  const offerBannerText = document.getElementById('offerBannerText');
-  const offerBannerCta = document.getElementById('offerBannerCta');
-  const closeOfferBannerBtn = document.getElementById('closeOfferBannerBtn');
-
   const offerPopupModal = document.getElementById('offerPopupModal');
   const closeOfferModalBtn = document.getElementById('closeOfferModalBtn');
   const dismissOfferModalBtn = document.getElementById('dismissOfferModalBtn');
@@ -811,50 +631,97 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroMainImage = document.getElementById('heroMainImage');
 
   let currentOfferData = null;
+  const heroSources = { site: '', legacy: '' };
+
+  function refreshHeroImage() {
+    const offer = currentOfferData;
+    const offerSrc = offer && offer.active && offer.showInHero && offer.image ? offer.image : '';
+    setManagedImage(heroMainImage, offerSrc || heroSources.site || heroSources.legacy);
+  }
 
   function applyOfferData(data) {
     if (!data || !data.active) {
-      if (activeOfferBanner) activeOfferBanner.classList.add('hidden');
+      currentOfferData = null;
       if (floatingOfferBtn) floatingOfferBtn.classList.add('hidden');
       if (offerPopupModal) offerPopupModal.classList.remove('show');
-      if (heroMainImage && heroMainImage.getAttribute('data-original-src')) {
-        heroMainImage.src = heroMainImage.getAttribute('data-original-src');
-      }
+      refreshHeroImage();
       return;
     }
 
     currentOfferData = data;
 
     // 1. Update Hero Image if offer poster should appear in hero
-    if (heroMainImage) {
-      if (!heroMainImage.getAttribute('data-original-src')) {
-        heroMainImage.setAttribute('data-original-src', heroMainImage.src);
-      }
-      if (data.showInHero && data.image) {
-        heroMainImage.src = data.image;
-      } else {
-        heroMainImage.src = heroMainImage.getAttribute('data-original-src');
-      }
-    }
-
-    // 2. Update Top Offer Banner
-    if (activeOfferBanner) {
-      if (offerBannerBadge) offerBannerBadge.textContent = data.badge || 'Special Offer';
-      if (offerBannerText) offerBannerText.textContent = `${data.title || ''} — ${data.subtitle || ''}`;
-      if (offerBannerCta) offerBannerCta.textContent = data.ctaText || 'Claim Offer';
-      activeOfferBanner.classList.remove('hidden');
-    }
+    refreshHeroImage();
 
     // 3. Update Modal & Floating Button
     if (offerModalTitle) offerModalTitle.textContent = data.title || 'Exclusive Dental Care Offer';
     if (offerModalDetails) offerModalDetails.textContent = data.subtitle || 'Special discount available on modern clinical treatments. Book your slot today!';
-    if (offerModalBadge) offerModalBadge.textContent = data.badge || 'Limited Time';
+    if (offerModalBadge) offerModalBadge.textContent = data.badge || (data.discountPercent ? `${data.discountPercent}% OFF` : 'Limited Time');
     if (offerModalCtaText) offerModalCtaText.textContent = data.ctaText || 'Book with Offer';
 
-    if (offerModalPosterImg) {
+    // Target Treatment Badge
+    const offerTreatmentBadge = document.getElementById('offerTreatmentBadge');
+    const offerTreatmentName = document.getElementById('offerTreatmentName');
+    if (offerTreatmentBadge && offerTreatmentName) {
+      const targetTreatments = Array.isArray(data.treatments) && data.treatments.length ? data.treatments : [data.treatment].filter(Boolean);
+      const targetLabel = targetTreatments.filter(treatment => treatment !== 'General Consultation' && !String(treatment).toLowerCase().includes('all treatments')).join(', ');
+      if (targetLabel) {
+        offerTreatmentName.textContent = targetLabel;
+        offerTreatmentBadge.classList.remove('hidden');
+      } else {
+        offerTreatmentBadge.classList.add('hidden');
+      }
+    }
+
+    // Strikethrough Price Row & Discount Badge
+    const offerPriceRow = document.getElementById('offerPriceRow');
+    const offerOldPrice = document.getElementById('offerOldPrice');
+    const offerNewPrice = document.getElementById('offerNewPrice');
+    const offerDiscountPill = document.getElementById('offerDiscountPill');
+
+    if (offerPriceRow && offerOldPrice && offerNewPrice && offerDiscountPill) {
+      const hasOld = data.originalPrice && String(data.originalPrice).trim() !== '';
+      const hasNew = data.offerPrice && String(data.offerPrice).trim() !== '';
+      const discountVal = data.discountPercent || data.discount;
+      const hasDiscount = discountVal && String(discountVal).trim() !== '';
+
+      if (hasOld || hasNew || hasDiscount) {
+        offerPriceRow.classList.remove('hidden');
+
+        if (hasOld) {
+          const val = String(data.originalPrice).trim();
+          offerOldPrice.textContent = val.startsWith('BDT') || val.startsWith('৳') ? val : `BDT ${val}`;
+          offerOldPrice.style.display = '';
+        } else {
+          offerOldPrice.style.display = 'none';
+        }
+
+        if (hasNew) {
+          const val = String(data.offerPrice).trim();
+          offerNewPrice.textContent = val.startsWith('BDT') || val.startsWith('৳') ? val : `BDT ${val}`;
+          offerNewPrice.style.display = '';
+        } else {
+          offerNewPrice.style.display = 'none';
+        }
+
+        if (hasDiscount) {
+          const discText = String(discountVal).includes('%') ? String(discountVal) : `${discountVal}% OFF`;
+          offerDiscountPill.textContent = discText.toUpperCase();
+          offerDiscountPill.style.display = '';
+        } else {
+          offerDiscountPill.style.display = 'none';
+        }
+      } else {
+        offerPriceRow.classList.add('hidden');
+      }
+    }
+
+    if (offerModalPosterImg && offerModalPosterImg.parentElement) {
       if (data.image) {
-        offerModalPosterImg.src = data.image;
+        const posterSrc = typeof formatDriveImageUrl === 'function' ? formatDriveImageUrl(data.image) : data.image;
+        offerModalPosterImg.src = posterSrc;
         offerModalPosterImg.parentElement.style.display = 'block';
+        offerModalPosterImg.onerror = () => { offerModalPosterImg.parentElement.style.display = 'none'; };
       } else {
         offerModalPosterImg.parentElement.style.display = 'none';
       }
@@ -875,13 +742,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Handle Offer Booking Action
   function handleOfferBooking() {
     if (offerPopupModal) offerPopupModal.classList.remove('show');
-    if (currentOfferData && currentOfferData.treatment && treatmentTypeSelect) {
-      for (let i = 0; i < treatmentTypeSelect.options.length; i++) {
-        if (treatmentTypeSelect.options[i].value.toLowerCase().includes(currentOfferData.treatment.toLowerCase())) {
-          treatmentTypeSelect.selectedIndex = i;
-          break;
-        }
-      }
+    if (currentOfferData && treatmentTypeSelect) {
+      const offeredTreatments = Array.isArray(currentOfferData.treatments) && currentOfferData.treatments.length
+        ? currentOfferData.treatments
+        : [currentOfferData.treatment].filter(Boolean);
+      const matchedOption = Array.from(treatmentTypeSelect.options).find(option =>
+        offeredTreatments.some(treatment => option.value.toLowerCase().includes(String(treatment).toLowerCase()))
+      );
+      if (matchedOption) treatmentTypeSelect.value = matchedOption.value;
     }
     const notesField = document.getElementById('notes');
     if (notesField && currentOfferData && currentOfferData.title) {
@@ -893,18 +761,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  offerBannerCta?.addEventListener('click', (e) => {
-    e.preventDefault();
-    handleOfferBooking();
-  });
-
   offerModalCta?.addEventListener('click', (e) => {
     e.preventDefault();
     handleOfferBooking();
-  });
-
-  closeOfferBannerBtn?.addEventListener('click', () => {
-    if (activeOfferBanner) activeOfferBanner.classList.add('hidden');
   });
 
   closeOfferModalBtn?.addEventListener('click', () => {
@@ -925,12 +784,16 @@ document.addEventListener('DOMContentLoaded', () => {
     active: true,
     title: 'স্পেশাল ডেন্টাল কেয়ার অফার',
     subtitle: 'দাঁতের স্কেলিং ও পলিশিং এবং টিথ হোয়াইটেনিং-এ বিশেষ ছাড়! সাথে রয়েছে সম্পূর্ণ ফ্রি ডিজিটাল চেকআপ ও ওরাল হেলথ গাইড।',
-    badge: 'Special Offer · Limited Period',
-    image: 'achivment.jpeg',
+    badge: 'Limited Period Offer',
+    treatment: 'Tooth Scaling & Polishing',
+    discountPercent: '25%',
+    originalPrice: 'BDT 2,000',
+    offerPrice: 'BDT 1,500',
+    image: '',
     showInHero: false,
-    showPopup: true,
-    ctaText: 'অফারটি গ্রহণ করুন / Book with Offer',
-    treatment: 'Tooth Scaling & Polishing'
+    // Fallback offer only shows the floating button; the popup is opt-in from the admin panel
+    showPopup: false,
+    ctaText: 'অফারটি গ্রহণ করুন / Book with Offer'
   };
 
   // Load from local cache first, or apply default offer
@@ -995,117 +858,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* --------------------------------------------------------------------------
-     Helper: Safe HTML Escaping
+     Live Clinic Profile Observer (delegates to shared applyGlobalClinicSettings in page-utils.js)
      -------------------------------------------------------------------------- */
-  function escapeHTML(str) {
-    if (!str) return '';
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-
-  /* --------------------------------------------------------------------------
-     Dynamic Chamber & Hotlines Settings (Admin-managed)
-     -------------------------------------------------------------------------- */
-  function applyClinicSettings(settings) {
-    if (!settings) return;
-
-    // 1. Hotlines
-    if (settings.hotline1) {
-      const cleanH1 = settings.hotline1.replace(/[^0-9+]/g, '');
-      const tel1 = cleanH1.startsWith('+') ? cleanH1 : (cleanH1.startsWith('88') ? `+${cleanH1}` : `+88${cleanH1}`);
-      const h1Nodes = document.querySelectorAll('#topHotline1, #apptHotline1, #contactHotline1, #footerHotline1');
-      h1Nodes.forEach(node => {
-        node.setAttribute('href', `tel:${tel1}`);
-        const span = node.querySelector('.hotline1-text');
-        if (span) {
-          span.textContent = settings.hotline1;
-        } else if (node.tagName.toLowerCase() === 'a' && !node.querySelector('span')) {
-          node.textContent = settings.hotline1;
-        }
-      });
-
-      const heroCallBtn = document.getElementById('heroCallBtn');
-      const heroCallText = document.getElementById('heroCallText');
-      if (heroCallBtn) heroCallBtn.setAttribute('href', `tel:${tel1}`);
-      if (heroCallText) heroCallText.textContent = `Call: ${settings.hotline1}`;
-    }
-
-    if (settings.hotline2) {
-      const cleanH2 = settings.hotline2.replace(/[^0-9+]/g, '');
-      const tel2 = cleanH2.startsWith('+') ? cleanH2 : (cleanH2.startsWith('88') ? `+${cleanH2}` : `+88${cleanH2}`);
-      const h2Nodes = document.querySelectorAll('#topHotline2, #apptHotline2, #contactHotline2, #footerHotline2');
-      h2Nodes.forEach(node => {
-        node.setAttribute('href', `tel:${tel2}`);
-        const span = node.querySelector('.hotline2-text');
-        if (span) {
-          span.textContent = settings.hotline2;
-        } else if (node.tagName.toLowerCase() === 'a' && !node.querySelector('span')) {
-          node.textContent = settings.hotline2;
-        }
-      });
-    }
-
-    // 2. WhatsApp
-    if (settings.whatsapp) {
-      const cleanWa = settings.whatsapp.replace(/[^0-9]/g, '');
-      const waNumber = cleanWa.startsWith('88') ? cleanWa : `88${cleanWa}`;
-      const waBtn = document.getElementById('floatingWhatsappBtn');
-      if (waBtn) {
-        waBtn.setAttribute('href', `https://wa.me/${waNumber}?text=Hello%20Kinetic%20Dental%2C%20I%20would%20like%20to%20consult%20or%20book%20an%20appointment.`);
-      }
-    }
-
-    // 3. Top Announcement Bar Live Ticker
-    const tickerWrap = document.getElementById('topBarTickerWrap');
-    const tickerText = document.getElementById('topBarTickerText');
-    if (tickerWrap && tickerText) {
-      if (settings.tickerActive && settings.tickerText && settings.tickerText.trim() !== '') {
-        tickerText.textContent = settings.tickerText;
-        tickerWrap.classList.remove('hidden');
-      } else {
-        tickerWrap.classList.add('hidden');
-      }
-    }
-
-    // 4. Address
-    if (settings.address) {
-      const addrEl = document.querySelector('#topAddress .address-text');
-      if (addrEl) addrEl.textContent = settings.address;
-    }
-
-    // 5. Social Links
-    if (settings.facebookPage) {
-      const fbPageEl = document.getElementById('topFbPage');
-      if (fbPageEl) fbPageEl.href = settings.facebookPage;
-    }
-    if (settings.facebookGroup) {
-      const fbGroupEl = document.getElementById('topFbGroup');
-      if (fbGroupEl) fbGroupEl.href = settings.facebookGroup;
-    }
-  }
-
-  // Load cached clinic settings
-  const cachedClinic = localStorage.getItem('kinetic_clinic_settings');
-  if (cachedClinic) {
-    try {
-      applyClinicSettings(JSON.parse(cachedClinic));
-    } catch (e) {
-      console.error("Local clinic settings parse error", e);
-    }
-  }
-
-  // Firestore clinic settings observer
   try {
     if (window.db) {
       window.db.collection('settings').doc('clinic_profile').onSnapshot((doc) => {
         if (doc.exists) {
           const liveSettings = doc.data();
           localStorage.setItem('kinetic_clinic_settings', JSON.stringify(liveSettings));
-          applyClinicSettings(liveSettings);
+          if (typeof applyGlobalClinicSettings === 'function') {
+            applyGlobalClinicSettings(liveSettings);
+          }
         }
       }, (err) => {
         console.log("Firestore clinic observer:", err.message);
@@ -1116,133 +879,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* --------------------------------------------------------------------------
-     Dynamic Patient Reviews / Testimonials (Admin-managed)
-     -------------------------------------------------------------------------- */
-  const DEFAULT_TESTIMONIALS = [
-    {
-      id: 'rev-1',
-      name: 'Tanvir Hossain',
-      treatment: 'Root Canal & Zirconia Crown',
-      rating: 5,
-      comment: 'Dr. Nadia apur treatment khub shundor ebong painless. Chamber er poribesh 100% sterile. Mirpur 12 e er theke bhalo dental care pawa kothin.',
-      date: 'September 2026',
-      verified: true
-    },
-    {
-      id: 'rev-2',
-      name: 'Sadia Afrin',
-      treatment: 'Teeth Whitening (Bleaching)',
-      rating: 5,
-      comment: 'Ekhane female doctor thakay khub comfortable legeche. 1 session e teeth whitening koralam, result ashar cheyeo onek bhalo hoyeche!',
-      date: 'September 2026',
-      verified: true
-    },
-    {
-      id: 'rev-3',
-      name: 'Mahmudul Hasan',
-      treatment: 'Tooth Scaling & Polishing',
-      rating: 5,
-      comment: 'Digital RVG X-ray diye age problem bujhiechen tarpor scaling korechen. Dater shirshir bhab chole geche. Extremely satisfied.',
-      date: 'August 2026',
-      verified: true
-    },
-    {
-      id: 'rev-4',
-      name: 'Farzana Yesmin',
-      treatment: 'Night Guard for Bruxism',
-      rating: 5,
-      comment: 'Raate dat ghoshar somoshar jonno customized night guard baniyechi. Ekhon r jaw pain hoy na. Khub helpful doctor & clinic staff.',
-      date: 'August 2026',
-      verified: true
-    },
-    {
-      id: 'rev-5',
-      name: 'Kawsar Ahmed',
-      treatment: 'Toothache & Emergency Care',
-      rating: 5,
-      comment: 'Severe dater byathay hotline e phone diye 30 minute er moddhe treatment peyechi. Dr. Nadia and his team are life savers!',
-      date: 'July 2026',
-      verified: true
-    },
-    {
-      id: 'rev-6',
-      name: 'Nasrin Sultana',
-      treatment: 'Cosmetic Filling & Veneers',
-      rating: 5,
-      comment: 'Samner dater gap bondho korechen. Ekdom natural dekhasse. Mirpur 12 bus stand er kache chamber howay jaoa o khub shohoj.',
-      date: 'July 2026',
-      verified: true
-    }
-  ];
-
-  function renderPublicTestimonials(list) {
-    const container = document.getElementById('publicTestimonialsContainer');
-    if (!container) return;
-
-    const items = (Array.isArray(list) && list.length > 0) ? list : DEFAULT_TESTIMONIALS;
-
-    container.innerHTML = items.map(item => {
-      const initial = (item.name || 'P').charAt(0).toUpperCase();
-      const starsCount = Math.max(1, Math.min(5, parseInt(item.rating) || 5));
-      const starsStr = '★'.repeat(starsCount) + '☆'.repeat(5 - starsCount);
-
-      return `
-        <div class="public-testimonial-card">
-          <div class="testimonial-card-header">
-            <div class="testimonial-avatar">${initial}</div>
-            <div class="testimonial-user-info">
-              <div class="testimonial-user-name">${escapeHTML(item.name || 'Anonymous Patient')}</div>
-              <span class="testimonial-treatment-tag">${escapeHTML(item.treatment || 'Dental Consultation')}</span>
-            </div>
-          </div>
-          <div class="testimonial-stars" aria-label="${starsCount} out of 5 stars">${starsStr}</div>
-          <p class="testimonial-quote">"${escapeHTML(item.comment || '')}"</p>
-          <div class="testimonial-footer">
-            <span><i data-lucide="calendar" class="icon-sm" style="display:inline-block; vertical-align:middle; width:14px; height:14px;"></i> ${escapeHTML(item.date || 'Recent Visit')}</span>
-            ${item.verified !== false ? '<span class="testimonial-verified-badge"><i data-lucide="check-circle" class="icon-sm" style="display:inline-block; vertical-align:middle; width:14px; height:14px;"></i> Verified Patient</span>' : ''}
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    if (typeof lucide !== 'undefined') {
-      lucide.createIcons();
-    }
-  }
-
-  // Load cached testimonials
-  const cachedTestimonials = localStorage.getItem('kinetic_testimonials');
-  if (cachedTestimonials) {
-    try {
-      renderPublicTestimonials(JSON.parse(cachedTestimonials));
-    } catch (e) {
-      renderPublicTestimonials(DEFAULT_TESTIMONIALS);
-    }
-  } else {
-    renderPublicTestimonials(DEFAULT_TESTIMONIALS);
-  }
-
-  // Firestore testimonials observer
-  try {
-    if (window.db) {
-      window.db.collection('settings').doc('testimonials').onSnapshot((doc) => {
-        if (doc.exists) {
-          const liveData = doc.data();
-          if (liveData && Array.isArray(liveData.list)) {
-            localStorage.setItem('kinetic_testimonials', JSON.stringify(liveData.list));
-            renderPublicTestimonials(liveData.list);
-          }
-        }
-      }, (err) => {
-        console.log("Firestore testimonials observer:", err.message);
-      });
-    }
-  } catch (err) {
-    console.log("Firestore testimonials init error:", err);
-  }
-
-  /* --------------------------------------------------------------------------
-     Dynamic Hero Content (Admin-managed)
+     Dynamic Hero Content & Upfront Medical Centre (Admin-managed)
      -------------------------------------------------------------------------- */
   function applyHeroContent(data) {
     if (!data) return;
@@ -1255,6 +892,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (titleMainEl && data.title) titleMainEl.textContent = data.title + ' ';
     if (brandHighlightEl && data.brandHighlight) brandHighlightEl.textContent = data.brandHighlight;
     if (descEl && data.description) descEl.textContent = data.description;
+
+    // Legacy hero image from the Homepage tab (Site images takes priority)
+    heroSources.legacy = data.medicalCentreImage || data.heroImage || '';
+    refreshHeroImage();
+
+    // Upfront Medical Centre Badge
+    const medBadgeEl = document.getElementById('heroMedicalBadge');
+    const medTitleEl = document.getElementById('heroMedicalTitle');
+    const medSubEl = document.getElementById('heroMedicalSubtitle');
+
+    if (medTitleEl && data.medicalTitle) medTitleEl.textContent = data.medicalTitle;
+    if (medSubEl && data.medicalSubtitle) medSubEl.textContent = data.medicalSubtitle;
+    if (medBadgeEl && typeof data.showMedicalBadge !== 'undefined') {
+      medBadgeEl.style.display = data.showMedicalBadge ? 'flex' : 'none';
+    }
 
     const s1Num = document.getElementById('heroStatNum1');
     const s1Lbl = document.getElementById('heroStatLbl1');
@@ -1311,6 +963,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     container.innerHTML = list.map(f => `
       <div class="facility-card ${f.style === 'highlight-female' ? 'highlight-female' : (f.style === 'highlight-free' ? 'highlight-free' : '')}">
+        ${f.image ? `<div class="managed-media facility-media" data-image-wrap><img alt="${escapeHTML(f.title || '')}" loading="lazy" src="${escapeHTML(formatDriveImageUrl(f.image))}" onload="this.parentNode.classList.remove('is-empty')" onerror="this.parentNode.classList.add('is-empty')"></div>` : ''}
         <div class="facility-icon-wrap">
           <i data-lucide="${escapeHTML(f.icon || 'award')}"></i>
         </div>
@@ -1362,81 +1015,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
-  function applyDoctorAdvice(data) {
-    if (!data) return;
-    const container = document.getElementById('doctorAdviceGrid');
-    if (!container) return;
-
-    const parseLines = (text) => {
-      if (!text) return [];
-      return text.split('\n').map(l => l.trim()).filter(Boolean);
-    };
-
-    const r1Lines = parseLines(data.rule1);
-    const r2Lines = parseLines(data.rule2);
-    const r3Lines = parseLines(data.rule3);
-
-    container.innerHTML = `
-      <!-- Advice 1: Daily Rules -->
-      <div class="advice-card">
-        <div class="advice-card-header">
-          <div class="advice-icon-wrap"><i data-lucide="check-square"></i></div>
-          <div>
-            <h3>দৈনন্দিন ডেন্টাল রুলস</h3>
-            <span class="advice-subtitle-bn">Daily Oral Health Rules</span>
-          </div>
-        </div>
-        <ul>
-          ${r1Lines.map(l => `<li>${escapeHTML(l)}</li>`).join('')}
-        </ul>
-        <a href="dental-problems.html#daily-rules" class="advice-link">বিস্তারিত গাইড পড়ুন <i data-lucide="arrow-right" class="icon-sm"></i></a>
-      </div>
-
-      <!-- Advice 2: Night Guard / Bruxism -->
-      <div class="advice-card">
-        <div class="advice-card-header">
-          <div class="advice-icon-wrap purple"><i data-lucide="moon"></i></div>
-          <div>
-            <h3>Tooth Grinding (Bruxism)</h3>
-            <span class="advice-subtitle-bn">ঘুমের মাঝে দাঁতে দাঁত ঘর্ষনের সমাধান</span>
-          </div>
-        </div>
-        <ul>
-          ${r2Lines.map(l => `<li>${escapeHTML(l)}</li>`).join('')}
-        </ul>
-        <a href="dental-problems.html#bruxism" class="advice-link">নাইট গার্ড বিস্তারিত <i data-lucide="arrow-right" class="icon-sm"></i></a>
-      </div>
-
-      <!-- Advice 3: Traumatic Injury -->
-      <div class="advice-card danger">
-        <div class="advice-card-header">
-          <div class="advice-icon-wrap danger"><i data-lucide="alert-triangle"></i></div>
-          <div>
-            <h3>আঘাতপ্রাপ্ত দাঁত কালো হওয়া</h3>
-            <span class="advice-subtitle-bn">Tooth Injury &amp; Discoloration</span>
-          </div>
-        </div>
-        <ul>
-          ${r3Lines.map(l => `<li>${escapeHTML(l)}</li>`).join('')}
-        </ul>
-        <a href="dental-problems.html#traumatic-injury" class="advice-link">জরুরি পরামর্শ জানুন <i data-lucide="arrow-right" class="icon-sm"></i></a>
-      </div>
-    `;
-
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-  }
-
   const cachedFaqsPublic = localStorage.getItem('kinetic_faqs');
   if (cachedFaqsPublic) {
     try {
       renderPublicFaqs(JSON.parse(cachedFaqsPublic));
-    } catch (e) {}
-  }
-
-  const cachedAdvicePublic = localStorage.getItem('kinetic_advice');
-  if (cachedAdvicePublic) {
-    try {
-      applyDoctorAdvice(JSON.parse(cachedAdvicePublic));
     } catch (e) {}
   }
 
@@ -1447,13 +1029,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPublicFaqs(doc.data().list);
       }
     }, err => console.log("FAQs live observer:", err.message));
-
-    window.db.collection('settings').doc('advice').onSnapshot(doc => {
-      if (doc.exists) {
-        localStorage.setItem('kinetic_advice', JSON.stringify(doc.data()));
-        applyDoctorAdvice(doc.data());
-      }
-    }, err => console.log("Advice live observer:", err.message));
   }
 
   /* --------------------------------------------------------------------------
@@ -1461,18 +1036,21 @@ document.addEventListener('DOMContentLoaded', () => {
      -------------------------------------------------------------------------- */
   function renderPublicGallery(list) {
     const container = document.getElementById('chamberGalleryGrid');
-    if (!container || !Array.isArray(list) || !list.length) return;
+    if (!container || !Array.isArray(list)) return;
+    list = list.filter(g => g && g.image);
+    document.getElementById('gallery')?.classList.toggle('hidden', !list.length);
 
     galleryImages.length = 0; // Clear for lightbox sync
 
     container.innerHTML = list.map((g, idx) => {
-      const src = g.image || 'chamber.jpg';
+      const rawSrc = g.image;
+      const src = typeof formatDriveImageUrl === 'function' ? formatDriveImageUrl(rawSrc) : rawSrc;
       const caption = `${g.title || 'Chamber'} - ${g.subtitle || ''}`;
       galleryImages.push({ src, caption });
 
       return `
         <div class="gallery-item" data-index="${idx}" data-src="${escapeHTML(src)}">
-          <img src="${escapeHTML(src)}" alt="${escapeHTML(g.title || 'Chamber')}" class="gallery-img" onerror="this.src='chamber.jpg'">
+          <img src="${escapeHTML(src)}" alt="${escapeHTML(g.title || 'Chamber')}" class="gallery-img" loading="lazy" onerror="this.closest('.gallery-item').remove()">
           <div class="gallery-overlay">
             <div class="gallery-icon-box"><i data-lucide="maximize-2"></i></div>
             <h4>${escapeHTML(g.title || '')}</h4>
@@ -1508,6 +1086,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }, err => console.log("Gallery live observer:", err.message));
   }
 
+  /* --------------------------------------------------------------------------
+     Admin-managed Site Images (hero, about photo, before/after results)
+     -------------------------------------------------------------------------- */
+  function renderResults(results) {
+    const grid = document.getElementById('resultsGrid');
+    const section = document.getElementById('chamber-treatments');
+    if (!grid || !section) return;
+    const list = (Array.isArray(results) ? results : []).filter(r => r && (r.before || r.after));
+    section.classList.toggle('hidden', !list.length);
+    grid.innerHTML = list.map(r => {
+      const sides = [['before', 'Before'], ['after', 'After']]
+        .filter(([key]) => r[key])
+        .map(([key, label]) => `
+          <div class="ft-ba-side"><img src="${escapeHTML(formatDriveImageUrl(r[key]))}" alt="${label} — ${escapeHTML(r.title || 'treatment')}" loading="lazy" onerror="this.parentElement.remove()"><span class="ft-ba-label ${key}">${label}</span></div>`)
+        .join('');
+      return `
+        <div class="ft-card">
+          <div class="ft-ba-pair${r.before && r.after ? '' : ' single'}">${sides}</div>
+          <div class="ft-card-overlay">
+            ${r.tag ? `<span class="ft-tag">${escapeHTML(r.tag)}</span>` : ''}
+            ${r.title ? `<h3>${escapeHTML(r.title)}</h3>` : ''}
+            ${r.desc ? `<p>${escapeHTML(r.desc)}</p>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function applySiteImages(images) {
+    const data = images || {};
+    heroSources.site = data.heroImage || '';
+    refreshHeroImage();
+
+    const aboutImg = document.getElementById('aboutImage');
+    setManagedImage(aboutImg, data.aboutImage);
+    document.getElementById('aboutContainer')?.classList.toggle('no-media', !data.aboutImage);
+
+    renderResults(data.results);
+  }
+
+  refreshHeroImage();
+  watchSiteImages(applySiteImages);
+
 });
-
-

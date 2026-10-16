@@ -8,55 +8,60 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://kineticdentalcare.com/dental-problems.html">
 
-  <link rel="icon" type="image/x-icon" href="first.jpg">
+  <link rel="icon" type="image/svg+xml" href="tooth-mark.svg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Top Announcement Bar (Tech Dental Style) -->
+  <!-- Top bar -->
   <div class="top-bar">
     <div class="container top-bar-content">
       <div class="top-info">
-        <span class="top-link"><span class="top-badge-hotline">24/7 Emergency</span> Hotline:</span>
-        <a href="tel:+8801313175779" class="top-link"><i data-lucide="phone" class="icon-sm"></i> 01313-175779</a>
-        <a href="tel:+8801308388577" class="top-link"><i data-lucide="phone" class="icon-sm"></i> 01308-388577</a>
-        <span class="top-link hide-mobile"><i data-lucide="map-pin" class="icon-sm"></i> Mirpur 12, Dhaka (Near Bus Stand)</span>
-        <span class="top-link hide-mobile"><i data-lucide="clock" class="icon-sm"></i> 10AM-2PM &amp; 5PM-9PM (Friday Open)</span>
+        <span class="top-link"><span class="top-badge-hotline">24/7 Emergency</span></span>
+        <a href="tel:+8801313175779" class="top-link"><i data-lucide="phone" class="icon-sm"></i> <span class="hotline1-text">01313-175779</span></a>
+        <a href="tel:+8801308388577" class="top-link"><i data-lucide="phone" class="icon-sm"></i> <span class="hotline2-text">01308-388577</span></a>
+        <span class="top-link hide-mobile"><i data-lucide="clock" class="icon-sm"></i> 10AM–2PM &amp; 5PM–9PM, open daily</span>
+      </div>
+      <div class="top-bar-ticker-wrap hidden" id="topBarTickerWrap">
+        <span class="top-bar-ticker-badge">NOTICE</span>
+        <span class="top-bar-ticker-text" id="topBarTickerText"></span>
       </div>
       <div class="top-socials">
-        <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" aria-label="Facebook Page"><i data-lucide="facebook"></i></a>
-        <a href="https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr" target="_blank" aria-label="Facebook Group"><i data-lucide="users"></i></a>
+        <span class="top-link hide-mobile" id="topAddress"><i data-lucide="map-pin" class="icon-sm"></i> <span class="address-text">Mirpur 12, Dhaka</span></span>
+        <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Page" id="topFbPage"><i data-lucide="facebook"></i></a>
+        <a href="https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Group" id="topFbGroup"><i data-lucide="users"></i></a>
       </div>
     </div>
   </div>
 
-  <!-- Header Section -->
+  <!-- Header -->
   <header class="main-header">
     <div class="container nav-container">
-      <a href="index.html" class="logo">
-        <img src="first.jpg" alt="Kinetic Dental Logo" class="logo-img">
-        <div class="logo-text">
+      <a href="index.html" class="logo" aria-label="Kinetic Dental home">
+        <img src="tooth-mark.svg" alt="" class="logo-img" width="36" height="36">
+        <span class="logo-text">
           <span class="logo-title">Kinetic Dental</span>
           <span class="logo-sub">Healthcare Center</span>
-        </div>
+        </span>
       </a>
 
-      <nav class="desktop-nav">
-        <a href="index.html" class="nav-item">Home</a>
+      <nav class="desktop-nav" aria-label="Primary">
         <a href="index.html#all-treatments" class="nav-item">Treatments</a>
         <a href="doctors.html" class="nav-item">Doctors</a>
-        <a href="dental-problems.html" class="nav-item active">Dental Tips</a>
+        <a href="treatments.html" class="nav-item">Results</a>
+        <a href="dental-problems.html" class="nav-item active" aria-current="page">Dental Tips</a>
+        <a href="campaigns.html" class="nav-item">Campaigns</a>
         <a href="index.html#contact" class="nav-item">Contact</a>
         <a href="index.html#appointment" class="btn btn-primary btn-nav">Book Appointment</a>
       </nav>
 
       <div class="nav-controls-mobile">
-        <button class="mobile-menu-btn" id="menuToggleBtn" aria-label="Open Menu">
+        <button class="mobile-menu-btn" id="menuToggleBtn" aria-label="Open menu">
           <i data-lucide="menu" class="menu-icon"></i>
           <i data-lucide="x" class="close-icon hidden"></i>
         </button>
@@ -64,685 +69,168 @@
     </div>
   </header>
 
-  <!-- Mobile Side Menu -->
   <div class="mobile-drawer" id="mobileDrawer">
-    <nav class="mobile-nav">
-      <a href="index.html" class="mobile-nav-item">Home</a>
-      <a href="index.html#all-treatments" class="mobile-nav-item">Treatments (চিকিৎসা সমূহ)</a>
-      <a href="doctors.html" class="mobile-nav-item">Doctors (৮ জন ডাক্তার)</a>
-      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips (ডাক্তারের পরামর্শ)</a>
-      <a href="campaigns.html" class="mobile-nav-item">Free Campaigns (ফ্রি ক্যাম্পেইন)</a>
-      <a href="index.html#contact" class="mobile-nav-item">Contact Us (যোগাযোগ)</a>
+    <nav class="mobile-nav" aria-label="Mobile">
+      <a href="index.html#all-treatments" class="mobile-nav-item">Treatments · চিকিৎসা</a>
+      <a href="doctors.html" class="mobile-nav-item">Doctors · ডাক্তার</a>
+      <a href="treatments.html" class="mobile-nav-item">Results · সফল চিকিৎসা</a>
+      <a href="dental-problems.html" class="mobile-nav-item">Dental Tips · পরামর্শ</a>
+      <a href="campaigns.html" class="mobile-nav-item">Free Campaigns · ক্যাম্পেইন</a>
+      <a href="index.html#contact" class="mobile-nav-item">Contact · যোগাযোগ</a>
       <a href="index.html#appointment" class="btn btn-primary mobile-booking-btn">Book Appointment</a>
     </nav>
   </div>
   <div class="drawer-overlay" id="drawerOverlay"></div>
 
-  <!-- Inner Hero -->
   <section class="inner-hero">
     <div class="container">
-      <h1>Dental Problems &amp; Solutions</h1>
-      <p>Expert articles and Q&amp;A by our doctors — in English and বাংলা — to help you understand common dental issues and the right solutions.</p>
-      <p class="inner-hero-bn">আমাদের ডাক্তারদের লেখা বিশেষজ্ঞ নিবন্ধ ও প্রশ্নোত্তর — ইংরেজি ও বাংলায় — সাধারণ দাঁতের সমস্যা ও সমাধান জানতে।</p>
-      <div class="breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Dental Tips</div>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a><span>/</span><span>Dental Tips</span></nav>
+      <h1>Dental tips</h1>
+      <p>Helpful articles and advice from our dental team · ডাক্তারের পরামর্শ</p>
     </div>
   </section>
 
   <!-- Main Content -->
   <main class="section-padding">
     <div class="container">
-      <div class="section-header scroll-reveal">
-        <span class="section-tag">Health Articles by Our Doctors</span>
-        <h2 class="section-title">Learn About Your Oral Health</h2>
-        <p class="section-subtitle">Practical, evidence-based guidance straight from the Kinetic Dental clinical team — English &amp; বাংলা।</p>
-      </div>
-
-      <div class="posts-grid scroll-reveal">
-
-        <!-- Article 1: Daily Dental Rules (Dr. Nadia's Guidelines) -->
-        <article class="post-card" id="daily-rules">
-          <div class="post-thumb">
-            <img src="treatment-1.jpeg" alt="Daily dental care rules">
-          </div>
-          <div class="post-body">
-            <span class="post-tag" style="background:var(--primary-light); color:var(--primary);">Daily Care · প্রতিদিনের যত্ন</span>
-            <div class="post-meta">
-              <span class="post-author"><i data-lucide="user-check" class="icon-sm"></i> Dr. Nafisa Anzum Nadia</span>
-              <span><i data-lucide="calendar" class="icon-sm"></i> Dr's Advice</span>
-            </div>
-            <h3>Essential Daily Dental Care Rules</h3>
-            <p class="post-title-bn">সকাল ও রাতে দাঁতের যত্নের আবশ্যকীয় নিয়মাবলী</p>
-            <p>Maintaining strong teeth requires disciplined daily oral hygiene. Brush twice daily using fluoride toothpaste and a soft-bristled brush. Consult a dentist immediately if enamel wears down or after any injury.</p>
-            <div class="post-text-bn" style="background:var(--bg-muted); padding:12px; border-radius:8px; margin:10px 0; border-left:3px solid var(--primary);">
-              <ul style="padding-left:18px; margin:0; line-height:1.6;">
-                <li>সকাল ও রাতে নিয়ম করে প্রতিদিন ২ বার দাঁত ব্রাশ করতে হবে।</li>
-                <li>ফ্লোরাইড সমৃদ্ধ ভালো মানের টুথপেস্ট ব্যবহার করতে হবে।</li>
-                <li>সবসময় নরম (Soft-bristled) ব্রাশ ব্যবহার করতে হবে।</li>
-                <li>এনামেল বেশি ক্ষয় হয়ে গেলে ফিলিং অথবা রুট ক্যানেল প্রয়োজন হতে পারে, সেক্ষেত্রে ডেন্টিস্টের পরামর্শ অনুযায়ী ডেন্টাল চিকিৎসা গ্রহণ করা।</li>
-                <li>দাঁতে কোনো আঘাত পেলে দ্রুত বিডিএস ডেন্টিস্টের শরণাপন্ন হয়ে চিকিৎসা গ্রহণ করা।</li>
-              </ul>
-            </div>
-            <a href="index.html#appointment" class="post-tag" style="background:var(--primary); color:#fff;">Book Checkup &rarr;</a>
-          </div>
-        </article>
-
-        <!-- Article 2: Tooth Grinding / Bruxism Solution (Night Guard) -->
-        <article class="post-card" id="bruxism">
-          <div class="post-thumb">
-            <img src="treatment-9.jpeg" alt="Tooth grinding bruxism night guard">
-          </div>
-          <div class="post-body">
-            <span class="post-tag" style="background:hsl(270, 75%, 94%); color:hsl(270, 70%, 40%);">Bruxism · অভ্যাসজনিত রোগ</span>
-            <div class="post-meta">
-              <span class="post-author"><i data-lucide="user-check" class="icon-sm"></i> Dr. Nafisa Anzum Nadia</span>
-              <span><i data-lucide="calendar" class="icon-sm"></i> Special Tip</span>
-            </div>
-            <h3>Tooth Grinding / Bruxism Solution</h3>
-            <p class="post-title-bn">"ঘুমের মাঝে দাঁতে দাঁত ঘর্ষনের সমাধান”</p>
-            <p>Teeth grinding during sleep (bruxism) causes loud jaw noises, severe enamel wear, and extreme tooth sensitivity. A custom-fabricated medical Night/Mouth Guard is the proven clinical solution.</p>
-            <div class="post-text-bn" style="background:var(--bg-muted); padding:12px; border-radius:8px; margin:10px 0; border-left:3px solid hsl(270, 70%, 50%);">
-              <p style="margin-bottom:8px;"><strong>ঘুমের মাঝে দাঁতে দাঁত ঘষা একটি অভ্যাসজনিত রোগ।</strong> যাদের ঘুমের মাঝে দাঁতে দাঁত ঘষার অভ্যাস রয়েছে, তাদের জন্য একমাত্র কার্যকর সমাধান হলো <strong>"Night / Mouth Guard"</strong>।</p>
-              <p style="margin-bottom:6px;">🔹 <strong>Night Guard ব্যবহারে কি লাভ হয়:</strong></p>
-              <ul style="padding-left:18px; margin:0 0 8px 0; line-height:1.6;">
-                <li>👉 ঘুমের মাঝে দাঁতে দাঁত ঘর্ষণের ফলে যে কিড়মিড় আওয়াজ হয়, তা প্রতিহত করবে।</li>
-                <li>👉 দাঁতে দাঁত ঘর্ষণের ফলে পরবর্তীতে সব দাঁতে ক্ষয় সৃষ্টি হয় ও শির শির অনুভূত হয়। Night Guard তা সম্পূর্ণ প্রতিরোধ করবে।</li>
-              </ul>
-              <p style="margin:0; font-size:0.86rem; color:var(--text-body);">🔹 খুব সহজেই ডেন্টিস্টের কাছে গিয়ে আপনার দাঁতের মাপ দিয়ে customized night guard বানিয়ে ব্যবহার করে এ সমস্যার স্থায়ী সমাধান করতে পারেন।</p>
-            </div>
-            <a href="index.html#appointment" class="post-tag" style="background:var(--primary); color:#fff;">Get Night Guard &rarr;</a>
-          </div>
-        </article>
-
-        <!-- Article 3: Traumatic Injury & Discoloration -->
-        <article class="post-card" id="traumatic-injury">
-          <div class="post-thumb">
-            <img src="treatment-6.jpeg" alt="Tooth discoloration due to trauma">
-          </div>
-          <div class="post-body">
-            <span class="post-tag" style="background:hsl(0, 75%, 93%); color:hsl(0, 75%, 45%);">Trauma &amp; Injury · আঘাতপ্রাপ্ত দাঁত</span>
-            <div class="post-meta">
-              <span class="post-author"><i data-lucide="user-check" class="icon-sm"></i> Dr. Nafisa Anzum Nadia</span>
-              <span><i data-lucide="calendar" class="icon-sm"></i> Urgent Warning</span>
-            </div>
-            <h3>Tooth Discoloration Due to Traumatic Injury</h3>
-            <p class="post-title-bn">🦷 আঘাত প্রাপ্ত দাঁত কালো হয়ে যাওয়া 🦷</p>
-            <p>A blunt force injury from sports, bone bites or accidents cuts off tooth blood supply, turning it dark. Without timely root canal therapy and capping, bone infections, cysts, or tumors can develop.</p>
-            <div class="post-text-bn" style="background:var(--bg-muted); padding:12px; border-radius:8px; margin:10px 0; border-left:3px solid hsl(0, 75%, 50%);">
-              <p style="margin-bottom:8px;">খাওয়ার সময় হাড়/কাটা বা পাথরে কামড় লেগে, কোন কিছুর সাথে ধাক্কা বা বলের আঘাত—এসবের কারণে দাঁতে ব্যথা পেলে দেরি না করে দ্রুত নিকটস্থ <strong>BDS ডাক্তারের শরণাপন্ন</strong> হতে হবে।</p>
-              <p style="margin-bottom:8px;">যেরকম ছিল সে অবস্থায় রেখে দিলে ধীরে ধীরে দাঁতটি কালো হয়ে যেতে পারে। দাঁত কালো বা discolor হয়ে গেলে বুঝতে হবে <strong>সেই দাঁতে আর প্রাণ নেই!</strong> মানে দাঁতটি আর বেঁচে নেই। তখন দাঁতের ভেতরে ইনফেকশন হয়ে হাড়ের নীচে হতে পারে সিস্ট বা টিউমার।</p>
-              <p style="margin:0;">তখন রুট ক্যানাল ট্রিটমেন্ট করে দাঁতে ক্রাউন বা ক্যাপ লাগাতে হবে। ভিতরের ইনফেকশন এর জন্য আলাদা জটিল চিকিৎসা লাগবে। তাই আঘাতপ্রাপ্ত হওয়ার পর পরই চিকিৎসা নিলে ক্ষতি অনেক লাঘব করা সম্ভব।</p>
-            </div>
-            <a href="index.html#appointment" class="post-tag" style="background:hsl(0, 75%, 45%); color:#fff;">Emergency Consultation &rarr;</a>
-          </div>
-        </article>
-
-        <article class="post-card">
-          <div class="post-thumb">
-            <img src="treatment-7.jpeg" alt="Sudden toothache at night">
-          </div>
-          <div class="post-body">
-            <span class="post-tag">Emergency</span>
-            <div class="post-meta">
-              <span class="post-author"><i data-lucide="user-circle" class="icon-sm"></i> Dr. Nadia</span>
-              <span><i data-lucide="calendar" class="icon-sm"></i> Jul 2026</span>
-            </div>
-            <h3>Sudden Toothache at Night — What to Do</h3>
-            <p class="post-title-bn">রাতে হঠাৎ দাঁত ব্যথা — কী করবেন?</p>
-            <p>A sharp nighttime toothache is usually a sign of pulp inflammation. Rinse with warm salt water, avoid chewing on that side and call us first thing in the morning. Do not place painkillers directly on the gum.</p>
-            <p class="post-text-bn">রাতে তীব্র দাঁত ব্যথা সাধারণত পাল্প প্রদাহের লক্ষণ। গরম লবণ পানি দিয়ে কুলি করুন, ওই দিকে চিবাবেন না এবং সকালে আমাদের কল করুন। ব্যথানাশক সরাসরি মাড়িতে দেবেন না।</p>
-            <a href="index.html#appointment" class="post-tag" style="background:var(--primary-light); color:var(--primary);">Read solution &rarr;</a>
-          </div>
-        </article>
-
-        <article class="post-card">
-          <div class="post-thumb">
-            <img src="treatment-3.jpeg" alt="Bleeding gums when brushing">
-          </div>
-          <div class="post-body">
-            <span class="post-tag">Gum Care</span>
-            <div class="post-meta">
-              <span class="post-author"><i data-lucide="user-circle" class="icon-sm"></i> Dr. Nadia</span>
-              <span><i data-lucide="calendar" class="icon-sm"></i> Jul 2026</span>
-            </div>
-            <h3>Why Do My Gums Bleed When Brushing?</h3>
-            <p class="post-title-bn">ব্রাশ করার সময় মাড়ি থেকে রক্ত কেন পড়ে?</p>
-            <p>Bleeding gums are the first warning of gingivitis caused by plaque build-up. Professional scaling every 6 months plus twice-daily brushing and flossing will reverse early gum disease completely.</p>
-            <p class="post-text-bn">মাড়ি থেকে রক্ত পড়া জিঞ্জিভাইটিসের প্রথম লক্ষণ। ৬ মাসে একবার স্কেলিং, দিনে দুবার ব্রাশ ও ফ্লস করলে প্রাথমিক মাড়ির রোগ সম্পূর্ণ ঠিক হয়ে যায়।</p>
-            <a href="index.html#appointment" class="post-tag" style="background:var(--primary-light); color:var(--primary);">Read solution &rarr;</a>
-          </div>
-        </article>
-
-        <article class="post-card">
-          <div class="post-thumb">
-            <img src="treatment-5.jpeg" alt="Tooth sensitivity to cold and sweet">
-          </div>
-          <div class="post-body">
-            <span class="post-tag">Sensitivity</span>
-            <div class="post-meta">
-              <span class="post-author"><i data-lucide="user-circle" class="icon-sm"></i> Dr. Nadia</span>
-              <span><i data-lucide="calendar" class="icon-sm"></i> Jun 2026</span>
-            </div>
-            <h3>How to Stop Tooth Sensitivity to Cold &amp; Sweet</h3>
-            <p class="post-title-bn">ঠান্ডা ও মিষ্টিতে দাঁতের সংবেদনশীলতা কমানোর উপায়</p>
-            <p>Sensitivity often comes from thin enamel or exposed roots. Desensitizing toothpaste, fluoride application and treating any hidden cavity will give long-term relief within weeks.</p>
-            <p class="post-text-bn">সংবেদনশীলতা পাতলা এনামেল বা উন্মুক্ত রুটের কারণে হয়। ডিসেনসিটাইজিং টুথপেস্ট, ফ্লোরাইড প্রয়োগ ও লুকানো ক্যাভিটি চিকিৎসা করলে কয়েক সপ্তাহে স্থায়ী উপশম পাবেন।</p>
-            <a href="index.html#appointment" class="post-tag" style="background:var(--primary-light); color:var(--primary);">Read solution &rarr;</a>
-          </div>
-        </article>
-
-        <article class="post-card">
-          <div class="post-thumb">
-            <img src="treatment-8.jpeg" alt="Dental cavities prevention">
-          </div>
-          <div class="post-body">
-            <span class="post-tag">Cavity</span>
-            <div class="post-meta">
-              <span class="post-author"><i data-lucide="user-circle" class="icon-sm"></i> Dr. Nadia</span>
-              <span><i data-lucide="calendar" class="icon-sm"></i> Jun 2026</span>
-            </div>
-            <h3>Cavities: How They Form and How to Prevent Them</h3>
-            <p class="post-title-bn">ক্যাভিটি কীভাবে হয় এবং কীভাবে রোধ করবেন</p>
-            <p>Cavities are caused by acid produced when bacteria feed on sugar. Limit sweets, brush with fluoride toothpaste and visit us every 6 months for early detection and simple fillings.</p>
-            <p class="post-text-bn">চিনি খেলে ব্যাকটেরিয়া এসিড তৈরি করে, তাই ক্যাভিটি হয়। মিষ্টি কমান, ফ্লোরাইড টুথপেস্টে ব্রাশ করুন এবং ৬ মাসে একবার চেকআপে আসুন।</p>
-            <a href="index.html#appointment" class="post-tag" style="background:var(--primary-light); color:var(--primary);">Read solution &rarr;</a>
-          </div>
-        </article>
-
-        <article class="post-card">
-          <div class="post-thumb">
-            <img src="our-program-1.jpeg" alt="Child first dental visit">
-          </div>
-          <div class="post-body">
-            <span class="post-tag">Kids Care</span>
-            <div class="post-meta">
-              <span class="post-author"><i data-lucide="user-circle" class="icon-sm"></i> Dr. Nadia</span>
-              <span><i data-lucide="calendar" class="icon-sm"></i> May 2026</span>
-            </div>
-            <h3>When Should My Child First See a Dentist?</h3>
-            <p class="post-title-bn">বাচ্চার প্রথম ডেন্টিস্ট দেখানোর সঠিক সময় কখন?</p>
-            <p>The first dental visit should be by the child's first birthday or when the first tooth appears. Early visits prevent future fear and allow us to apply fluoride and sealants for protection.</p>
-            <p class="post-text-bn">প্রথম দাঁত ওঠার সাথে সাথে বা এক বছর বয়সের মধ্যে প্রথম ডেন্টাল ভিজিট করান। আগে থেকে দেখালে ভয় কমে এবং ফ্লোরাইড ও সিল্যান্ট দিয়ে দাঁত রক্ষা করা যায়।</p>
-            <a href="index.html#appointment" class="post-tag" style="background:var(--primary-light); color:var(--primary);">Read solution &rarr;</a>
-          </div>
-        </article>
-
-        <article class="post-card">
-          <div class="post-thumb">
-            <img src="treatment-10.jpeg" alt="Braces and aligners for crooked teeth">
-          </div>
-          <div class="post-body">
-            <span class="post-tag">Orthodontics</span>
-            <div class="post-meta">
-              <span class="post-author"><i data-lucide="user-circle" class="icon-sm"></i> Dr. Nadia</span>
-              <span><i data-lucide="calendar" class="icon-sm"></i> May 2026</span>
-            </div>
-            <h3>Crooked Teeth — Is Braces the Only Option?</h3>
-            <p class="post-title-bn">বাঁকা দাঁত — শুধু ব্রেসেসই কি একমাত্র উপায়?</p>
-            <p>Besides traditional metal braces, clear aligners and cosmetic contouring can correct mild crowding. Book a consultation to find out which option fits your lifestyle and budget.</p>
-            <p class="post-text-bn">মেটাল ব্রেসেস ছাড়াও ক্লিয়ার অ্যালাইনার ও কসমেটিক কনট্যুরিং হালকা বাঁকা দাঁত ঠিক করতে পারে। কোনটি আপনার জন্য উপযুক্ত জানতে পরামর্শ বুক করুন।</p>
-            <a href="index.html#appointment" class="post-tag" style="background:var(--primary-light); color:var(--primary);">Read solution &rarr;</a>
-          </div>
-        </article>
-
-        <article class="post-card">
-          <div class="post-thumb">
-            <img src="treatment-11.jpeg" alt="Bad breath causes and solutions">
-          </div>
-          <div class="post-body">
-            <span class="post-tag">Oral Hygiene</span>
-            <div class="post-meta">
-              <span class="post-author"><i data-lucide="user-circle" class="icon-sm"></i> Dr. Nadia</span>
-              <span><i data-lucide="calendar" class="icon-sm"></i> Apr 2026</span>
-            </div>
-            <h3>What Causes Bad Breath and How to Fix It?</h3>
-            <p class="post-title-bn">দুর্গন্ধ কেন হয় এবং কীভাবে ঠিক করবেন?</p>
-            <p>Bad breath often comes from gum disease, dry mouth or trapped food. Tongue cleaning, flossing, hydration and regular scaling usually solve the problem within days.</p>
-            <p class="post-text-bn">মাড়ির রোগ, শুকনো মুখ বা খাবার আটকে থাকায় দুর্গন্ধ হয়। জিভ পরিষ্কার, ফ্লস, পানি পান ও স্কেলিং করলে কয়েক দিনে সমস্যা কমে যায়।</p>
-            <a href="index.html#appointment" class="post-tag" style="background:var(--primary-light); color:var(--primary);">Read solution &rarr;</a>
-          </div>
-        </article>
-
-        <article class="post-card">
-          <div class="post-thumb">
-            <img src="treatment-12.jpeg" alt="Wisdom tooth pain relief">
-          </div>
-          <div class="post-body">
-            <span class="post-tag">Surgery</span>
-            <div class="post-meta">
-              <span class="post-author"><i data-lucide="user-circle" class="icon-sm"></i> Dr. Nadia</span>
-              <span><i data-lucide="calendar" class="icon-sm"></i> Apr 2026</span>
-            </div>
-            <h3>Wisdom Tooth Pain — When Is Extraction Needed?</h3>
-            <p class="post-title-bn">অ্যাডুল্ট দাঁত ব্যথা — কখন তুলতে হয়?</p>
-            <p>Pain from impacted wisdom teeth may cause swelling and infection. Warm salt rinses give temporary relief, but surgical extraction is often the permanent solution.</p>
-            <p class="post-text-bn">আটকে থাকা অ্যাডুল্ট দাঁত ফোলা ও ইনফেকশন করতে পারে। গরম লবণ পানি সাময়িক উপশম দেয়, তবে স্থায়ী সমাধানের জন্য সার্জিক্যাল এক্সট্রাকশন প্রয়োজন হতে পারে।</p>
-            <a href="index.html#appointment" class="post-tag" style="background:var(--primary-light); color:var(--primary);">Read solution &rarr;</a>
-          </div>
-        </article>
-
+      <div class="posts-grid scroll-reveal" id="dentalTipsGridContainer">
+        <p class="empty-blog-state">New dental articles will appear here soon.</p>
       </div>
     </div>
   </main>
-
-  <!-- Bilingual FAQ Section -->
-  <section id="faq" class="faq-section section-padding">
-    <div class="container">
-      <div class="section-header scroll-reveal">
-        <span class="section-tag">Common Dental Q&amp;A · সাধারণ প্রশ্নোত্তর</span>
-        <h2 class="section-title">Frequently Asked Questions</h2>
-        <p class="section-subtitle">Quick answers in English and বাংলা about everyday dental care and our treatments.</p>
-      </div>
-
-      <div class="faq-accordion-container scroll-reveal">
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>How often should I visit the dentist for scaling and polishing?</span>
-              <span class="faq-q-bn">কতদিন পর পর স্কেলিং ও পলিশিং করাতে হবে?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Visit every 6 months for scaling and polishing. This removes tartar that brushing cannot, preventing gum swelling, bleeding and bad breath.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>৬ মাসে একবার স্কেলিং ও পলিশিং করান। এতে ব্রাশে যায় না এমন টার্টার উঠে যায় এবং মাড়ি ফোলা, রক্ত পড়া ও দুর্গন্ধ রোধ হয়।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>What is a Night Guard and how does it solve tooth grinding (Bruxism)?</span>
-              <span class="faq-q-bn">ঘুমের মাঝে দাঁত ঘষা (Bruxism)-র সমাধান কী এবং নাইট গার্ড কীভাবে সাহায্য করে?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Teeth grinding during sleep (bruxism) damages enamel and causes intense sensitivity. A customized Night Guard acts as a durable protective barrier, eliminating grinding noise and shielding your teeth from long-term wear.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>ঘুমের মাঝে দাঁতে দাঁত ঘষা একটি অভ্যাসজনিত রোগ। একমাত্র সমাধান হলো customized night/mouth guard। এটি ঘুমের ঘর্ষণের কিড়মিড় আওয়াজ প্রতিহত করে এবং দাঁতের মারাত্মক ক্ষয় ও শিরশির অনুভূতি বন্ধ করে। চেম্বারে মাপ দিয়ে সহজেই এটি বানিয়ে নেওয়া যায়।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>Why does a tooth turn black after injury and what treatment is needed?</span>
-              <span class="faq-q-bn">দাঁতে আঘাত পেয়ে কালো হয়ে যাওয়ার কারণ কী এবং কী চিকিৎসা প্রয়োজন?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>A blunt impact (from sports, bone bites or falls) destroys internal blood vessels, meaning the tooth has lost vitality (dead tooth). Root canal therapy (RCT) and a protective dental crown are essential to stop deep bone cysts or tumors.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>খাওয়ার সময় হাড়/পাথরে কামড় বা বলের আঘাতে ব্যথা পেলে কালক্ষেপণ না করে দ্রুত বিডিএস ডাক্তারের কাছে যেতে হবে। দাঁত কালো হয়ে যাওয়া মানে দাঁতে আর প্রাণ নেই। ফেলে রাখলে হাড়ের নিচে সিস্ট বা টিউমার হতে পারে। রুট ক্যানাল (RCT) ও ক্যাপ লাগিয়ে দাঁতটি রক্ষা করা যায়।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>Is professional teeth whitening safe for my enamel?</span>
-              <span class="faq-q-bn">পেশাদার টিথ হোয়াইটেনিং কি এনামেলের জন্য নিরাপদ?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Yes. At Kinetic Dental, certified bleaching materials are applied under Dr. Nadia's supervision. They remove stains without weakening your enamel.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>হ্যাঁ, নিরাপদ। Kinetic Dental-এ সার্টিফাইড ব্লিচিং উপাদান ডা. নাদিয়ার তত্ত্বাবধানে প্রয়োগ করা হয়, যা দাগ তুলে দেয় কিন্তু এনামেল দুর্বল করে না।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>What should I do if I have a sudden severe toothache?</span>
-              <span class="faq-q-bn">হঠাৎ তীব্র দাঁত ব্যথা হলে কী করব?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Do not chew on that side. Rinse with warm salt water and avoid placing aspirin on the gum. Call +880 1313-175779 or +880 1308-388577 — we prioritize emergency cases.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>ওই দিকে চিবাবেন না। গরম লবণ পানি দিয়ে কুলি করুন এবং মাড়িতে অ্যাসপিরিন দেবেন না। +880 1313-175779 বা +880 1308-388577 নম্বরে কল করুন — জরুরি কেসে আমরা অগ্রাধিকার দিই।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>Does Root Canal Therapy (RCT) hurt?</span>
-              <span class="faq-q-bn">রুট ক্যানাল (RCT) কি ব্যথা করে?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Modern RCT is virtually painless under local anesthesia. It usually takes 1–2 sessions to remove infected pulp, clean the canal and save your natural tooth.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>আধুনিক RCT লোকাল অ্যানেসথেশিয়ায় প্রায় ব্যথাহীন। সাধারণত ১–২ সেশনে ইনফেক্টেড পাল্প সরিয়ে ক্যানাল পরিষ্কার করে প্রাকৃতিক দাঁত বাঁচানো যায়।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>Why do my gums bleed when I brush or floss?</span>
-              <span class="faq-q-bn">ব্রাশ বা ফ্লস করলে মাড়ি থেকে রক্ত কেন পড়ে?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Bleeding gums usually mean gingivitis from plaque buildup. Daily brushing, flossing and professional scaling every 6 months restore healthy gums.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>প্লাক জমায় জিঞ্জিভাইটিস হয়, তাই রক্ত পড়ে। দিনে দুবার ব্রাশ, ফ্লস ও ৬ মাসে একবার স্কেলিং করলে মাড়ি সুস্থ হয়।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>When should my child first see a dentist?</span>
-              <span class="faq-q-bn">বাচ্চাকে প্রথম কখন ডেন্টিস্টের কাছে নিয়ে যাব?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>By age one or when the first tooth appears. Early visits build confidence, allow fluoride treatment and catch problems before they become painful.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>এক বছর বয়সে বা প্রথম দাঁত ওঠার সাথে সাথে। আগে থেকে দেখালে ভয় কমে, ফ্লোরাইড দেওয়া যায় এবং ব্যথা হওয়ার আগেই সমস্যা ধরা পড়ে।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>What is the best age to start braces?</span>
-              <span class="faq-q-bn">ব্রেসেস শুরু করার সঠিক বয়স কত?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Most children start braces between ages 12–14 when permanent teeth are in place. An orthodontic check-up by age 7 helps plan the best timing.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>বেশিরভাগ বাচ্চা ১২–১৪ বছর বয়সে ব্রেসেস শুরু করে। ৭ বছর বয়সে অর্থোডন্টিক চেকআপ করলে সঠিক সময় ঠিক করা সহজ হয়।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>How can I reduce tooth sensitivity to cold and sweet foods?</span>
-              <span class="faq-q-bn">ঠান্ডা ও মিষ্টি খেলে দাঁত ঝিমঝিম করে — কী করব?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Use desensitizing toothpaste, avoid very hot/cold drinks and get any hidden cavities treated. In-clinic fluoride application gives faster relief.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>ডিসেনসিটাইজিং টুথপেস্ট ব্যবহার করুন, খুব গরম-ঠান্ডা পানীয় এড়িয়ে চলুন এবং লুকানো ক্যাভিটি চিকিৎসা করান। ক্লিনিকে ফ্লোরাইড দিলে দ্রুত উপশম পাবেন।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>How do cavities form and how can I prevent them?</span>
-              <span class="faq-q-bn">ক্যাভিটি কীভাবে হয় এবং কীভাবে রোধ করব?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Bacteria turn sugar into acid that erodes enamel. Limit sweets, brush twice daily with fluoride toothpaste and visit us every 6 months.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>চিনি থেকে এসিড তৈরি হয়ে এনামেল ক্ষয় করে। মিষ্টি কমান, ফ্লোরাইড টুথপেস্টে দিনে দুবার ব্রাশ করুন এবং ৬ মাসে একবার চেকআপ করুন।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>What causes bad breath and how do I fix it?</span>
-              <span class="faq-q-bn">মুখে দুর্গন্ধ কেন হয় এবং কীভাবে ঠিক করব?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Gum disease, dry mouth and food trapped between teeth are common causes. Clean your tongue, floss daily, drink water and get scaling if needed.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>মাড়ির রোগ, শুকনো মুখ ও দাঁতের ফাঁকে খাবার আটকে থাকায় দুর্গন্ধ হয়। জিভ পরিষ্কার করুন, ফ্লস করুন, পানি পান করুন এবং প্রয়োজনে স্কেলিং করান।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>Are dental X-rays safe?</span>
-              <span class="faq-q-bn">ডেন্টাল এক্স-রে কি নিরাপদ?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Yes. Digital dental X-rays use very low radiation — less than a short flight. They help us find hidden cavities, bone loss and infections early.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>হ্যাঁ, নিরাপদ। ডিজিটাল ডেন্টাল এক্স-রেতে খুব কম রেডিয়েশন থাকে। এতে লুকানো ক্যাভিটি, হাড় ক্ষয় ও ইনফেকশন আগে থেকেই ধরা পড়ে।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>How do I care for my teeth after a dental implant?</span>
-              <span class="faq-q-bn">ডেন্টাল ইমপ্লান্টের পর দাঁতের যত্ন কীভাবে নেব?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Brush gently, use a soft brush and floss around the implant. Avoid smoking and hard foods for the first few weeks. Attend all follow-up visits.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>নরম ব্রাশে আস্তে ব্রাশ করুন এবং ইমপ্লান্টের চারপাশে ফ্লস করুন। প্রথম কয়েক সপ্তাহ ধূমপান ও শক্ত খাবার এড়িয়ে চলুন এবং ফলো-আপে আসুন।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>Which toothbrush should I use — soft, medium or hard?</span>
-              <span class="faq-q-bn">কোন ব্রাশ ব্যবহার করব — সফট, মিডিয়াম নাকি হার্ড?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Always choose a soft-bristled brush. Hard brushes damage enamel and cause gum recession. Replace your brush every 3 months or after illness.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>সবসময় সফট ব্রিসলের ব্রাশ ব্যবহার করুন। হার্ড ব্রাশ এনামেল ক্ষতি ও মাড়ি নিচে নামায়। ৩ মাস পর বা অসুখের পর ব্রাশ বদলান।</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="faq-card">
-          <button class="faq-trigger" type="button">
-            <span class="faq-trigger-text">
-              <span>Is it normal for teeth to hurt after scaling?</span>
-              <span class="faq-q-bn">স্কেলিংয়ের পর দাঁত ব্যথা করা কি স্বাভাবিক?</span>
-            </span>
-            <i data-lucide="chevron-down" class="faq-arrow"></i>
-          </button>
-          <div class="faq-content">
-            <div class="faq-answer-block">
-              <span class="lang-tag">English</span>
-              <p>Mild sensitivity for 1–3 days after scaling is normal. Use desensitizing toothpaste and avoid very cold drinks. If pain persists beyond a week, contact us.</p>
-            </div>
-            <div class="faq-answer-block faq-answer-bn">
-              <span class="lang-tag">বাংলা</span>
-              <p>স্কেলিংয়ের পর ১–৩ দিন হালকা সংবেদনশীলতা স্বাভাবিক। ডিসেনসিটাইজিং টুথপেস্ট ব্যবহার করুন এবং খুব ঠান্ডা পানীয় এড়িয়ে চলুন। এক সপ্তাহের বেশি ব্যথা থাকলে আমাদের জানান।</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
 
   <!-- Footer -->
   <footer class="footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <a href="index.html" class="logo footer-logo">
-          <img src="first.jpg" alt="Kinetic Dental Logo" class="logo-img">
-          <div class="logo-text">
-            <span class="logo-title text-white">Kinetic Dental</span>
-            <span class="logo-sub text-white-op">Healthcare Center</span>
-          </div>
+        <a href="index.html" class="logo">
+          <img src="tooth-mark.svg" alt="" class="logo-img" width="36" height="36">
+          <span class="logo-text">
+            <span class="logo-title">Kinetic Dental</span>
+            <span class="logo-sub">Healthcare Center</span>
+          </span>
         </a>
-        <p class="footer-brand-desc">Premium dental care in Mirpur 12, Dhaka. Hygiene, comfort and modern technology by Dr. Nadia &amp; team.</p>
+        <p class="footer-brand-desc">Gentle, modern dentistry for families in Mirpur 12, Dhaka — led by Dr. Nadia.</p>
+        <div class="footer-socials">
+          <a href="https://www.facebook.com/share/1Dj9PJN149/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Page"><i data-lucide="facebook"></i></a>
+          <a href="https://www.facebook.com/share/g/1AFfpMzWcu/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook Group"><i data-lucide="users"></i></a>
+        </div>
       </div>
       <div class="footer-links">
-        <h4>Quick Links</h4>
+        <h4>Clinic</h4>
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="index.html#all-treatments">All Treatments</a></li>
-          <li><a href="treatments.html">Treatments</a></li>
+          <li><a href="index.html#all-treatments">Treatments</a></li>
+          <li><a href="doctors.html">Our Doctors</a></li>
+          <li><a href="treatments.html">Results</a></li>
           <li><a href="dental-problems.html">Dental Tips</a></li>
           <li><a href="campaigns.html">Campaigns</a></li>
-          <li><a href="doctors.html">Our Doctors</a></li>
-          <li><a href="index.html#appointment">Book Appointment</a></li>
         </ul>
       </div>
       <div class="footer-hours">
-        <h4>Chamber Hours</h4>
+        <h4>Hours</h4>
         <ul>
-          <li><span>Open Days:</span> Friday to Thursday</li>
+          <li><span>Open:</span> Friday to Thursday</li>
           <li><span>Morning:</span> 10:00 AM - 2:00 PM</li>
           <li><span>Evening:</span> 5:00 PM - 9:00 PM</li>
+          <li><span>Emergency:</span> 24/7 Hotline</li>
         </ul>
-        <h4 style="margin-top: 20px;">Contact Numbers</h4>
+      </div>
+      <div class="footer-links">
+        <h4>Contact</h4>
         <ul>
           <li><a href="tel:+8801313175779">01313-175779</a></li>
           <li><a href="tel:+8801308388577">01308-388577</a></li>
+          <li><a href="index.html#appointment">Book Appointment</a></li>
+          <li><a href="index.html#check-status">Check Booking Status</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <div class="container footer-bottom-content">
-        <p>&copy; 2026 Kinetic Dental &amp; Healthcare Center. All rights reserved.</p>
-        <p>Website: <a href="https://kineticdentalcare.com/" target="_blank" rel="noopener">kineticdentalcare.com</a></p>
+        <p>&copy; 2026 Kinetic Dental &amp; Healthcare Center</p>
+        <p>kineticdentalcare.com</p>
       </div>
     </div>
   </footer>
 
-  <!-- Scroll to Top Button -->
-  <button class="scroll-to-top" id="scrollTopBtn" aria-label="Scroll to Top">
+  <button class="scroll-to-top" id="scrollTopBtn" aria-label="Scroll to top">
     <i data-lucide="chevron-up"></i>
   </button>
 
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="firebase-init.js"></script>
+
   <script src="page-utils.js"></script>
   <script>
+    function renderDentalTips(list) {
+      const container = document.getElementById('dentalTipsGridContainer');
+      if (!container || !Array.isArray(list)) return;
+      if (!list.length) { container.innerHTML = '<p class="empty-blog-state">New dental articles will appear here soon.</p>'; return; }
+
+      container.innerHTML = list.map(item => {
+        const rawImg = item.image || item.imageUrl || '';
+        const imgSrc = typeof formatDriveImageUrl === 'function' ? formatDriveImageUrl(rawImg) : rawImg;
+        const hasImg = imgSrc && imgSrc.trim() !== '' && /drive\.google\.com|googleusercontent\.com/i.test(rawImg);
+        const summary = String(item.descEn || item.descBn || '').trim();
+        const excerpt = summary.length > 180 ? `${summary.slice(0, 177)}…` : summary;
+
+        return `
+          <article class="post-card" id="${escapeHTML(item.slug || '')}">
+            ${hasImg ? `
+              <div class="post-thumb">
+                <img src="${escapeHTML(imgSrc)}" alt="${escapeHTML(item.title || 'Dental Health')}" loading="lazy" onerror="this.parentElement.style.display='none'">
+              </div>
+            ` : ''}
+            <div class="post-body">
+              ${item.tag ? `<span class="post-tag">${escapeHTML(item.tag)}</span>` : ''}
+              <h3>${escapeHTML(item.title || '')}</h3>
+              ${item.titleBn ? `<p class="post-title-bn">${escapeHTML(item.titleBn)}</p>` : ''}
+              ${excerpt ? `<p>${escapeHTML(excerpt)}</p>` : ''}
+              <a href="index.html#appointment" class="post-tag" style="background:var(--primary); color:#fff; display:inline-block; margin-top:8px;">${escapeHTML(item.ctaText || 'Book Appointment →')}</a>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       if (typeof lucide !== 'undefined') lucide.createIcons();
-
-      const menuBtn = document.getElementById('menuToggleBtn');
-      const drawer = document.getElementById('mobileDrawer');
-      const overlay = document.getElementById('drawerOverlay');
-      const toggleMenu = (open) => {
-        drawer.classList.toggle('open', open);
-        overlay.classList.toggle('active', open);
-        menuBtn.querySelector('.menu-icon').classList.toggle('hidden', open);
-        menuBtn.querySelector('.close-icon').classList.toggle('hidden', !open);
-      };
-      menuBtn?.addEventListener('click', () => toggleMenu(!drawer.classList.contains('open')));
-      overlay?.addEventListener('click', () => toggleMenu(false));
-
-      const scrollBtn = document.getElementById('scrollTopBtn');
-      window.addEventListener('scroll', () => {
-        scrollBtn.classList.toggle('show', window.scrollY > 400);
-      });
-      scrollBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
       initScrollReveal();
-      hideCardsWithoutImages('.post-card');
-      initFaqAccordion();
+
+      // Load cached or live dental tips from Firestore
+      try {
+        const cached = localStorage.getItem('kinetic_dental_tips');
+        if (cached) {
+          const list = JSON.parse(cached);
+          if (Array.isArray(list)) renderDentalTips(list);
+        }
+      } catch (e) {}
+
+      try {
+        const firebaseConfig = window.firebaseConfig || {};
+        if (typeof firebase !== 'undefined') {
+          if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+          firebase.firestore().collection('settings').doc('dental_tips').onSnapshot((doc) => {
+            if (doc.exists && Array.isArray(doc.data().list)) {
+              const list = doc.data().list;
+              localStorage.setItem('kinetic_dental_tips', JSON.stringify(list));
+              renderDentalTips(list);
+            }
+          }, (err) => { console.log('Firestore dental_tips:', err.message); });
+        }
+      } catch (err) { console.log('Firebase init error on dental-problems page:', err); }
     });
   </script>
   <!-- Floating WhatsApp Quick Dial -->
   <a href="https://wa.me/8801313175779?text=Hello%20Kinetic%20Dental%2C%20I%20would%20like%20to%20consult%20or%20book%20an%20appointment." target="_blank" rel="noopener noreferrer" class="floating-whatsapp-btn" id="floatingWhatsappBtn" aria-label="Chat on WhatsApp">
     <i data-lucide="message-circle" class="whatsapp-icon"></i>
-    <span class="whatsapp-label">WhatsApp Helpline</span>
+    <span class="whatsapp-label">WhatsApp</span>
   </a>
 </body>
 </html>
