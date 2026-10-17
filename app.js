@@ -489,6 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }).join('');
 
+    decorateTreatmentOffers();
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
@@ -639,9 +640,61 @@ document.addEventListener('DOMContentLoaded', () => {
     setManagedImage(heroMainImage, offerSrc || heroSources.site || heroSources.legacy);
   }
 
+  /* Show struck-through main price + offer price + OFFER tag on matching treatment cards */
+  function decorateTreatmentOffers() {
+    const cards = document.querySelectorAll('.treatment-quick-card');
+    const data = currentOfferData;
+    const fmt = (v) => { const t = String(v).trim(); return /^(BDT|৳)/i.test(t) ? t : `BDT ${t}`; };
+    const num = (v) => { const n = parseFloat(String(v).replace(/[^\d.]/g, '')); return isNaN(n) ? null : n; };
+    const targets = data ? ((Array.isArray(data.treatments) && data.treatments.length ? data.treatments : [data.treatment]).filter(Boolean).map(x => String(x).toLowerCase())) : [];
+    const specific = targets.filter(x => x !== 'general consultation' && !x.includes('all treatments'));
+    const appliesToAll = !specific.length;
+    const pct = data ? parseFloat(String(data.discountPercent || data.discount || '').replace(/[^\d.]/g, '')) : NaN;
+
+    cards.forEach(card => {
+      const valEl = card.querySelector('.treatment-price-val');
+      const top = card.querySelector('.treatment-quick-top');
+      if (!valEl) return;
+      if (valEl.dataset.orig === undefined) valEl.dataset.orig = valEl.textContent;
+      valEl.textContent = valEl.dataset.orig;
+      card.classList.remove('has-offer');
+      card.querySelector('.treatment-offer-tag')?.remove();
+      if (!data) return;
+
+      const name = (card.querySelector('h3')?.textContent || '').toLowerCase();
+      const book = (card.querySelector('.btn-book-treatment')?.dataset.treatment || '').toLowerCase();
+      const matched = appliesToAll || specific.some(t => name.includes(t) || t.includes(name) || (book && (book.includes(t) || t.includes(book))));
+      if (!matched) return;
+
+      let oldP = valEl.dataset.orig, newP = '';
+      if (specific.length === 1 && data.offerPrice) {
+        newP = fmt(data.offerPrice);
+        if (data.originalPrice) oldP = fmt(data.originalPrice);
+      } else if (!isNaN(pct) && pct > 0 && num(oldP) !== null) {
+        newP = `BDT ${Math.round(num(oldP) * (1 - pct / 100)).toLocaleString('en-US')}`;
+      }
+      if (newP) {
+        valEl.textContent = '';
+        const oldEl = document.createElement('s');
+        oldEl.className = 'treatment-price-old';
+        oldEl.textContent = oldP;
+        const newEl = document.createElement('strong');
+        newEl.className = 'treatment-price-offer';
+        newEl.textContent = newP;
+        valEl.append(oldEl, ' ', newEl);
+      }
+      const tag = document.createElement('span');
+      tag.className = 'treatment-offer-tag';
+      tag.textContent = !isNaN(pct) && pct > 0 ? `OFFER · ${pct}% OFF` : 'OFFER';
+      (top || card).appendChild(tag);
+      card.classList.add('has-offer');
+    });
+  }
+
   function applyOfferData(data) {
     if (!data || !data.active) {
       currentOfferData = null;
+      decorateTreatmentOffers();
       if (floatingOfferBtn) floatingOfferBtn.classList.add('hidden');
       if (offerPopupModal) offerPopupModal.classList.remove('show');
       refreshHeroImage();
@@ -649,6 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     currentOfferData = data;
+    decorateTreatmentOffers();
 
     // 1. Update Hero Image if offer poster should appear in hero
     refreshHeroImage();

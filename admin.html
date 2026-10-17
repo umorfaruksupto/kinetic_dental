@@ -642,6 +642,7 @@
               <button type="button" class="btn btn-secondary" data-goto-tab="dentaltips"><i data-lucide="book-open" class="icon-left"></i> Dental tips</button>
               <button type="button" class="btn btn-secondary" data-goto-tab="campaigns"><i data-lucide="heart-handshake" class="icon-left"></i> Campaigns</button>
             </div>
+            <div id="otherPhotosPreview" class="op-groups"></div>
           </div>
         </div>
 
@@ -1105,17 +1106,6 @@
               </div>
             </div>
 
-            <!-- Add Email Form -->
-            <form id="addAdminEmailForm" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; max-width:650px;">
-              <div class="input-wrapper" style="flex:1; min-width:260px;">
-                <i data-lucide="mail" class="input-icon"></i>
-                <input type="email" id="newAdminEmailInput" placeholder="e.g. doctor@kineticdentalcare.com" required>
-              </div>
-              <button type="submit" class="btn btn-primary btn-sm" style="white-space:nowrap;">
-                <i data-lucide="user-plus" class="icon-left"></i> Authorize New Admin
-              </button>
-            </form>
-
             <!-- List of Whitelisted Emails -->
             <div id="adminEmailsListContainer" class="admin-emails-grid">
               <!-- Rendered dynamically -->
@@ -1163,17 +1153,8 @@ service cloud.firestore {
     function isClinicAdmin() {
       return request.auth != null && (
         request.auth.token.email in [
-          'kineticdental29@gmail.com',
-          'drnadiakineticdental@gmail.com',
-          'drnafisanadiaanzum@gmail.com',
-          'drnafisanadiaanzum@gamil.com',
-          'kineticdentalwebsite@gmail.com',
-          'kinetocdentalwebsite@gmail.com',
-          'admin@kineticdentalcare.com',
-          'kineticdentalcare@gmail.com'
-        ] ||
-        (exists(/databases/$(database)/documents/settings/admin_users) &&
-          request.auth.token.email in get(/databases/$(database)/documents/settings/admin_users).data.emails)
+          'kineticdentalwebsite@gmail.com'
+        ]
       );
     }
     function isPublicBooking() {

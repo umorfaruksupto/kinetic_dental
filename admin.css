@@ -6415,3 +6415,10 @@ body { line-height: 1.65; }
 .si-moved-note span { flex: 1; }
 #paneSiteImages input[type="url"],
 #paneSiteImages input[type="text"] { padding-left: 14px; }
+
+/* Other photos preview */
+.op-groups { display: grid; gap: 14px; margin-top: 16px; }
+.op-group { padding: 14px 16px; border: 1px solid var(--neutral-border); border-radius: var(--border-radius-md); background: var(--bg-surface); }
+.op-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+.op-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.op-row img { width: 84px; height: 62px; object-fit: cover; border-radius: 8px; border: 1px solid var(--neutral-border); }

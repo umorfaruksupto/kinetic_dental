@@ -5,15 +5,8 @@ service cloud.firestore {
     function isClinicAdmin() {
       return request.auth != null && (
         request.auth.token.email in [
-          'kineticdental29@gmail.com',
-          'drnadiakineticdental@gmail.com',
-          'drnafisanadiaanzum@gmail.com',
-          'kineticdentalwebsite@gmail.com',
-          'admin@kineticdentalcare.com',
-          'kineticdentalcare@gmail.com'
-        ] ||
-        (exists(/databases/$(database)/documents/settings/admin_users) &&
-          request.auth.token.email in get(/databases/$(database)/documents/settings/admin_users).data.emails)
+          'kineticdentalwebsite@gmail.com'
+        ]
       );
     }
 

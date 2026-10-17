@@ -36,8 +36,8 @@ const authDomain = process.env.FIREBASE_AUTH_DOMAIN || 'kinetic-dental.firebasea
 const projectId = process.env.FIREBASE_PROJECT_ID || 'kinetic-dental';
 const storageBucket = process.env.FIREBASE_STORAGE_BUCKET || 'kinetic-dental.firebasestorage.app';
 const messagingSenderId = process.env.FIREBASE_MESSAGING_SENDER_ID || '523401059267';
-const appId = process.env.FIREBASE_APP_ID || '1:523401059267:web:186d0b1b23405fea333b76';
-const measurementId = process.env.FIREBASE_MEASUREMENT_ID || 'G-Z1C46B6GSF';
+const appId = process.env.FIREBASE_APP_ID || '1:523401059267:web:2dcf6a2123575859333b76';
+const measurementId = process.env.FIREBASE_MEASUREMENT_ID || 'G-Z8VYC001V4';
 
 const configContent = `// Auto-generated configuration file
 window.firebaseConfig = {

@@ -118,47 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
      2. Admin Email Whitelist & Authentication
      -------------------------------------------------------------------------- */
   const DEFAULT_ADMIN_EMAILS = [
-    'kineticdental29@gmail.com',
-    'drnadiakineticdental@gmail.com',
-    'drnafisanadiaanzum@gmail.com',
-    /* 'drnafisanadiaanzum@gmail.com', */ // corrected below
     'kineticdentalwebsite@gmail.com',
-    /* 'kinetocdentalwebsite@gmail.com', */ // typo of above, kept disabled
-    'admin@kineticdentalcare.com',
-    'kineticdentalcare@gmail.com'
   ];
 
   let authorizedAdminEmails = new Set(DEFAULT_ADMIN_EMAILS.map(e => e.toLowerCase()));
-  let customAdminEmails = [];
   let activeAdminEmail = '';
-
-  // Load custom authorized emails from localStorage & Firestore
-  function loadAuthorizedAdmins() {
-    try {
-      const cached = localStorage.getItem('kinetic_authorized_admins');
-      if (cached) {
-        const list = JSON.parse(cached);
-        if (Array.isArray(list)) {
-          customAdminEmails = list;
-          list.forEach(e => {
-            if (e && typeof e === 'string') authorizedAdminEmails.add(e.trim().toLowerCase());
-          });
-        }
-      }
-    } catch (e) {}
-
-    if (window.db) {
-      window.db.collection('settings').doc('admin_users').get().then(doc => {
-        if (doc.exists && Array.isArray(doc.data().emails)) {
-          customAdminEmails = doc.data().emails;
-          customAdminEmails.forEach(e => authorizedAdminEmails.add(e.trim().toLowerCase()));
-          localStorage.setItem('kinetic_authorized_admins', JSON.stringify(customAdminEmails));
-          renderAuthorizedEmailsList();
-        }
-      }).catch(e => console.log('Admin users load note:', e.message));
-    }
-  }
-  loadAuthorizedAdmins();
 
   function isAllowedAdminEmail(email) {
     if (!email) return false;
@@ -3168,8 +3132,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminAuthMethodDisplay = document.getElementById('adminAuthMethodDisplay');
   const adminDbStatusDisplay = document.getElementById('adminDbStatusDisplay');
   const adminEmailsListContainer = document.getElementById('adminEmailsListContainer');
-  const addAdminEmailForm = document.getElementById('addAdminEmailForm');
-  const newAdminEmailInput = document.getElementById('newAdminEmailInput');
   const btnSendPasswordReset = document.getElementById('btnSendPasswordReset');
   const btnTestDbConnection = document.getElementById('btnTestDbConnection');
   const btnExportFullBackup = document.getElementById('btnExportFullBackup');
@@ -3208,81 +3170,8 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     });
 
-    // Render custom authorized emails
-    customAdminEmails.forEach((email, idx) => {
-      html += `
-        <div class="admin-email-pill">
-          <i data-lucide="user" style="width:13px; height:13px;"></i>
-          <span>${escapeHTML(email)}</span>
-          <button type="button" class="admin-email-del-btn" data-email="${escapeHTML(email)}" title="Remove authorization">
-            <i data-lucide="x-circle" style="width:14px; height:14px;"></i>
-          </button>
-        </div>
-      `;
-    });
-
     adminEmailsListContainer.innerHTML = html;
     if (typeof lucide !== 'undefined') lucide.createIcons();
-
-    // Attach delete listeners
-    adminEmailsListContainer.querySelectorAll('.admin-email-del-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const emailToRemove = btn.getAttribute('data-email');
-        if (confirm(`Remove admin access for "${emailToRemove}"?`)) {
-          customAdminEmails = customAdminEmails.filter(e => e.toLowerCase() !== emailToRemove.toLowerCase());
-          authorizedAdminEmails.delete(emailToRemove.toLowerCase());
-          localStorage.setItem('kinetic_authorized_admins', JSON.stringify(customAdminEmails));
-
-          if (window.db) {
-            window.db.collection('settings').doc('admin_users').set({
-              emails: customAdminEmails,
-              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true }).catch(err => console.warn('Save admin users error:', err));
-          }
-
-          renderAuthorizedEmailsList();
-          showAdminToast(`Removed "${emailToRemove}" from authorized admin list.`);
-        }
-      });
-    });
-  }
-
-  // Add new authorized admin email handler
-  if (addAdminEmailForm) {
-    addAdminEmailForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const newEmail = (newAdminEmailInput?.value || '').trim().toLowerCase();
-      if (!newEmail || !newEmail.includes('@')) {
-        alert('Please enter a valid email address.');
-        return;
-      }
-
-      if (authorizedAdminEmails.has(newEmail)) {
-        showAdminToast('This email is already in the authorized admin list.', 'error');
-        return;
-      }
-
-      customAdminEmails.push(newEmail);
-      authorizedAdminEmails.add(newEmail);
-      localStorage.setItem('kinetic_authorized_admins', JSON.stringify(customAdminEmails));
-
-      if (window.db) {
-        window.db.collection('settings').doc('admin_users').set({
-          emails: customAdminEmails,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true })
-          .then(() => showAdminToast(`Authorized "${newEmail}" as admin!`))
-          .catch(err => {
-            console.warn('Save admin users error:', err);
-            showAdminToast(`Authorized "${newEmail}" locally!`);
-          });
-      } else {
-        showAdminToast(`Authorized "${newEmail}" as admin!`);
-      }
-
-      if (newAdminEmailInput) newAdminEmailInput.value = '';
-      renderAuthorizedEmailsList();
-    });
   }
 
   // Send password reset link to active admin
@@ -3582,6 +3471,58 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSiteResults();
   });
 
+  /* Live thumbnails for the photos managed inside other tabs */
+  function renderOtherPhotos() {
+    const host = document.getElementById('otherPhotosPreview');
+    if (!host) return;
+    const read = (key) => { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) { return null; } };
+    const offer = read('kinetic_active_offer');
+    const groups = [
+      { label: 'Chamber gallery', tab: 'gallery', items: (read('kinetic_gallery') || []).map(g => ({ img: g.image, cap: g.title })) },
+      { label: 'Offer poster', tab: 'offers', items: offer && offer.image ? [{ img: offer.image, cap: offer.title }] : [] },
+      { label: 'Success stories', tab: 'successfulcases', items: (read('kinetic_successful_treatments') || []).map(g => ({ img: g.image || g.imageUrl, cap: g.diseaseName || g.title })) },
+      { label: 'Dental tips', tab: 'dentaltips', items: (read('kinetic_dental_tips') || []).map(g => ({ img: g.image || g.imageUrl, cap: g.title })) },
+      { label: 'Campaigns', tab: 'campaigns', items: (read('kinetic_campaigns') || []).map(g => ({ img: g.image, cap: g.title })) }
+    ];
+    host.innerHTML = '';
+    groups.forEach(gr => {
+      const items = gr.items.filter(i => i && i.img);
+      const box = document.createElement('div');
+      box.className = 'op-group';
+      const head = document.createElement('div');
+      head.className = 'op-head';
+      const title = document.createElement('strong');
+      title.textContent = `${gr.label} (${items.length})`;
+      const edit = document.createElement('button');
+      edit.type = 'button';
+      edit.className = 'btn btn-secondary';
+      edit.textContent = 'Manage';
+      edit.addEventListener('click', () => document.querySelector(`.admin-main-tab-btn[data-tab="${gr.tab}"]`)?.click());
+      head.append(title, edit);
+      const row = document.createElement('div');
+      row.className = 'op-row';
+      if (!items.length) {
+        const empty = document.createElement('span');
+        empty.className = 'si-hint';
+        empty.textContent = 'No photos yet.';
+        row.appendChild(empty);
+      }
+      items.slice(0, 8).forEach(i => {
+        const im = document.createElement('img');
+        im.src = formatDriveImageUrl(i.img);
+        im.alt = i.cap || gr.label;
+        im.title = i.cap || '';
+        im.loading = 'lazy';
+        im.onerror = () => im.remove();
+        row.appendChild(im);
+      });
+      box.append(head, row);
+      host.appendChild(box);
+    });
+  }
+  renderOtherPhotos();
+  document.querySelector('.admin-main-tab-btn[data-tab="siteimages"]')?.addEventListener('click', renderOtherPhotos);
+
   document.querySelectorAll('[data-goto-tab]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelector(`.admin-main-tab-btn[data-tab="${btn.dataset.gotoTab}"]`)?.click();
@@ -3629,6 +3570,3 @@ document.addEventListener('DOMContentLoaded', () => {
   updateAdminProfileUI();
 
 });
-
-
-
