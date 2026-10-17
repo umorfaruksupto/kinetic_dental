@@ -963,16 +963,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const mainTabBtns = document.querySelectorAll('.admin-main-tab-btn');
   const contentPanes = document.querySelectorAll('.admin-content-pane');
 
+  function switchAdminTab(targetTab) {
+    const key = String(targetTab || '').toLowerCase();
+    mainTabBtns.forEach(b => b.classList.toggle('active', (b.getAttribute('data-tab') || '').toLowerCase() === key));
+    contentPanes.forEach(pane => pane.classList.toggle('active', pane.id.toLowerCase() === 'pane' + key));
+    document.querySelector(`.admin-main-tab-btn[data-tab="${targetTab}"]`)?.scrollIntoView({ block: 'nearest' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+  window.switchAdminTab = switchAdminTab;
+
   mainTabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetTab = btn.getAttribute('data-tab');
-      mainTabBtns.forEach(b => b.classList.toggle('active', b === btn));
-      contentPanes.forEach(pane => {
-        const match = pane.id.toLowerCase().includes(targetTab.toLowerCase());
-        pane.classList.toggle('active', match);
-      });
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-    });
+    btn.addEventListener('click', () => switchAdminTab(btn.getAttribute('data-tab')));
   });
 
   /* --------------------------------------------------------------------------
@@ -3472,17 +3474,38 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* Live thumbnails for the photos managed inside other tabs */
-  function renderOtherPhotos() {
+  async function loadOtherPhotoSources() {
+    const read = (key) => { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) { return null; } };
+    const src = {
+      gallery: read('kinetic_gallery') || [],
+      offer: read('kinetic_active_offer'),
+      stories: read('kinetic_successful_treatments') || [],
+      tips: read('kinetic_dental_tips') || [],
+      campaigns: read('kinetic_campaigns') || []
+    };
+    if (window.db) {
+      const get = async (id) => { try { const d = await window.db.collection('settings').doc(id).get(); return d.exists ? d.data() : null; } catch (e) { return null; } };
+      const [g, o, st, dt, c] = await Promise.all([get('gallery'), get('active_offer'), get('successful_treatments'), get('dental_tips'), get('campaigns')]);
+      if (g && Array.isArray(g.list)) src.gallery = g.list;
+      if (o) src.offer = o;
+      if (st && Array.isArray(st.list)) src.stories = st.list;
+      if (dt && Array.isArray(dt.list)) src.tips = dt.list;
+      if (c && Array.isArray(c.list)) src.campaigns = c.list;
+    }
+    return src;
+  }
+
+  async function renderOtherPhotos() {
     const host = document.getElementById('otherPhotosPreview');
     if (!host) return;
-    const read = (key) => { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) { return null; } };
-    const offer = read('kinetic_active_offer');
+    const src = await loadOtherPhotoSources();
+    const offer = src.offer;
     const groups = [
-      { label: 'Chamber gallery', tab: 'gallery', items: (read('kinetic_gallery') || []).map(g => ({ img: g.image, cap: g.title })) },
+      { label: 'Chamber gallery', tab: 'gallery', items: src.gallery.map(g => ({ img: g.image, cap: g.title })) },
       { label: 'Offer poster', tab: 'offers', items: offer && offer.image ? [{ img: offer.image, cap: offer.title }] : [] },
-      { label: 'Success stories', tab: 'successfulcases', items: (read('kinetic_successful_treatments') || []).map(g => ({ img: g.image || g.imageUrl, cap: g.diseaseName || g.title })) },
-      { label: 'Dental tips', tab: 'dentaltips', items: (read('kinetic_dental_tips') || []).map(g => ({ img: g.image || g.imageUrl, cap: g.title })) },
-      { label: 'Campaigns', tab: 'campaigns', items: (read('kinetic_campaigns') || []).map(g => ({ img: g.image, cap: g.title })) }
+      { label: 'Success stories', tab: 'successfulcases', items: src.stories.map(g => ({ img: g.image || g.imageUrl, cap: g.diseaseName || g.title })) },
+      { label: 'Dental tips', tab: 'dentaltips', items: src.tips.map(g => ({ img: g.image || g.imageUrl, cap: g.title })) },
+      { label: 'Campaigns', tab: 'campaigns', items: src.campaigns.map(g => ({ img: g.image, cap: g.title })) }
     ];
     host.innerHTML = '';
     groups.forEach(gr => {
@@ -3497,7 +3520,7 @@ document.addEventListener('DOMContentLoaded', () => {
       edit.type = 'button';
       edit.className = 'btn btn-secondary';
       edit.textContent = 'Manage';
-      edit.addEventListener('click', () => document.querySelector(`.admin-main-tab-btn[data-tab="${gr.tab}"]`)?.click());
+      edit.addEventListener('click', () => switchAdminTab(gr.tab));
       head.append(title, edit);
       const row = document.createElement('div');
       row.className = 'op-row';
@@ -3525,7 +3548,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('[data-goto-tab]').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelector(`.admin-main-tab-btn[data-tab="${btn.dataset.gotoTab}"]`)?.click();
+      switchAdminTab(btn.dataset.gotoTab);
     });
   });
 
