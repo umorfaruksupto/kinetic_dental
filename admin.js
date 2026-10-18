@@ -1008,6 +1008,44 @@ document.addEventListener('DOMContentLoaded', () => {
   const offerShowPopup = document.getElementById('offerShowPopup');
   const offerCtaTextInput = document.getElementById('offerCtaTextInput');
   const offerTreatmentSelect = document.getElementById('offerTreatmentSelect');
+  const offerChipGrid = document.getElementById('offerChipGrid');
+  const offerChipCount = document.getElementById('offerChipCount');
+
+  // Click-to-toggle checkboxes (no Ctrl/Cmd needed) kept in sync with the hidden multi-select
+  function renderOfferChips() {
+    if (!offerTreatmentSelect || !offerChipGrid) return;
+    offerChipGrid.innerHTML = '';
+    Array.from(offerTreatmentSelect.options).forEach(option => {
+      const label = document.createElement('label');
+      label.className = 'offer-chip' + (option.selected ? ' is-on' : '');
+      const box = document.createElement('input');
+      box.type = 'checkbox';
+      box.checked = option.selected;
+      box.addEventListener('change', () => {
+        option.selected = box.checked;
+        label.classList.toggle('is-on', box.checked);
+        updateOfferChipCount();
+      });
+      const text = document.createElement('span');
+      text.textContent = option.textContent;
+      label.append(box, text);
+      offerChipGrid.appendChild(label);
+    });
+    updateOfferChipCount();
+  }
+  function updateOfferChipCount() {
+    if (offerChipCount && offerTreatmentSelect) {
+      offerChipCount.textContent = offerTreatmentSelect.selectedOptions.length + ' selected';
+    }
+  }
+  document.getElementById('offerSelectAllBtn')?.addEventListener('click', () => {
+    Array.from(offerTreatmentSelect.options).forEach(o => { o.selected = true; });
+    renderOfferChips();
+  });
+  document.getElementById('offerClearAllBtn')?.addEventListener('click', () => {
+    Array.from(offerTreatmentSelect.options).forEach(o => { o.selected = false; });
+    renderOfferChips();
+  });
   const offerOriginalPriceInput = document.getElementById('offerOriginalPriceInput');
   const offerPriceInput = document.getElementById('offerPriceInput');
   const offerDiscountPercentInput = document.getElementById('offerDiscountPercentInput');
@@ -1034,6 +1072,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (offerTreatmentSelect) {
       const selectedTreatments = Array.isArray(activeOfferState.treatments) ? activeOfferState.treatments : [activeOfferState.treatment].filter(Boolean);
       Array.from(offerTreatmentSelect.options).forEach(option => { option.selected = selectedTreatments.includes(option.value); });
+      renderOfferChips();
     }
     if (offerOriginalPriceInput) offerOriginalPriceInput.value = activeOfferState.originalPrice || '';
     if (offerPriceInput) offerPriceInput.value = activeOfferState.offerPrice || '';

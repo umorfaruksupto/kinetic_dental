@@ -545,7 +545,7 @@
                   <label for="offerTreatmentSelect">Target Treatments / যেসব চিকিৎসায় একই ছাড় প্রযোজ্য <span class="required">*</span></label>
                   <div class="input-wrapper">
                     <i data-lucide="stethoscope" class="input-icon"></i>
-                    <select id="offerTreatmentSelect" multiple size="5" aria-describedby="offerTreatmentsHelp">
+                    <select id="offerTreatmentSelect" multiple size="5" aria-describedby="offerTreatmentsHelp" hidden>
                       <option value="Tooth Scaling &amp; Polishing">Tooth Scaling &amp; Polishing (দাঁতের স্কেলিং ও পলিশিং)</option>
                       <option value="Teeth Whitening (Bleaching)">Teeth Whitening (টিথ হোয়াইটেনিং)</option>
                       <option value="Root Canal Therapy (RCT)">Root Canal (রুট ক্যানেল থেরাপি)</option>
@@ -558,7 +558,13 @@
                       <option value="General Consultation">All Treatments / General (সকল চিকিৎসা)</option>
                     </select>
                   </div>
-                  <small id="offerTreatmentsHelp" class="section-desc">একাধিক চিকিৎসা বাছতে Ctrl (Windows) চেপে ক্লিক করুন।</small>
+                  <div class="offer-chip-tools">
+                    <button type="button" class="btn btn-secondary" id="offerSelectAllBtn">Select all (সব বাছুন)</button>
+                    <button type="button" class="btn btn-secondary" id="offerClearAllBtn">Clear (সব বাদ দিন)</button>
+                    <span class="offer-chip-count" id="offerChipCount"></span>
+                  </div>
+                  <div class="offer-chip-grid" id="offerChipGrid" role="group" aria-label="Target treatments"></div>
+                  <small id="offerTreatmentsHelp" class="section-desc">যে চিকিৎসায় অফার প্রযোজ্য সেগুলোতে ক্লিক করে টিক দিন; বাদ দিতে আবার ক্লিক করুন (Windows ও Mac দুটোতেই কাজ করে)।</small>
                 </div>
               </div>
 
