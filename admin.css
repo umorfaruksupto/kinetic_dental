@@ -6422,3 +6422,12 @@ body { line-height: 1.65; }
 .op-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
 .op-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .op-row img { width: 84px; height: 62px; object-fit: cover; border-radius: 8px; border: 1px solid var(--neutral-border); }
+
+.op-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+/* Doctors table: keep Edit / Delete always visible, and let long text wrap */
+#paneDoctors .appointments-table th:last-child,
+#paneDoctors .appointments-table td:last-child { position: sticky; right: 0; background: var(--bg-surface); box-shadow: -8px 0 10px -8px rgba(0,0,0,.18); z-index: 2; }
+#paneDoctors .appointments-table thead th:last-child { background: var(--bg-muted); }
+#paneDoctors .appointments-table tbody tr:hover td:last-child { background: var(--primary-light); }
+#paneDoctors .appointments-table { min-width: 0; }
+#paneDoctors .appointments-table th { white-space: normal; }

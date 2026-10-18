@@ -3501,11 +3501,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const src = await loadOtherPhotoSources();
     const offer = src.offer;
     const groups = [
-      { label: 'Chamber gallery', tab: 'gallery', items: src.gallery.map(g => ({ img: g.image, cap: g.title })) },
-      { label: 'Offer poster', tab: 'offers', items: offer && offer.image ? [{ img: offer.image, cap: offer.title }] : [] },
-      { label: 'Success stories', tab: 'successfulcases', items: src.stories.map(g => ({ img: g.image || g.imageUrl, cap: g.diseaseName || g.title })) },
-      { label: 'Dental tips', tab: 'dentaltips', items: src.tips.map(g => ({ img: g.image || g.imageUrl, cap: g.title })) },
-      { label: 'Campaigns', tab: 'campaigns', items: src.campaigns.map(g => ({ img: g.image, cap: g.title })) }
+      { label: 'Chamber gallery', tab: 'gallery', add: 'addNewGalleryBtn', items: src.gallery.map(g => ({ img: g.image, cap: g.title })) },
+      { label: 'Offer poster', tab: 'offers', focus: 'offerPosterUrlInput', items: offer && offer.image ? [{ img: offer.image, cap: offer.title }] : [] },
+      { label: 'Success stories', tab: 'successfulcases', add: 'addNewStBtn', items: src.stories.map(g => ({ img: g.image || g.imageUrl, cap: g.diseaseName || g.title })) },
+      { label: 'Dental tips', tab: 'dentaltips', add: 'addNewDentalTipBtn', items: src.tips.map(g => ({ img: g.image || g.imageUrl, cap: g.title })) },
+      { label: 'Campaigns', tab: 'campaigns', add: 'addNewCampaignBtn', items: src.campaigns.map(g => ({ img: g.image, cap: g.title })) }
     ];
     host.innerHTML = '';
     groups.forEach(gr => {
@@ -3519,9 +3519,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const edit = document.createElement('button');
       edit.type = 'button';
       edit.className = 'btn btn-secondary';
-      edit.textContent = 'Manage';
+      edit.textContent = 'Manage / Edit';
       edit.addEventListener('click', () => switchAdminTab(gr.tab));
-      head.append(title, edit);
+      const addBtn = document.createElement('button');
+      addBtn.type = 'button';
+      addBtn.className = 'btn btn-primary';
+      addBtn.textContent = gr.add ? '+ Add photo' : (items.length ? 'Change photo' : '+ Add photo');
+      addBtn.addEventListener('click', () => {
+        switchAdminTab(gr.tab);
+        setTimeout(() => {
+          if (gr.add) document.getElementById(gr.add)?.click();
+          else if (gr.focus) { const f = document.getElementById(gr.focus); f?.scrollIntoView({ block: 'center' }); f?.focus(); }
+        }, 50);
+      });
+      const btns = document.createElement('div');
+      btns.className = 'op-btns';
+      btns.append(addBtn, edit);
+      head.append(title, btns);
       const row = document.createElement('div');
       row.className = 'op-row';
       if (!items.length) {
@@ -3536,6 +3550,8 @@ document.addEventListener('DOMContentLoaded', () => {
         im.alt = i.cap || gr.label;
         im.title = i.cap || '';
         im.loading = 'lazy';
+        im.style.cursor = 'pointer';
+        im.addEventListener('click', () => switchAdminTab(gr.tab));
         im.onerror = () => im.remove();
         row.appendChild(im);
       });
