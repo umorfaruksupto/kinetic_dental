@@ -1360,12 +1360,12 @@ document.addEventListener('DOMContentLoaded', () => {
       docIsFemaleInput.checked = false;
     }
 
-    doctorEditModal.classList.add('show');
+    doctorEditModal.classList.add('active');
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
   function closeDoctorEditModal() {
-    if (doctorEditModal) doctorEditModal.classList.remove('show');
+    if (doctorEditModal) doctorEditModal.classList.remove('active');
   }
 
   doctorEditModalClose?.addEventListener('click', closeDoctorEditModal);
@@ -1434,7 +1434,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('kinetic_doctors_directory', JSON.stringify(doctorsDirectoryState));
     if (window.db) {
       window.db.collection('settings').doc('doctors_directory').set(doctorsDirectoryState, { merge: true })
-        .catch(err => console.error("Firestore save doctors error:", err));
+        .catch(err => showAdminToast('Save failed (' + (err.code || err.message) + '). Sign in again as admin and make sure Firestore rules are published.', 'error'));
     }
   }
 
@@ -1660,7 +1660,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('kinetic_treatments_directory', JSON.stringify(payload));
     if (window.db) {
       window.db.collection('settings').doc('treatments_directory').set(payload, { merge: true })
-        .catch(err => console.error("Firestore save treatments error:", err));
+        .catch(err => showAdminToast('Save failed (' + (err.code || err.message) + '). Sign in again as admin and make sure Firestore rules are published.', 'error'));
     }
   }
 
@@ -1742,7 +1742,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('kinetic_clinic_settings', JSON.stringify(clinicSettingsState));
     if (window.db) {
       window.db.collection('settings').doc('clinic_profile').set(clinicSettingsState, { merge: true })
-        .catch(err => console.warn("Firestore save clinic settings error:", err));
+        .catch(err => showAdminToast('Save failed (' + (err.code || err.message) + '). Sign in again as admin and make sure Firestore rules are published.', 'error'));
     }
   }
 
@@ -2222,7 +2222,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('kinetic_facilities', JSON.stringify(facilitiesState));
     if (window.db) {
       window.db.collection('settings').doc('facilities').set({ list: facilitiesState }, { merge: true })
-        .catch(err => console.warn('Firestore facilities save error:', err));
+        .catch(err => showAdminToast('Save failed (' + (err.code || err.message) + '). Sign in again as admin and make sure Firestore rules are published.', 'error'));
     }
   }
 
@@ -2421,7 +2421,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('kinetic_faqs', JSON.stringify(faqsState));
     if (window.db) {
       window.db.collection('settings').doc('faqs').set({ list: faqsState }, { merge: true })
-        .catch(err => console.warn('Firestore FAQs save error:', err));
+        .catch(err => showAdminToast('Save failed (' + (err.code || err.message) + '). Sign in again as admin and make sure Firestore rules are published.', 'error'));
     }
   }
 
@@ -2605,7 +2605,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('kinetic_campaigns', JSON.stringify(campaignsState));
     if (window.db) {
       window.db.collection('settings').doc('campaigns').set({ list: campaignsState }, { merge: true })
-        .catch(err => console.warn('Firestore campaigns save error:', err));
+        .catch(err => showAdminToast('Save failed (' + (err.code || err.message) + '). Sign in again as admin and make sure Firestore rules are published.', 'error'));
     }
   }
 
@@ -2775,7 +2775,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('kinetic_gallery', JSON.stringify(galleryState));
     if (window.db) {
       window.db.collection('settings').doc('gallery').set({ list: galleryState }, { merge: true })
-        .catch(err => console.warn('Firestore gallery save error:', err));
+        .catch(err => showAdminToast('Save failed (' + (err.code || err.message) + '). Sign in again as admin and make sure Firestore rules are published.', 'error'));
     }
   }
 
@@ -2932,7 +2932,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('kinetic_successful_treatments', JSON.stringify(stState));
     if (window.db) {
       window.db.collection('settings').doc('successful_treatments').set({ list: stState }, { merge: true })
-        .catch(err => console.warn('Firestore successful_treatments save error:', err));
+        .catch(err => showAdminToast('Save failed (' + (err.code || err.message) + '). Sign in again as admin and make sure Firestore rules are published.', 'error'));
     }
   }
 
@@ -3097,7 +3097,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('kinetic_dental_tips', JSON.stringify(dtState));
     if (window.db) {
       window.db.collection('settings').doc('dental_tips').set({ list: dtState }, { merge: true })
-        .catch(err => console.warn('Firestore dental_tips save error:', err));
+        .catch(err => showAdminToast('Save failed (' + (err.code || err.message) + '). Sign in again as admin and make sure Firestore rules are published.', 'error'));
     }
   }
 
