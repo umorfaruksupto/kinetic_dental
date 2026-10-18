@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* --------------------------------------------------------------------------
-     6. Appointment Form Validation & Dual Firebase + Formspree Post
+     6. Appointment Form Validation & Firebase Post (shown in admin)
      -------------------------------------------------------------------------- */
   const bookingForm = document.getElementById('bookingForm');
   const successModal = document.getElementById('successModal');
@@ -156,31 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
           replies: []
         };
 
-        // 1. Post to Formspree API (with graceful fallback if unverified/blocked)
-        const formspreePromise = fetch('https://formspree.io/f/xjgdaagw', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            name: bookingData.name,
-            phone: bookingData.phone,
-            treatment: bookingData.treatment,
-            date: bookingData.date,
-            time: bookingData.time,
-            message: bookingData.notes
-          })
-        }).catch(err => {
-          console.warn('Formspree dispatch notice (handled gracefully):', err);
-          return { ok: false, unverifiedOrBlocked: true };
-        });
-
-        // 2. Post to Firebase Firestore
-        const firestorePromise = window.db.collection('appointments').add(bookingData);
-
-        Promise.all([formspreePromise, firestorePromise])
-          .then(([, docRef]) => {
+        // Save to Firestore: every booking appears in the admin Appointments tab
+        window.db.collection('appointments').add(bookingData)
+          .then((docRef) => {
             const bookingId = docRef.id;
             try {
               localStorage.setItem('kinetic-last-booking-ref', bookingId);
