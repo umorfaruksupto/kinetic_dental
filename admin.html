@@ -986,6 +986,7 @@
               </button>
             </div>
           </div>
+        </div>
 
 
 
@@ -1176,7 +1177,8 @@ service cloud.firestore {
     // Patients can submit appointment requests; only clinic admins can read/manage them.
     match /appointments/{appointmentId} {
       allow create: if isClinicAdmin() || isPublicBooking();
-      allow read, update, delete: if isClinicAdmin();
+      allow get: if true;
+      allow list, update, delete: if isClinicAdmin();
     }
     // Public pages need read access; all content changes require clinic admin access.
     match /settings/{settingId} {
@@ -1192,7 +1194,6 @@ service cloud.firestore {
 
       </div>
 
-    </div>
     </div>
   </main>
 
