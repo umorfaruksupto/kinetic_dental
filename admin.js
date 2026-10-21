@@ -3456,8 +3456,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="form-group">
               <label for="siResult${side}${idx}">${side === 'before' ? 'Before' : 'After'} photo (Drive link)</label>
               <div class="si-field">
-                <div class="si-preview ${r[side] ? '' : 'is-empty'}" data-preview-for="siResult${side}${idx}"><img src="${escapeHTML(formatDriveImageUrl(r[side] || ''))}" alt="" onerror="this.style.visibility='hidden'"></div>
+                <div class="si-preview ${r[side] ? '' : 'is-empty'}" data-img-box data-preview-for="siResult${side}${idx}"><img src="${escapeHTML(formatDriveImageUrl(r[side] || ''))}" data-drive="${escapeHTML(r[side] || '')}" alt=""></div>
                 <input type="url" id="siResult${side}${idx}" data-result-field="${side}" value="${escapeHTML(r[side] || '')}" placeholder="https://drive.google.com/file/d/.../view">
+                <small class="si-hint">Drive: Share → General access → <b>Anyone with the link</b> (Viewer), then paste the link.</small>
               </div>
             </div>`).join('')}
         </div>
@@ -3511,6 +3512,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   siteImagesForm?.addEventListener('input', (e) => {
     if (e.target.matches('input[type="url"]')) previewSiteImage(e.target);
+  });
+  // Live preview for before/after fields (they are re-rendered, so delegate)
+  siteResultsList?.addEventListener('input', (e) => {
+    const input = e.target.closest('input[data-result-field="before"], input[data-result-field="after"]');
+    if (!input) return;
+    const box = siteResultsList.querySelector(`[data-preview-for="${input.id}"]`);
+    const img = box?.querySelector('img');
+    if (!img) return;
+    const val = input.value.trim();
+    box.classList.remove('img-failed');
+    box.classList.toggle('is-empty', !val);
+    img.style.visibility = '';
+    img.dataset.step = '0';
+    img.dataset.drive = val;
+    img.src = formatDriveImageUrl(val);
   });
 
   siteResultsList?.addEventListener('click', (e) => {

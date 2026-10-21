@@ -190,19 +190,35 @@ function formatDriveImageUrl(url) {
   const trimmed = url.trim();
   if (!trimmed) return '';
 
-  // Google Drive patterns: /file/d/{id} or ?id={id}
-  const matchFileD = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-  if (matchFileD && matchFileD[1]) {
-    return `https://lh3.googleusercontent.com/d/${matchFileD[1]}`;
-  }
-
-  const matchId = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (matchId && matchId[1]) {
-    return `https://lh3.googleusercontent.com/d/${matchId[1]}`;
-  }
-
-  return trimmed;
+  const id = driveFileId(trimmed);
+  return id ? `https://lh3.googleusercontent.com/d/${id}` : trimmed;
 }
+
+/** File id from any Drive share style: /file/d/ID, /d/ID, open?id=ID, uc?id=ID, thumbnail?id=ID, or a bare id */
+function driveFileId(url) {
+  const t = String(url || '').trim();
+  if (!t) return '';
+  if (/drive\.google\.com\/(drive\/)?(u\/\d+\/)?folders\//.test(t)) return '';
+  const m = t.match(/\/d\/([a-zA-Z0-9_-]{15,})/) || t.match(/[?&]id=([a-zA-Z0-9_-]{15,})/);
+  if (m) return m[1];
+  return /^[a-zA-Z0-9_-]{25,}$/.test(t) ? t : '';
+}
+
+/** Drive images that fail on the first host retry on other hosts; after that the box shows a visible warning */
+document.addEventListener('error', (e) => {
+  const img = e.target;
+  if (!img || img.tagName !== 'IMG' || !img.dataset.drive) return;
+  const id = driveFileId(img.dataset.drive);
+  const tries = id ? [`https://drive.google.com/thumbnail?id=${id}&sz=w1600`, `https://drive.google.com/uc?export=view&id=${id}`] : [];
+  const step = parseInt(img.dataset.step || '0', 10);
+  if (step < tries.length) {
+    img.dataset.step = String(step + 1);
+    img.src = tries[step];
+    return;
+  }
+  img.closest('[data-img-box]')?.classList.add('img-failed');
+  img.style.visibility = 'hidden';
+}, true);
 
 /**
  * Point an <img> at an admin-provided image link (Google Drive or direct URL).

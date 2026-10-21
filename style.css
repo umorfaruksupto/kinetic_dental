@@ -869,3 +869,7 @@ a.top-link:hover { color: #fff; }
 .rm-full p + p { margin-top: 10px; }
 .rm-toggle { margin-top: 6px; padding: 0; background: none; border: 0; color: var(--brand-600, var(--primary, #258b7e)); font: inherit; font-size: var(--fs-sm); font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .rm-toggle:hover { color: var(--brand-700, #1f756b); }
+
+/* Drive image could not load: say so instead of silently hiding it */
+.img-failed { display: flex; align-items: center; justify-content: center; background: var(--gray-100, #f1f5f9); }
+.img-failed::after { content: "Photo not available — set Drive sharing to \"Anyone with the link\""; padding: 12px; text-align: center; font-size: .75rem; color: var(--gray-600, #475569); }

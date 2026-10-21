@@ -6460,3 +6460,6 @@ body { line-height: 1.65; }
   .offer-item-row .oi-name { grid-column: 1 / -1; }
   .offer-item-row .oi-old, .offer-item-row .oi-new { grid-column: auto; }
 }
+
+.img-failed { position: relative; outline: 2px solid var(--danger, #dc2626); }
+.img-failed::after { content: "Can't load — set Drive sharing to \"Anyone with the link\""; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 6px; text-align: center; font-size: .65rem; color: var(--danger, #dc2626); background: rgba(255,255,255,.9); }

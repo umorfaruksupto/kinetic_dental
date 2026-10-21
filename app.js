@@ -1148,7 +1148,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const sides = [['before', 'Before'], ['after', 'After']]
         .filter(([key]) => r[key])
         .map(([key, label]) => `
-          <div class="ft-ba-side"><img src="${escapeHTML(formatDriveImageUrl(r[key]))}" alt="${label} — ${escapeHTML(r.title || 'treatment')}" loading="lazy" onerror="this.parentElement.remove()"><span class="ft-ba-label ${key}">${label}</span></div>`)
+          <div class="ft-ba-side" data-img-box><img src="${escapeHTML(formatDriveImageUrl(r[key]))}" data-drive="${escapeHTML(r[key])}" alt="${label} — ${escapeHTML(r.title || 'treatment')}" loading="lazy"><span class="ft-ba-label ${key}">${label}</span></div>`)
         .join('');
       return `
         <div class="ft-card">
