@@ -6446,3 +6446,17 @@ body { line-height: 1.65; }
 .built-by { width: 100%; text-align: center; margin-top: 4px; padding-top: 14px; border-top: 1px dashed rgba(255, 255, 255, 0.12); font-size: .9rem; font-weight: 600; color: rgba(255, 255, 255, 0.75); letter-spacing: .02em; }
 .built-by a { color: var(--brand-200, #9fd8cf); font-weight: 800; text-decoration: none; border-bottom: 1.5px solid currentColor; padding-bottom: 1px; transition: color .15s; }
 .built-by a:hover { color: #fff; }
+
+/* Per-treatment offer rows */
+.offer-items-box { background: var(--bg-muted); padding: 16px; border-radius: var(--border-radius-sm); margin-top: 15px; border-left: 4px solid var(--primary); }
+.offer-items-head, .offer-item-row { display: grid; grid-template-columns: minmax(180px, 2.4fr) 1fr 1.2fr 1.2fr 40px; gap: 8px; align-items: center; }
+.offer-items-head { margin: 12px 0 6px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; opacity: .7; }
+.offer-items-list { display: grid; gap: 8px; }
+.offer-item-row input { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid var(--neutral-border); border-radius: 8px; background: var(--bg-surface); color: inherit; font: inherit; }
+.offer-item-row .oi-del { padding: 8px 0; }
+@media (max-width: 720px) {
+  .offer-items-head { display: none; }
+  .offer-item-row { grid-template-columns: 1fr 1fr 40px; }
+  .offer-item-row .oi-name { grid-column: 1 / -1; }
+  .offer-item-row .oi-old, .offer-item-row .oi-new { grid-column: auto; }
+}

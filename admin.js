@@ -991,6 +991,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctaText: 'অফারটি গ্রহণ করুন / Book with Offer',
     treatments: ['Tooth Scaling & Polishing'],
     treatment: 'Tooth Scaling & Polishing',
+    items: [{ name: 'Tooth Scaling & Polishing', discountPercent: '25%', originalPrice: 'BDT 2,000', offerPrice: 'BDT 1,500' }],
     originalPrice: 'BDT 2,000',
     offerPrice: 'BDT 1,500',
     discountPercent: '25%'
@@ -1007,48 +1008,62 @@ document.addEventListener('DOMContentLoaded', () => {
   const offerShowInHero = document.getElementById('offerShowInHero');
   const offerShowPopup = document.getElementById('offerShowPopup');
   const offerCtaTextInput = document.getElementById('offerCtaTextInput');
-  const offerTreatmentSelect = document.getElementById('offerTreatmentSelect');
-  const offerChipGrid = document.getElementById('offerChipGrid');
-  const offerChipCount = document.getElementById('offerChipCount');
+  const offerItemsList = document.getElementById('offerItemsList');
 
-  // Click-to-toggle checkboxes (no Ctrl/Cmd needed) kept in sync with the hidden multi-select
-  function renderOfferChips() {
-    if (!offerTreatmentSelect || !offerChipGrid) return;
-    offerChipGrid.innerHTML = '';
-    Array.from(offerTreatmentSelect.options).forEach(option => {
-      const label = document.createElement('label');
-      label.className = 'offer-chip' + (option.selected ? ' is-on' : '');
-      const box = document.createElement('input');
-      box.type = 'checkbox';
-      box.checked = option.selected;
-      box.addEventListener('change', () => {
-        option.selected = box.checked;
-        label.classList.toggle('is-on', box.checked);
-        updateOfferChipCount();
-      });
-      const text = document.createElement('span');
-      text.textContent = option.textContent;
-      label.append(box, text);
-      offerChipGrid.appendChild(label);
-    });
-    updateOfferChipCount();
+  // One row per treatment: name (typed), discount %, optional old/offer price
+  function addOfferItemRow(item) {
+    if (!offerItemsList) return;
+    item = item || {};
+    const row = document.createElement('div');
+    row.className = 'offer-item-row';
+    const mk = (cls, ph, val, extra) => {
+      const i = document.createElement('input');
+      i.type = 'text';
+      i.className = cls;
+      i.placeholder = ph;
+      i.value = val || '';
+      if (extra) Object.keys(extra).forEach(k => i.setAttribute(k, extra[k]));
+      return i;
+    };
+    const name = mk('oi-name', 'e.g. Teeth Whitening', item.name, { list: 'offerTreatmentSuggestions', 'aria-label': 'Treatment name' });
+    const pct = mk('oi-pct', '25%', item.discountPercent, { 'aria-label': 'Discount percent' });
+    const oldP = mk('oi-old', 'BDT 2,000', item.originalPrice, { 'aria-label': 'Old price' });
+    const newP = mk('oi-new', 'BDT 1,500', item.offerPrice, { 'aria-label': 'Offer price' });
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'btn btn-secondary oi-del';
+    del.textContent = '✕';
+    del.title = 'Remove';
+    del.setAttribute('aria-label', 'Remove treatment');
+    del.addEventListener('click', () => row.remove());
+    row.append(name, pct, oldP, newP, del);
+    offerItemsList.appendChild(row);
   }
-  function updateOfferChipCount() {
-    if (offerChipCount && offerTreatmentSelect) {
-      offerChipCount.textContent = offerTreatmentSelect.selectedOptions.length + ' selected';
-    }
+  function readOfferItems() {
+    if (!offerItemsList) return [];
+    return Array.from(offerItemsList.querySelectorAll('.offer-item-row')).map(row => ({
+      name: row.querySelector('.oi-name').value.trim(),
+      discountPercent: row.querySelector('.oi-pct').value.trim(),
+      originalPrice: row.querySelector('.oi-old').value.trim(),
+      offerPrice: row.querySelector('.oi-new').value.trim()
+    })).filter(i => i.name);
   }
-  document.getElementById('offerSelectAllBtn')?.addEventListener('click', () => {
-    Array.from(offerTreatmentSelect.options).forEach(o => { o.selected = true; });
-    renderOfferChips();
+  // Older offers stored a treatments[] list with one shared discount
+  function offerItemsFromData(d) {
+    if (Array.isArray(d.items) && d.items.length) return d.items;
+    const list = (Array.isArray(d.treatments) && d.treatments.length ? d.treatments : [d.treatment]).filter(Boolean);
+    return list.map(n => ({
+      name: /^general consultation$/i.test(n) ? 'All Treatments' : n,
+      discountPercent: d.discountPercent || '',
+      originalPrice: list.length === 1 ? (d.originalPrice || '') : '',
+      offerPrice: list.length === 1 ? (d.offerPrice || '') : ''
+    }));
+  }
+  document.getElementById('offerAddItemBtn')?.addEventListener('click', () => {
+    addOfferItemRow();
+    offerItemsList.lastElementChild?.querySelector('.oi-name')?.focus();
   });
-  document.getElementById('offerClearAllBtn')?.addEventListener('click', () => {
-    Array.from(offerTreatmentSelect.options).forEach(o => { o.selected = false; });
-    renderOfferChips();
-  });
-  const offerOriginalPriceInput = document.getElementById('offerOriginalPriceInput');
-  const offerPriceInput = document.getElementById('offerPriceInput');
-  const offerDiscountPercentInput = document.getElementById('offerDiscountPercentInput');
+
   const saveOfferBtn = document.getElementById('saveOfferBtn');
   const previewOfferBtn = document.getElementById('previewOfferBtn');
 
@@ -1069,14 +1084,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (offerShowInHero) offerShowInHero.checked = activeOfferState.showInHero !== false;
     if (offerShowPopup) offerShowPopup.checked = activeOfferState.showPopup !== false;
     if (offerCtaTextInput) offerCtaTextInput.value = activeOfferState.ctaText || '';
-    if (offerTreatmentSelect) {
-      const selectedTreatments = Array.isArray(activeOfferState.treatments) ? activeOfferState.treatments : [activeOfferState.treatment].filter(Boolean);
-      Array.from(offerTreatmentSelect.options).forEach(option => { option.selected = selectedTreatments.includes(option.value); });
-      renderOfferChips();
+    if (offerItemsList) {
+      offerItemsList.innerHTML = '';
+      const rows = offerItemsFromData(activeOfferState);
+      (rows.length ? rows : [{}]).forEach(addOfferItemRow);
     }
-    if (offerOriginalPriceInput) offerOriginalPriceInput.value = activeOfferState.originalPrice || '';
-    if (offerPriceInput) offerPriceInput.value = activeOfferState.offerPrice || '';
-    if (offerDiscountPercentInput) offerDiscountPercentInput.value = activeOfferState.discountPercent || '';
   }
 
   // Handle image URL changes & preview
@@ -1133,6 +1145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     offerForm.addEventListener('submit', (e) => {
       e.preventDefault();
       
+      const offerItems = readOfferItems();
       const updatedOffer = {
         active: Boolean(offerActiveToggle?.checked),
         title: offerTitleInput?.value.trim() || '',
@@ -1142,11 +1155,13 @@ document.addEventListener('DOMContentLoaded', () => {
         showInHero: Boolean(offerShowInHero?.checked),
         showPopup: Boolean(offerShowPopup?.checked),
         ctaText: offerCtaTextInput?.value.trim() || 'Claim Offer',
-        treatments: offerTreatmentSelect ? Array.from(offerTreatmentSelect.selectedOptions).map(option => option.value) : [],
-        treatment: offerTreatmentSelect ? (Array.from(offerTreatmentSelect.selectedOptions).map(option => option.value).join(', ') || 'General Consultation') : 'General Consultation',
-        originalPrice: offerOriginalPriceInput?.value.trim() || '',
-        offerPrice: offerPriceInput?.value.trim() || '',
-        discountPercent: offerDiscountPercentInput?.value.trim() || '',
+        items: offerItems,
+        treatments: offerItems.map(i => i.name),
+        treatment: offerItems.map(i => i.name).join(', ') || 'General Consultation',
+        // popup summary: a single item shows its own prices, several show a shared % only if equal
+        originalPrice: offerItems.length === 1 ? offerItems[0].originalPrice : '',
+        offerPrice: offerItems.length === 1 ? offerItems[0].offerPrice : '',
+        discountPercent: offerItems.length && offerItems.every(i => i.discountPercent === offerItems[0].discountPercent) ? offerItems[0].discountPercent : '',
         updatedAt: new Date().toISOString()
       };
 

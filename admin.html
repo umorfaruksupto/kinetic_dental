@@ -503,34 +503,27 @@
                 </div>
               </div>
 
-              <!-- Offer Pricing & Discount Percent Inputs (Admin Controlled) -->
-              <div style="background:var(--bg-muted); padding:16px; border-radius:var(--border-radius-sm); margin-top:15px; border-left:4px solid var(--primary);">
-                <label style="font-weight:700; margin-bottom:8px; display:block;"><i data-lucide="tag" class="icon-sm text-primary"></i> অফার মূল্য ও ডিসকাউন্ট শতাংশ (Pricing &amp; Strikethrough Display)</label>
-                <div class="admin-form-grid-3">
-                  <div class="form-group">
-                    <label for="offerOriginalPriceInput">পূর্বের মূল মূল্য (Old Price e.g. BDT 2,000) - কাটা থাকবে</label>
-                    <div class="input-wrapper">
-                      <i data-lucide="banknote" class="input-icon"></i>
-                      <input type="text" id="offerOriginalPriceInput" placeholder="যেমন: BDT 2,000">
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="offerPriceInput">অফার মূল্য (Offer Price e.g. BDT 1,500)</label>
-                    <div class="input-wrapper">
-                      <i data-lucide="sparkles" class="input-icon"></i>
-                      <input type="text" id="offerPriceInput" placeholder="যেমন: BDT 1,500">
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="offerDiscountPercentInput">কত পার্সেন্ট ছাড় (Discount % e.g. 25%)</label>
-                    <div class="input-wrapper">
-                      <i data-lucide="percent" class="input-icon"></i>
-                      <input type="text" id="offerDiscountPercentInput" placeholder="যেমন: 25%">
-                    </div>
-                  </div>
+              <!-- Per-treatment discounts (admin types the treatment names) -->
+              <div class="offer-items-box">
+                <label style="font-weight:700; margin-bottom:6px; display:block;"><i data-lucide="tag" class="icon-sm text-primary"></i> কোন কোন চিকিৎসায় কত ছাড় (Treatments &amp; Discounts)</label>
+                <small class="section-desc">চিকিৎসার নাম নিজে লিখুন (যেমন: Teeth Whitening) এবং তার পাশে ছাড়ের শতাংশ লিখুন। চাইলে পুরনো দাম ও অফার দামও দিতে পারেন। একাধিক চিকিৎসায় আলাদা আলাদা ছাড় দেওয়া যাবে। সব চিকিৎসার জন্য নাম লিখুন <b>All</b>।</small>
+                <div class="offer-items-head" aria-hidden="true">
+                  <span>Treatment / চিকিৎসা</span><span>Discount %</span><span>Old price</span><span>Offer price</span><span></span>
                 </div>
+                <div id="offerItemsList" class="offer-items-list"></div>
+                <datalist id="offerTreatmentSuggestions">
+                  <option value="All Treatments"></option>
+                  <option value="Tooth Scaling &amp; Polishing"></option>
+                  <option value="Teeth Whitening (Bleaching)"></option>
+                  <option value="Root Canal Therapy (RCT)"></option>
+                  <option value="Braces &amp; Clear Aligners"></option>
+                  <option value="Customized Night Guard (Bruxism)"></option>
+                  <option value="Cosmetic Fillings &amp; Veneers"></option>
+                  <option value="Crowns &amp; Bridges"></option>
+                  <option value="Dental Implants"></option>
+                  <option value="Pediatric Dentistry (Kids Care)"></option>
+                </datalist>
+                <button type="button" class="btn btn-secondary" id="offerAddItemBtn" style="margin-top:10px;"><i data-lucide="plus" class="icon-left"></i> Add treatment (চিকিৎসা যোগ করুন)</button>
               </div>
 
               <div class="admin-form-grid-2" style="margin-top:15px;">
@@ -542,31 +535,7 @@
                   </div>
                 </div>
 
-                <div class="form-group">
-                  <label for="offerTreatmentSelect">Target Treatments / যেসব চিকিৎসায় একই ছাড় প্রযোজ্য <span class="required">*</span></label>
-                  <div class="input-wrapper">
-                    <i data-lucide="stethoscope" class="input-icon"></i>
-                    <select id="offerTreatmentSelect" multiple size="5" aria-describedby="offerTreatmentsHelp" hidden>
-                      <option value="Tooth Scaling &amp; Polishing">Tooth Scaling &amp; Polishing (দাঁতের স্কেলিং ও পলিশিং)</option>
-                      <option value="Teeth Whitening (Bleaching)">Teeth Whitening (টিথ হোয়াইটেনিং)</option>
-                      <option value="Root Canal Therapy (RCT)">Root Canal (রুট ক্যানেল থেরাপি)</option>
-                      <option value="Braces &amp; Clear Aligners">Braces &amp; Aligners (ব্রেসেস ও ক্লিয়ার অ্যালাইনার)</option>
-                      <option value="Customized Night Guard (Bruxism)">Night Guard (নাইট গার্ড)</option>
-                      <option value="Cosmetic Fillings &amp; Veneers">Cosmetic Filling &amp; Veneers (কসমেটিক ফিলিং ও ভেনিয়ার্স)</option>
-                      <option value="Crowns &amp; Bridges">Crowns &amp; Bridges (ক্যাপ ও ব্রিজ)</option>
-                      <option value="Dental Implants">Dental Implants (ডেন্টাল ইমপ্ল্যান্ট)</option>
-                      <option value="Pediatric Dentistry (Kids Care)">Kids Care (শিশুদের দাঁতের যত্ন)</option>
-                      <option value="General Consultation">All Treatments / General (সকল চিকিৎসা)</option>
-                    </select>
-                  </div>
-                  <div class="offer-chip-tools">
-                    <button type="button" class="btn btn-secondary" id="offerSelectAllBtn">Select all (সব বাছুন)</button>
-                    <button type="button" class="btn btn-secondary" id="offerClearAllBtn">Clear (সব বাদ দিন)</button>
-                    <span class="offer-chip-count" id="offerChipCount"></span>
-                  </div>
-                  <div class="offer-chip-grid" id="offerChipGrid" role="group" aria-label="Target treatments"></div>
-                  <small id="offerTreatmentsHelp" class="section-desc">যে চিকিৎসায় অফার প্রযোজ্য সেগুলোতে ক্লিক করে টিক দিন; বাদ দিতে আবার ক্লিক করুন (Windows ও Mac দুটোতেই কাজ করে)।</small>
-                </div>
+                
               </div>
 
               <div style="display:flex; gap:14px; margin-top:24px; flex-wrap:wrap;">

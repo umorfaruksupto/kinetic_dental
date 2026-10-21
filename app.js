@@ -618,16 +618,28 @@ document.addEventListener('DOMContentLoaded', () => {
     setManagedImage(heroMainImage, offerSrc || heroSources.site || heroSources.legacy);
   }
 
+  /* Offer items: [{name, discountPercent, originalPrice, offerPrice}] (falls back to the older shared-discount fields) */
+  function getOfferItems(data) {
+    if (!data) return [];
+    if (Array.isArray(data.items) && data.items.length) return data.items.filter(i => i && i.name);
+    const list = (Array.isArray(data.treatments) && data.treatments.length ? data.treatments : [data.treatment]).filter(Boolean);
+    return (list.length ? list : ['All Treatments']).map(n => ({
+      name: n,
+      discountPercent: data.discountPercent || data.discount || '',
+      originalPrice: list.length === 1 ? data.originalPrice : '',
+      offerPrice: list.length === 1 ? data.offerPrice : ''
+    }));
+  }
+
   /* Show struck-through main price + offer price + OFFER tag on matching treatment cards */
   function decorateTreatmentOffers() {
     const cards = document.querySelectorAll('.treatment-quick-card');
     const data = currentOfferData;
     const fmt = (v) => { const t = String(v).trim(); return /^(BDT|৳)/i.test(t) ? t : `BDT ${t}`; };
     const num = (v) => { const n = parseFloat(String(v).replace(/[^\d.]/g, '')); return isNaN(n) ? null : n; };
-    const targets = data ? ((Array.isArray(data.treatments) && data.treatments.length ? data.treatments : [data.treatment]).filter(Boolean).map(x => String(x).toLowerCase())) : [];
-    const specific = targets.filter(x => x !== 'general consultation' && !x.includes('all treatments'));
-    const appliesToAll = !specific.length;
-    const pct = data ? parseFloat(String(data.discountPercent || data.discount || '').replace(/[^\d.]/g, '')) : NaN;
+    const items = getOfferItems(data);
+    const isAll = (n) => n === 'all' || n.includes('all treatments') || n === 'general consultation' || n.includes('সকল');
+
 
     cards.forEach(card => {
       const valEl = card.querySelector('.treatment-price-val');
@@ -641,13 +653,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const name = (card.querySelector('h3')?.textContent || '').toLowerCase();
       const book = (card.querySelector('.btn-book-treatment')?.dataset.treatment || '').toLowerCase();
-      const matched = appliesToAll || specific.some(t => name.includes(t) || t.includes(name) || (book && (book.includes(t) || t.includes(book))));
-      if (!matched) return;
+      const hit = (it) => { const t = it.name.toLowerCase(); return name.includes(t) || t.includes(name) || (book && (book.includes(t) || t.includes(book))); };
+      const item = items.find(it => !isAll(it.name.toLowerCase()) && hit(it)) || items.find(it => isAll(it.name.toLowerCase()));
+      if (!item) return;
+      const pct = parseFloat(String(item.discountPercent || '').replace(/[^\d.]/g, ''));
 
       let oldP = valEl.dataset.orig, newP = '';
-      if (specific.length === 1 && data.offerPrice) {
-        newP = fmt(data.offerPrice);
-        if (data.originalPrice) oldP = fmt(data.originalPrice);
+      if (item.offerPrice) {
+        newP = fmt(item.offerPrice);
+        if (item.originalPrice) oldP = fmt(item.originalPrice);
       } else if (!isNaN(pct) && pct > 0 && num(oldP) !== null) {
         newP = `BDT ${Math.round(num(oldP) * (1 - pct / 100)).toLocaleString('en-US')}`;
       }
@@ -663,7 +677,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const tag = document.createElement('span');
       tag.className = 'treatment-offer-tag';
-      tag.textContent = !isNaN(pct) && pct > 0 ? `OFFER · ${pct}% OFF` : 'OFFER';
+      const shownPct = !isNaN(pct) && pct > 0 ? pct : (num(oldP) && num(newP) && num(oldP) > num(newP) ? Math.round((1 - num(newP) / num(oldP)) * 100) : 0);
+      tag.textContent = shownPct > 0 ? `OFFER · ${shownPct}% OFF` : 'OFFER';
       (top || card).appendChild(tag);
       card.classList.add('has-offer');
     });
@@ -695,8 +710,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const offerTreatmentBadge = document.getElementById('offerTreatmentBadge');
     const offerTreatmentName = document.getElementById('offerTreatmentName');
     if (offerTreatmentBadge && offerTreatmentName) {
-      const targetTreatments = Array.isArray(data.treatments) && data.treatments.length ? data.treatments : [data.treatment].filter(Boolean);
-      const targetLabel = targetTreatments.filter(treatment => treatment !== 'General Consultation' && !String(treatment).toLowerCase().includes('all treatments')).join(', ');
+      const targetLabel = getOfferItems(data)
+        .filter(it => !/^(all|general consultation)/i.test(it.name) && !/all treatments/i.test(it.name))
+        .map(it => it.discountPercent ? `${it.name} (${String(it.discountPercent).includes('%') ? it.discountPercent : it.discountPercent + '%'} off)` : it.name)
+        .join(', ');
       if (targetLabel) {
         offerTreatmentName.textContent = targetLabel;
         offerTreatmentBadge.classList.remove('hidden');
