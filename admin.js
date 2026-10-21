@@ -3442,7 +3442,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!siteResultsList) return;
     const results = siteImagesState.results || [];
     if (!results.length) {
-      siteResultsList.innerHTML = '<p class="si-empty">No before/after results yet. The homepage results section stays hidden until you add one.</p>';
+      siteResultsList.innerHTML = '<p class="si-empty">No before/after results yet. The Results page section stays hidden until you add one.</p>';
       return;
     }
     siteResultsList.innerHTML = results.map((r, idx) => `

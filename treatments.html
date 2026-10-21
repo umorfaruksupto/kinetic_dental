@@ -95,6 +95,18 @@
   <main class="section-padding">
     <div class="container">
 
+      <!-- Before / after results (admin: Site images → Homepage results) -->
+      <section id="chamber-treatments" class="hidden" style="margin-bottom:56px;">
+        <div class="split-header scroll-reveal">
+          <div>
+            <span class="section-tag">Real Results</span>
+            <h2 class="section-title">Real smiles from our chamber</h2>
+          </div>
+          <p>Before &amp; after transformations performed by Dr. Nadia and team.</p>
+        </div>
+        <div class="featured-treat-strip" id="resultsGrid"></div>
+      </section>
+
       <div class="ba-grid scroll-reveal" id="successfulTreatmentsGrid">
         <!-- Treatment cases are managed in the admin panel. -->
       </div>
@@ -174,6 +186,30 @@
   <!-- Lucide Init + Mobile Menu + Firebase Dynamic Treatments -->
   <script src="page-utils.js"></script>
   <script>
+    function renderResults(results) {
+      const grid = document.getElementById('resultsGrid');
+      const section = document.getElementById('chamber-treatments');
+      if (!grid || !section) return;
+      const list = (Array.isArray(results) ? results : []).filter(r => r && (r.before || r.after));
+      section.classList.toggle('hidden', !list.length);
+      grid.innerHTML = list.map(r => {
+        const sides = [['before', 'Before'], ['after', 'After']]
+          .filter(([key]) => r[key])
+          .map(([key, label]) => `
+            <div class="ft-ba-side" data-img-box><img src="${escapeHTML(formatDriveImageUrl(r[key]))}" data-drive="${escapeHTML(r[key])}" alt="${label} — ${escapeHTML(r.title || 'treatment')}" loading="lazy"><span class="ft-ba-label ${key}">${label}</span></div>`)
+          .join('');
+        return `
+          <div class="ft-card">
+            <div class="ft-ba-pair${r.before && r.after ? '' : ' single'}">${sides}</div>
+            <div class="ft-card-overlay">
+              ${r.tag ? `<span class="ft-tag">${escapeHTML(r.tag)}</span>` : ''}
+              ${r.title ? `<h3>${escapeHTML(r.title)}</h3>` : ''}
+              ${r.desc ? `<p>${escapeHTML(r.desc)}</p>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+    }
+
     function renderSuccessfulTreatments(list) {
       const grid = document.getElementById('successfulTreatmentsGrid');
       if (!grid || !Array.isArray(list)) return;
@@ -207,6 +243,7 @@
       }
 
       initScrollReveal();
+      if (typeof watchSiteImages === 'function') watchSiteImages((d) => renderResults((d || {}).results));
 
       // Load successful treatments from Firebase cache then live
       try {
