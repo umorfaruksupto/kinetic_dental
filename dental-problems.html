@@ -176,8 +176,7 @@
         const rawImg = item.image || item.imageUrl || '';
         const imgSrc = typeof formatDriveImageUrl === 'function' ? formatDriveImageUrl(rawImg) : rawImg;
         const hasImg = imgSrc && imgSrc.trim() !== '' && /drive\.google\.com|googleusercontent\.com/i.test(rawImg);
-        const summary = String(item.descEn || item.descBn || '').trim();
-        const excerpt = summary.length > 180 ? `${summary.slice(0, 177)}…` : summary;
+        const articleHtml = buildReadMore([item.descEn, item.descBn], 220);
 
         return `
           <article class="post-card" id="${escapeHTML(item.slug || '')}">
@@ -190,7 +189,7 @@
               ${item.tag ? `<span class="post-tag">${escapeHTML(item.tag)}</span>` : ''}
               <h3>${escapeHTML(item.title || '')}</h3>
               ${item.titleBn ? `<p class="post-title-bn">${escapeHTML(item.titleBn)}</p>` : ''}
-              ${excerpt ? `<p>${escapeHTML(excerpt)}</p>` : ''}
+              ${articleHtml}
               <a href="index.html#appointment" class="post-tag" style="background:var(--primary); color:#fff; display:inline-block; margin-top:8px;">${escapeHTML(item.ctaText || 'Book Appointment →')}</a>
             </div>
           </article>

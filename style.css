@@ -862,3 +862,10 @@ a.top-link:hover { color: #fff; }
 .built-by { width: 100%; text-align: center; margin-top: 4px; padding-top: 14px; border-top: 1px dashed rgba(255, 255, 255, 0.12); font-size: var(--fs-sm); font-weight: 600; color: rgba(255, 255, 255, 0.75); letter-spacing: .02em; }
 .built-by a { color: var(--brand-200, #9fd8cf); font-weight: 800; text-decoration: none; border-bottom: 1.5px solid currentColor; padding-bottom: 1px; transition: color .15s; }
 .built-by a:hover { color: #fff; }
+
+/* Read-more articles */
+.read-more { width: 100%; }
+.rm-full p, .rm-preview { white-space: pre-line; }
+.rm-full p + p { margin-top: 10px; }
+.rm-toggle { margin-top: 6px; padding: 0; background: none; border: 0; color: var(--brand-600, var(--primary, #258b7e)); font: inherit; font-size: var(--fs-sm); font-weight: 700; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.rm-toggle:hover { color: var(--brand-700, #1f756b); }

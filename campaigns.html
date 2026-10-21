@@ -196,7 +196,7 @@
             ${camp.badge ? `<span class="post-tag">${escapeHTML(camp.badge)}</span>` : ''}
             <h3>${escapeHTML(camp.title || '')}</h3>
             ${camp.location ? `<p class="post-meta"><i data-lucide="map-pin" class="icon-sm"></i> ${escapeHTML(camp.location)}</p>` : ''}
-            ${camp.descEn ? `<p>${escapeHTML(String(camp.descEn).slice(0, 180))}${String(camp.descEn).length > 180 ? '…' : ''}</p>` : ''}
+            ${buildReadMore([camp.descEn, camp.descBn], 220)}
           </div>
         </article>
       `;

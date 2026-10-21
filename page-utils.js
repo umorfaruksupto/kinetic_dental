@@ -311,5 +311,34 @@ if (document.readyState === 'loading') {
   initCommonPageUI();
 }
 
+/**
+ * Expandable article text: shows a short preview with a "Read full article" toggle.
+ * `parts` is one or more text blocks (e.g. English + Bangla); line breaks are kept.
+ */
+function buildReadMore(parts, limit) {
+  const blocks = (Array.isArray(parts) ? parts : [parts]).map((t) => String(t || '').trim()).filter(Boolean);
+  if (!blocks.length) return '';
+  const esc = (t) => (typeof escapeHTML === 'function' ? escapeHTML(t) : t);
+  const full = blocks.join('\n\n');
+  const max = limit || 180;
+  if (full.length <= max) return `<p class="rm-full">${esc(full)}</p>`;
+  const preview = full.slice(0, max).replace(/\s+\S*$/, '') + '…';
+  const fullHtml = blocks.map((b) => `<p>${esc(b)}</p>`).join('');
+  return `<div class="read-more">
+    <p class="rm-preview">${esc(preview)}</p>
+    <div class="rm-full" hidden>${fullHtml}</div>
+    <button type="button" class="rm-toggle" aria-expanded="false">Read full article · সম্পূর্ণ পড়ুন</button>
+  </div>`;
+}
 
-
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest ? e.target.closest('.rm-toggle') : null;
+  if (!btn) return;
+  const box = btn.closest('.read-more');
+  if (!box) return;
+  const open = btn.getAttribute('aria-expanded') !== 'true';
+  box.querySelector('.rm-full').hidden = !open;
+  box.querySelector('.rm-preview').hidden = open;
+  btn.setAttribute('aria-expanded', String(open));
+  btn.textContent = open ? 'Show less · সংক্ষেপে দেখুন' : 'Read full article · সম্পূর্ণ পড়ুন';
+});
